@@ -13,4 +13,12 @@ typedef struct Sprite_S
     Uint8 used;                         /**<used by the maintanenc functions to keep track of how many times a single sprite is being used*/
 }Sprite;
 
+void sprite_init_all();
+
+void sprite_free(Sprite *img);
+
+Sprite *sprite_load(char *filename,int sizex, int sizey);
+
+void sprite_close_all();
+
 #endif
