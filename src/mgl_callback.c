@@ -1,12 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
-#include "collisions.h"
-#include "simple_logger.h"
-#include "vector.h"
+#include "include.h"
 
-#include "mgl_callback.h"
-#include "body.h"
-#include "entity.h"
 MglCallback mgl_callback(void (*function)(void *data,void *context),void *data)
 {
     MglCallback cb;

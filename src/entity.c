@@ -1,5 +1,1 @@
-﻿#include "mgl_callback.h"
-#include "vector.h"
-#include "collisions.h"
-#include "entity.h"
-#include "body.h"
+﻿#include "include.h"

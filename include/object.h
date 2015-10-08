@@ -77,7 +77,6 @@ typedef struct Model_S
 
 	GLuint *triangle_array; // why not use ObjTriangle
 
-
 }Model;
 
 

@@ -1,0 +1,9 @@
+#include <SDL.h>
+#include <GL\glew.h>
+#include "mgl_callback.h"
+#include "simple_logger.h"
+#include "collisions.h"
+#include "vector.h"
+#include "sprite.h"
+#include "body.h"
+#include "entity.h"

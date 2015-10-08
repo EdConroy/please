@@ -1,7 +1,7 @@
 #ifndef _ENTITY_H_
 #define _ENTITY_H_
 
-#define MAX_ENT 20
+#define MAX_ENT 255
 
 typedef struct Entity_S
 {
@@ -12,16 +12,15 @@ typedef struct Entity_S
 
 	struct Body_S* body;
 
-	//Obj* model;
+	Vec3D accel;
+	Vec3D rot;
+	Vec3D scale;
+	Vec4D color;
 
-	// cube stuff
-	//Vec3D box;
-	//Vec3D size;
+	Sprite* texture;
 
-	//models not used yet
-	void (*draw)(struct Entity_S* ent);
-
-	//Sprite* texture;
+	struct Obj_S *object;
+	struct Model_S* model;
 	
 }Entity;
 
