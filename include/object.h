@@ -60,6 +60,44 @@ typedef struct Obj_S
 }Obj;
 
 /**
+ * @brief initializes object subsystem
+ */
+void obj_init_all();
+
+/**
+ * @brief load an object file into an obj
+ * @param filename the object file to parse
+ * @return NULL on failure or an Obj pointer otherwise;
+ */
+Obj *obj_load(char *filename);
+
+/**
+ * @brief free an object from memory if no longer in use
+ * @param obj the object to free
+ */
+void obj_free(Obj *obj);
+
+/**
+ * @brief draw an object primitive
+ * @param obj the obj to draw
+ * @param position the position to draw it at
+ * @param rotation the yaw, pitch and roll of the obj to draw
+ * @param scale the x,y,z stretch of the obj.  1,1,1 is no deformation
+ * @param color the r,g,b,a value for the model as a whole
+ * @param texture [optional] if provided, render with texture
+ */
+void obj_draw(
+    Obj *obj,
+    struct Vec3D_S position,
+    struct Vec3D_S rotation,
+    struct Vec3D_S scale,
+    struct Vec4D_S color,
+    struct Sprite_S *texture
+);
+
+///////////////////////////////////////////////////////////////////////
+
+/**
   * A structure to represent 3D models (ex. human)
   */
 typedef struct Model_S
@@ -79,5 +117,69 @@ typedef struct Model_S
 
 }Model;
 
+/**
+ * @brief initialize the model system
+ */
+void model_init_all();
+
+/**
+ * @brief get a new model pointer
+ * @return NULL on error or out of space, a zero initialized model pointer otherwise
+ */
+Model *model_init();
+
+/**
+ * @brief load an object file into a model
+ * @param filename the object file to parse
+ * @return NULL on failure or a model pointer otherwise;
+ */
+Model *obj_load_model(char *filename);
+
+/**
+ * @brief frees a loaded model
+ * @param model a pointer to the model to free
+ */
+void model_free(Model *model);
+
+/**
+ * @brief checks if the model file is already loaded and returns a pointer to it if it is
+ * @param filename the file to check if its already loaded
+ * @return NULL on error or not loaded, the model pointer otherwise
+ */
+Model *model_get_by_filename(char *filename);
+
+/**
+ * @brief assign a texture to the model
+ * @param model the model to assign to
+ * @param texture the name of the texture file to load
+ */
+void model_assign_texture(Model *model,char *texture);
+
+/**
+ * @brief allocate the data needed for the triangle array buffer
+ * NOTE: a NO-OP is it already exists
+ * @param model the model to allocate data for
+ * @param triangles how many triangles to allocate, must be > 0
+ * @return -1 on error or 0 otherwise
+ */
+int model_allocate_triangle_buffer(Model *model, GLuint triangles);
+
+/**
+ * @brief allocate the data needed for the attribute array buffer
+ * NOTE: a NO-OP is it already exists
+ * @param model the model to allocate data for
+ * @param attributes how many attributes to allocate, must be > 0
+ * @return -1 on error or 0 otherwise
+ */
+int model_allocate_attribute_buffer(Model *model, GLuint attributes);
+
+/**
+ * @brief allocate the data needed for the vertex array buffer
+ * NOTE: a NO-OP is it already exists
+ * @param model the model to allocate data for
+ * @param vertices how many vertices to allocate, must be > 0
+ * @return -1 on error or 0 otherwise
+ */
+int model_allocate_vertex_buffer(Model *model, GLuint vertices);
 
 #endif

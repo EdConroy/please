@@ -19,9 +19,16 @@ typedef struct Body_S
 	bool done;
 }Body;
 
-
+/**
+ * @brief resets a body pre-physics calculation
+ * @param body the body to reset
+ */
 void body_reset(Body *body);
 
-
+/**
+ * @brief applies any post physics processing needed for the body
+ * @param body the body to process
+ */
+void body_process(Body *body);
 
 #endif

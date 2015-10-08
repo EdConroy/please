@@ -19,22 +19,45 @@ typedef struct Entity_S
 
 	Sprite* texture;
 
-	struct Obj_S *object;
+	/* entity has choice of either one */
+	struct Obj_S* object;
 	struct Model_S* model;
 	
 }Entity;
 
-void ent_init();
-static void ent_close();
-void ent_draw();
+/**
+ * @brief initialize the entity sub system
+ * @param max the maximum number of simultaneously supported entities.
+ */
+void ent_init_all(int max);
 
-struct Entity_S* Init_Ent();
-void KillEnt(struct Entity_S* ent);
+/**
+ * @brief draws all active entities
+ */
+void ent_draw_all();
 
-void draw(struct Entity_S* ent);
+/**
+ * @brief get a pointer to a new entity
+ * @return NULL on no more entities or error,  a valid entity pointer otherwise
+ */
+Entity* ent_init();
 
-void setPos (struct Entity_S* ent, float x, float y, float z);
-void setSize (struct Entity_S* ent, float x, float y, float z);
-//void setTexture (Entity* ent, Sprite* texture);
+/**
+ * @brief creates an new floor
+ * @param position for floor
+ * @param name for floor
+ */
+Entity *newFloor(Vec3D position, const char *name);
+
+/**
+ * @brief draws an entity
+ * @param ent the entity to draw
+ */
+void ent_draw(Entity* ent);
+
+/**
+ * @brief frees entity from memory
+ */
+void ent_free(Entity* ent);
 
 #endif

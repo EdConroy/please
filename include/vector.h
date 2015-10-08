@@ -11,7 +11,7 @@ typedef struct Vec3D_S
     float x,y,z;
 }Vec3D;
 
-typedef struct
+typedef struct Vec4D_S
 {
     float x,y,z,w;
 }Vec4D;
