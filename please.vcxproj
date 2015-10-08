@@ -10,6 +10,31 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\entity.c" />
+    <ClCompile Include="src\game.c" />
+    <ClCompile Include="src\main.c" />
+    <ClCompile Include="src\mgl_callback.c" />
+    <ClCompile Include="src\object.c" />
+    <ClCompile Include="src\simple_logger.c" />
+    <ClCompile Include="src\vector.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\body.h" />
+    <ClInclude Include="include\bool.h" />
+    <ClInclude Include="include\collisions.h" />
+    <ClInclude Include="include\entity.h" />
+    <ClInclude Include="include\game.h" />
+    <ClInclude Include="include\mgl_callback.h" />
+    <ClInclude Include="include\object.h" />
+    <ClInclude Include="include\simple_logger.h" />
+    <ClInclude Include="include\sprite.h" />
+    <ClInclude Include="include\vector.h" />
+    <ClInclude Include="src\body.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\collisions.c" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D60C6D41-407D-4D73-9C4B-213C7276BCBB}</ProjectGuid>
     <RootNamespace>please</RootNamespace>
@@ -38,10 +63,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)\..</OutDir>
-    <IntDir>$(ProjectDir)\..</IntDir>
-    <IncludePath>C:\Libraries\SDL2-2.0.3\include;C:\Libraries\SDL2_image-2.0.0\include;C:\Libraries\glew-1.12.0\include;C:\Users\iwh-pc\Documents\College\fall2015\it485\please\please\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Libraries\SDL2-2.0.3\lib\x86;C:\Libraries\SDL2_image-2.0.0\lib\x86;C:\Libraries\glew-1.12.0\lib\Release\Win32;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)\</OutDir>
+    <IntDir>$(ProjectDir)\</IntDir>
+    <IncludePath>C:\Libraries\SDL2-2.0.3\include;C:\Libraries\SDL2_image-2.0.0\include;C:\Libraries\glew-1.12.0\include;C:\Users\iwh-pc\Documents\College\fall2015\it485\please\please\include;C:\Libraries\glib-2.28\include\glib-2.0;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Libraries\SDL2-2.0.3\lib\x86;C:\Libraries\SDL2_image-2.0.0\lib\x86;C:\Libraries\glew-1.12.0\lib\Release\Win32;C:\Libraries\glib-2.28\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)\..</OutDir>
@@ -51,10 +76,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;opengl32.lib;glew32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;opengl32.lib;glew32.lib;glu32.lib;glib-2.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -71,9 +98,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="game.c" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
