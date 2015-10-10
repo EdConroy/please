@@ -1,6 +1,10 @@
 #include <string.h>
 #include <stdlib.h>
-#include "include.h"
+#include <SDL.h>
+#include <GL\glew.h>
+#include "mgl_callback.h"
+#include "collisions.h"
+#include "entity.h"
 
 MglCallback mgl_callback(void (*function)(void *data,void *context),void *data)
 {
@@ -49,14 +53,14 @@ void mgl_callback_delete(MglCallback *cb)
 /* actual callback function???
 void touch_callback(void *data, void *context)
 {
-    Entity *me,*other;
-    Body *obody;
+    struct Entity_S *me,*other;
+    struct Body_S *obody;
     if ((!data)||(!context))return;
-    me = (Entity *)data;
-    obody = (Body *)context;
+    me = (struct Entity_S *)data;
+    obody = (struct Body_S *)context;
     if (entity_is_entity(obody->touch.data))
     {
-        other = (Entity *)obody->touch.data;
+        other = (struct Entity_S *)obody->touch.data;
         //slog("%s is ",other->name);
     }
     //slog("touching me.... touching youuuuuuuu");

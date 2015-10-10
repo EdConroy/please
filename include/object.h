@@ -21,9 +21,15 @@
  *    SOFTWARE.
  */
 
+#include <SDL.h>
+#include <GL\glew.h>
+#include <stdlib.h>
+
 /**
  * @purpse reorganized version of headers with ability to load/parse object files into the structures
  */
+
+// model is primary in entity struct
 
 typedef struct TriPoint_S
 {

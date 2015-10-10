@@ -38,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\collisions.c" />
+    <None Include="src\graphics.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D60C6D41-407D-4D73-9C4B-213C7276BCBB}</ProjectGuid>
@@ -81,7 +82,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <CompileAs>CompileAsC</CompileAs>
+      <CompileAs>Default</CompileAs>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

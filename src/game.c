@@ -20,7 +20,14 @@ int Run()
 
 int game_Init()
 {
+	// init everything here
 	game.Run = Run;
 
 	return 1;
+}
+
+bool game_Exit()
+{
+	// deInit everything here
+	game.Run = NULL;
 }

@@ -1,6 +1,11 @@
 #ifndef _ENTITY_H_
 #define _ENTITY_H_
 
+#include "vector.h"
+#include "object.h"
+#include "sprite.h"
+#include "body.h"
+
 #define MAX_ENT 255
 
 typedef struct Entity_S
@@ -10,18 +15,18 @@ typedef struct Entity_S
 
 	char name[128];
 
-	struct Body_S* body;
+	Body body; //keep getting a disappearing red underline here
 
 	Vec3D accel;
 	Vec3D rot;
 	Vec3D scale;
 	Vec4D color;
 
-	Sprite* texture;
+	Sprite* texture;	/**<object texture*/
 
-	/* entity has choice of either one */
-	struct Obj_S* object;
-	struct Model_S* model;
+	float speed; // speed relative to time
+
+	Model* model; // treat same way SDL_Texture was treated
 	
 }Entity;
 
@@ -43,6 +48,12 @@ void ent_draw_all();
 Entity* ent_init();
 
 /**
+ * @brief boolean that checks if data that was sent to the function is an entity
+ * @return true (1) if data is an entity, false (0) if not
+ */
+int ent_is_real(void* data);
+
+/**
  * @brief creates an new floor
  * @param position for floor
  * @param name for floor
@@ -59,5 +70,10 @@ void ent_draw(Entity* ent);
  * @brief frees entity from memory
  */
 void ent_free(Entity* ent);
+
+/**
+ * @brief set what kind of entity it is
+ */
+void ent_set_type(Entity* ent);
 
 #endif

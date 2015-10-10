@@ -1,21 +1,26 @@
 #ifndef __BODY_H__
 #define __BODY_H__
 
+#include "vector.h"
+#include "collisions.h"
 #include "bool.h"
+#include "entity.h"
+#include "mgl_callback.h"
 
 typedef struct Body_S
 {
-	struct Entity_S* owner;
+	struct Entity_S* owner; /**<owner of this body*/ // entity has body, but body needs ref. to entity
 
-	struct Vec3D_S position;
-	struct Vec3D_S velocity;
-	struct Vec3D_S posFix; /**<repositioning after collision*/
+	Vec3D position;
+	Vec3D velocity;
+	Vec3D posFixVector; /**<repositioning after collision*/
 
-	struct Cube_S bounds;
+	Cube bounds; /**<bounding box*/
 	
-	struct MglCallback_S touch;
+	MglCallback touch;
 
-	bool needsFix; /**<needs the position to be fixed*/
+	// ___naming convention????
+	bool needsFixing; /**<needs the position to be fixed*/
 	bool done;
 }Body;
 

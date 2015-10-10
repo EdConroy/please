@@ -4,7 +4,7 @@
 #include "bool.h"
 
 /**
-* @brief Running the game.
+* @brief Running the game. Private??
 */
 typedef struct gamedata
 {
@@ -13,5 +13,6 @@ typedef struct gamedata
 }GameData;
 
 int game_Init();
+bool game_Exit();
 
 #endif

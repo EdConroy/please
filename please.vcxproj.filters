@@ -65,12 +65,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\main.c">
-      <Filter>Main Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\game.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\entity.c">
       <Filter>Main Files</Filter>
     </ClCompile>
@@ -86,9 +80,18 @@
     <ClCompile Include="src\simple_logger.c">
       <Filter>Main Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game.c">
+      <Filter>Main Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\collisions.c">
+      <Filter>Main Files</Filter>
+    </None>
+    <None Include="src\graphics.c">
       <Filter>Main Files</Filter>
     </None>
   </ItemGroup>

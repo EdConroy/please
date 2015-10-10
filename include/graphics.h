@@ -20,6 +20,8 @@
  *    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *    SOFTWARE.
  */
+#include <SDL.h>
+#include <GL\glew.h>
 
 #define EPSILON   1e-6f // ???
 #define TWOPI 6.283185308 // ???
@@ -31,7 +33,7 @@
 #define DEGTORAD  0.017453292519943295769236907684886
 
 /**
- * @brief initializes 3d graphics system
+ * @brief initializes 3d graphics
  * @param sw the screen width you want
  * @param sh the screen height you want
  * @param fullscreen set true to initialize to fullscreen
@@ -39,22 +41,23 @@
  * @param frameDelay the desired delay (in ms) between frames
  * @return -1 on error, 0 otherwise
  */
-int graphics3d_init(int sw,int sh,int fullscreen,const char *project, Uint32 frameDelay);
+int graphics_init(int sw,int sh,int fullscreen,const char *project, Uint32 frameDelay);
 
 /**
  * @brief get the active shader program index
  * @return 0 on error or the index of the active shader program
  */
-GLuint graphics3d_get_shader_program();
+GLuint graphics_get_shader_program();
+// "function returning function" error disappears
 
 /**
  * @brief clear the drawing context and ready the next frame
  */
-void graphics3d_frame_begin();
+void graphics_frame_begin();
 
 /**
  * @brief advance the frame, taking into account desired frame rate
  */
-void graphics3d_next_frame();
+void graphics_next_frame();
 
 #endif

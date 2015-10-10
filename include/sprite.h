@@ -1,6 +1,9 @@
 #ifndef __SPRITE__
 #define __SPRITE__
 
+#include <SDL.h>
+#include <GL\glew.h>
+
 #define MAXSPRITEFILENAME 512
 
 typedef struct Sprite_S
