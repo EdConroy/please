@@ -81,7 +81,7 @@ void ent_draw(Entity *ent)
 {
 	if (!ent) return;
 
-	/*
+	
 	obj_draw
 		(
 		ent->model, 
@@ -91,7 +91,7 @@ void ent_draw(Entity *ent)
 		ent->color, 
 		ent->texture
 		);
-	*/
+	
 }
 
 int ent_is_real(void* data)
@@ -130,8 +130,8 @@ Entity *ent_floor(Vec3D position, const char *name)
         return NULL;
     }
 	
-	//ent->model = obj_load("models/level2.obj");
-	//ent->texture = sprite_load("models/mountain_text.png",1024,1024);
+	ent->model = obj_load("resources/level2.obj");
+	ent->texture = sprite_load("resources/mountain_text.png",1024,1024);
     vec3d_cpy(ent->body.position,position);
     cube_set(ent->body.bounds,-1,-1,-1,2,2,2);
     sprintf(ent->name,"%s",name);

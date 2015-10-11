@@ -24,6 +24,8 @@
 #include <SDL.h>
 #include <GL\glew.h>
 #include <stdlib.h>
+#include "sprite.h"
+#include "vector.h"
 
 /**
  * @purpse reorganized version of headers with ability to load/parse object files into the structures
@@ -120,6 +122,9 @@ typedef struct Model_S
     float *attribute_array; // ???
 
 	GLuint *triangle_array; // why not use ObjTriangle
+
+	Sprite *texture;        /**<pointer to texture data*/
+    Uint8 used;             /**<refcount*/
 
 }Model;
 

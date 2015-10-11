@@ -1,10 +1,13 @@
 #include <stdlib.h>
 #include "graphics.h"
+#include "shader.h"
 #include "simple_logger.h"
 
 // WARNING IN CASE OF UNRESOLVED EXTERNAL SYMBOLS
 // IF YOUR .H OR .C FILE WAS ORIGINALLY OF ANOTHER FORMAT,
 // CREATE ENTIRE NEW FILE (IT MUST BE .H OR .C TO BEGIN WITH)
+// OR ELSE UNUSUAL ERRORS WILL APPEAR (EX. GLuint as <error-tyoe>
+// or unresolved external symbol error for defined functions)
 
 // "Think of a context as an object that holds all of OpenGL; 
 // when a context is destroyed, OpenGL is destroyed."
@@ -83,13 +86,13 @@ int graphics_init(int sw,int sh,int fullscreen,const char *project, Uint32 frame
         return -1;
     }
 
-	/*
-	__graphics_shader_program = BuildShaderProgram("shaders/vs1.glsl", "shaders/fs1.glsl");
-    if (__graphics3d_shader_program == -1)
+	__graphics_shader_program = BuildShaderProgram("resources/shaders/vs1.glsl", "resources/shaders/fs1.glsl");
+    if (__graphics_shader_program == -1)
     {
+		slog("failed to load shaders.\n");
         return -1;
     }
-	*/
+	
 
 	glViewport(0,0,sw, sh);
     glMatrixMode(GL_PROJECTION);

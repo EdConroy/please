@@ -26,7 +26,8 @@ typedef struct Entity_S
 
 	float speed; // speed relative to time
 
-	Model* model; // treat same way SDL_Texture was treated
+	//Model* model; // treat same way SDL_Texture was treated
+	Obj*	model;
 	
 }Entity;
 
@@ -58,7 +59,7 @@ int ent_is_real(void* data);
  * @param position for floor
  * @param name for floor
  */
-Entity *newFloor(Vec3D position, const char *name);
+Entity *ent_floor(Vec3D position, const char *name);
 
 /**
  * @brief draws an entity
