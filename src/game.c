@@ -16,6 +16,7 @@ void game_Update();
 void game_Draw();
 int Run();
 
+// private definitions
 void game_Poll()
 {
 	while (SDL_PollEvent (&events))
@@ -28,14 +29,21 @@ void game_Poll()
 	}
 }
 
+void game_Draw()
+{
+	graphics_clear_frame();
+	graphics_next_frame();
+}
+
 // private definitions
 int Run()
 {
 	slog("running: %d", SDL_GetTicks());
-	// poll
+	
 	game_Poll();
 	// update
-	// draw
+	game_Draw();
+	
 	return 1;
 }
 

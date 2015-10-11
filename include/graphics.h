@@ -53,7 +53,7 @@ int graphics_init(int sw,int sh,int fullscreen,const char *project, Uint32 frame
 /**
  * @brief clear the drawing context and ready the next frame
  */
-void graphics_frame_begin();
+void graphics_clear_frame();
 
 /**
  * @brief advance the frame, taking into account desired frame rate
