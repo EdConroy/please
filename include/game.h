@@ -1,6 +1,7 @@
 #ifndef _GAME_H_
 #define _GAME_H_
 
+#include "graphics.h"
 #include "bool.h"
 
 /**
@@ -13,6 +14,6 @@ typedef struct gamedata
 }GameData;
 
 int game_Init();
-bool game_Exit();
+void game_Exit();
 
 #endif

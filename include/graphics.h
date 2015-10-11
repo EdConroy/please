@@ -47,7 +47,7 @@ int graphics_init(int sw,int sh,int fullscreen,const char *project, Uint32 frame
  * @brief get the active shader program index
  * @return 0 on error or the index of the active shader program
  */
-GLuint graphics_get_shader_program();
+//GLuint graphics_get_shader_program();
 // "function returning function" error disappears
 
 /**

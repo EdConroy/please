@@ -1,7 +1,10 @@
-﻿#include <stdlib.h>
-#include <GL\glu.h>
-#include "simple_logger.h"
+#include <stdlib.h>
 #include "graphics.h"
+#include "simple_logger.h"
+
+// WARNING IN CASE OF UNRESOLVED EXTERNAL SYMBOLS
+// IF YOUR .H OR .C FILE WAS ORIGINALLY OF ANOTHER FORMAT,
+// CREATE ENTIRE NEW FILE (IT MUST BE .H OR .C TO BEGIN WITH)
 
 // "Think of a context as an object that holds all of OpenGL; 
 // when a context is destroyed, OpenGL is destroyed."
@@ -14,7 +17,7 @@ static SDL_Window*		__graphics_window = NULL;
 static GLuint			__graphics_shader_program;
 
 // frame delay
-static Uint32			__graphics3d_frame_delay = 33;
+static Uint32			__graphics_frame_delay = 33;
 
 // private function: close graphics system
 void graphics_end();
@@ -38,4 +41,24 @@ int graphics_init(int sw,int sh,int fullscreen,const char *project, Uint32 frame
 		return -1;
 	}
 	atexit(SDL_Quit);
+
+	__graphics_frame_delay = frameDelay;
+
+	__graphics_window = SDL_CreateWindow
+		(
+		project?project:"please",
+		SDL_WINDOWPOS_UNDEFINED,
+		SDL_WINDOWPOS_UNDEFINED,
+		sw, sh,
+		SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
+		);
+
+	atexit(graphics_end);
+
+	return 0;
+}
+
+void graphics_end()
+{
+	__graphics_frame_delay = 0;
 }

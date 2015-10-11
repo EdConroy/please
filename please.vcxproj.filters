@@ -54,13 +54,13 @@
     <ClInclude Include="include\include.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\graphics.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\space.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -86,12 +86,12 @@
     <ClCompile Include="src\game.c">
       <Filter>Main Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\graphics.c">
+      <Filter>Main Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\collisions.c">
-      <Filter>Main Files</Filter>
-    </None>
-    <None Include="src\graphics.c">
       <Filter>Main Files</Filter>
     </None>
   </ItemGroup>

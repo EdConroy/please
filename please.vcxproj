@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="src\entity.c" />
     <ClCompile Include="src\game.c" />
+    <ClCompile Include="src\graphics.c" />
     <ClCompile Include="src\main.c" />
     <ClCompile Include="src\mgl_callback.c" />
     <ClCompile Include="src\object.c" />
@@ -38,7 +39,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\collisions.c" />
-    <None Include="src\graphics.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D60C6D41-407D-4D73-9C4B-213C7276BCBB}</ProjectGuid>
@@ -49,7 +49,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
-    <WholeProgramOptimization />
+    <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -72,6 +72,7 @@
     <IntDir>$(ProjectDir)\</IntDir>
     <IncludePath>C:\Libraries\SDL2-2.0.3\include;C:\Libraries\SDL2_image-2.0.0\include;C:\Libraries\glew-1.12.0\include;C:\Users\iwh-pc\Documents\College\fall2015\it485\please\please\include;C:\Libraries\glib-2.28\include\glib-2.0;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Libraries\SDL2-2.0.3\lib\x86;C:\Libraries\SDL2_image-2.0.0\lib\x86;C:\Libraries\glew-1.12.0\lib\Release\Win32;C:\Libraries\glib-2.28\lib;$(LibraryPath)</LibraryPath>
+    <SourcePath>C:\Users\iwh-pc\Documents\College\fall2015\it485\please\please\src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)\..</OutDir>
