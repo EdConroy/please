@@ -63,6 +63,9 @@
     <ClInclude Include="include\graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\phys.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\entity.c">
@@ -95,10 +98,14 @@
     <ClCompile Include="src\sprite.c">
       <Filter>Main Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="src\collisions.c">
+    <ClCompile Include="src\space.c">
       <Filter>Main Files</Filter>
-    </None>
+    </ClCompile>
+    <ClCompile Include="src\phys.c">
+      <Filter>Main Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\collisions.c">
+      <Filter>Main Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

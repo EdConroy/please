@@ -1,6 +1,6 @@
 ﻿#include <stdio.h>
-#include "object.h"
 #include "entity.h"
+#include "phys.h"
 #include "simple_logger.h"
 
 // LIST OF ENTITIES
@@ -38,6 +38,7 @@ static void entity_deInit()
 		if ( __entity_list[i].inuse)
 		{
 			ent_free(&__entity_list[i]); // free memory where entity is in use
+			physics_remove_body(&__entity_list[i].body);
 		}
 		free(__entity_list); // free entire entity list from memory
 		__entity_max = 0;
@@ -116,9 +117,21 @@ void ent_free(Entity* ent)
 	//sprite_free(ent->texture);
 }
 
-void ent_set_type(Entity* ent)
+// use this in the case of an if-statement
+void ent_add_gravity(Entity* ent)
 {
+	// acceleration and velocity
+	ent->body.velocity.x += ent->accel.x * 0.00000002;
+	ent->body.velocity.y += ent->accel.y * 0.00000002;
 	
+	if (ent->body.position.z > 2)
+		ent->body.velocity.z -= ent->gravity * 0.00000002;
+	else
+		ent->body.velocity.z = 0;
+	// vec3d_add(ent->body.velocity, ent->body.velocity, ent->accel);
+
+	vec3d_add(ent->body.position, ent->body.position, ent->body.velocity);
+
 }
 
 Entity *ent_floor(Vec3D position, const char *name)
@@ -135,6 +148,31 @@ Entity *ent_floor(Vec3D position, const char *name)
     vec3d_cpy(ent->body.position,position);
     cube_set(ent->body.bounds,-1,-1,-1,2,2,2);
     sprintf(ent->name,"%s",name);
+	ent->movetype = MTYPE_NONE;
+	ent->gravity = 0;
     //mgl_callback_set(&ent->body.touch,touch_callback,ent);
+	physics_add_body(&ent->body);
+	return ent;
+}
+
+Entity *ent_player(Vec3D position, const char *name)
+{
+	Entity * ent;
+	ent = ent_init();
+    if (!ent)
+    {
+        return NULL;
+    }
+	
+	ent->model = obj_load("resources/level2.obj");
+	ent->texture = sprite_load("resources/mountain_text.png",1024,1024);
+    vec3d_cpy(ent->body.position,position);
+    cube_set(ent->body.bounds,-1,-1,-1,2,2,2);
+    sprintf(ent->name,"%s",name);
+	ent->movetype = MTYPE_ENT;
+	ent->gravity = 15;
+    //mgl_callback_set(&ent->body.touch,touch_callback,ent);
+	physics_add_body(&ent->body);
+	ent->body.owner = ent;
 	return ent;
 }

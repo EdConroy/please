@@ -4,7 +4,7 @@
 // private class:
 typedef struct Space_S Space;
 
-Space *space_new();
+Space *space_init();
 
 /**
  * @brief remove space from memory

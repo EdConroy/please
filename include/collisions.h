@@ -1,6 +1,8 @@
 #ifndef __COLLISIONS_H__
 #define __COLLISIONS_H__
 
+//rename?
+
 typedef struct Cube_S
 {
     float x,y,z;

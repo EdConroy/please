@@ -1,4 +1,5 @@
 #include "collisions.h"
+#include "bool.h"
 
 int cube_cube_intersection(
 	Cube a, 

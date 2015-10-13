@@ -25,8 +25,6 @@ void camera_Init();
 
 typedef struct gamedata
 {
-	//Camera	gameCamera; /***<this is the global game camera> **/
-
 	int		(*Run)(); /***<function pointer that will run the game> **/
 
 }GameData;

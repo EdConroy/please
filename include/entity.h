@@ -3,7 +3,6 @@
 
 #include "vector.h"
 #include "object.h"
-#include "sprite.h"
 #include "body.h"
 
 #define MAX_ENT 255
@@ -28,6 +27,10 @@ typedef struct Entity_S
 
 	//Model* model; // treat same way SDL_Texture was treated
 	Obj*	model;
+
+	float gravity;
+
+	int movetype;
 	
 }Entity;
 
@@ -48,6 +51,8 @@ void ent_draw_all();
  */
 Entity* ent_init();
 
+void ent_add_gravity(Entity* ent);
+
 /**
  * @brief boolean that checks if data that was sent to the function is an entity
  * @return true (1) if data is an entity, false (0) if not
@@ -60,6 +65,13 @@ int ent_is_real(void* data);
  * @param name for floor
  */
 Entity *ent_floor(Vec3D position, const char *name);
+
+/**
+ * @brief creates teh player
+ * @param initial position
+ * @param name
+ */
+Entity *ent_player(Vec3D position, const char *name);
 
 /**
  * @brief draws an entity
