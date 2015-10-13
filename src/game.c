@@ -17,9 +17,11 @@ GList *it;
 
 extern GList* __bodyList;
 
+int curMouseX, curMouseY;
+
 // private declarations: camera
-Vec3D camera_position = {0,-10,0.3};
-Vec3D camera_rotation = {90,0,0};
+Vec3D camera_position;
+Vec3D camera_rotation;
 
 extern int game_running;
 
@@ -36,24 +38,97 @@ void set_camera(Vec3D position, Vec3D rotation)
     glRotatef(-rotation.z, 0.0f, 0.0f, 1.0f);
 
 	glTranslatef(-position.x,
-                 -position.y,
+                 -position.y+5,
                  -position.z);
 }
 
 // private definitions
 void game_Poll()
 {
+	int mouseX, mouseY;
+	int horiz, verti;
+
+	curMouseX = 0;
+	curMouseY = 0;
+
 	while (SDL_PollEvent (&events))
 	{
-		switch (events.type)
-		{
-		case SDL_QUIT:
+		//switch (events.type)
+		
+		if (events.type == SDL_QUIT)
 			game_running = false;
-		case SDL_KEYDOWN:
+		if (events.type == SDL_KEYDOWN)
 			{
-				if (events.key.keysym.sym == SDLK_SPACE)
-					camera_position.y++;
+				switch(events.key.keysym.sym)
+				{
+				case SDLK_w:
+						{
+						player->accel.y = 4;
+						break;
+						}
+						case SDLK_s:
+						{
+						player->accel.y = -4;
+						break;
+						}
+					case SDLK_a:
+						{
+						player->accel.x = -4;
+						break;
+						}
+					case SDLK_d:
+						{
+						player->accel.x = 4;
+						break;
+						}
+				}
 			}
+		if (events.type == SDL_KEYUP)
+			{
+				switch(events.key.keysym.sym)
+				{
+						case SDLK_w:
+						{
+						player->accel.y = 0;
+						break;
+						}
+						case SDLK_s:
+						{
+						player->accel.y = 0;
+						break;
+						}
+					case SDLK_a:
+						{
+						player->accel.x = 0;
+						break;
+						}
+					case SDLK_d:
+						{
+						player->accel.x = 0;
+						break;
+						}
+				}
+			}
+		if (events.type == SDL_MOUSEMOTION)
+		{
+			//mouseOnCamera();
+			SDL_GetMouseState(&mouseX, &mouseY);
+
+			horiz = ((curMouseX - mouseX) - ((1024/2)) * .00000000000000001);
+			verti = ((curMouseY - mouseY) - (768/2)) * .9;
+
+			printf("%f\n", player->rot.x);
+
+			//player->rot.z = horiz;
+			player->rot.x = verti;
+
+			if (player->rot.x <= -650)
+				player->rot.x = -650;
+			if(player->rot.x >= -560)
+				player->rot.x = -560;
+
+			curMouseX = mouseX;
+			curMouseY = mouseY;
 
 		}
 	}
@@ -74,7 +149,7 @@ void game_Draw()
 {
 	graphics_clear_frame();
 	glPushMatrix(); // ???
-	set_camera(camera_position, camera_rotation);
+	set_camera(player->body.position, player->rot); // will change player->rot
 	ent_draw_all();
 	glPopMatrix();// ???
 	graphics_next_frame();
@@ -108,6 +183,7 @@ int game_Init()
 	test->rot = vec3d(100,0,0);
 	
 	player = ent_player(vec3d(0,0,10), "player");
+	player->rot = vec3d(80,0,0);
 
 	slog("game initialization finished");
 	return 1;

@@ -121,10 +121,10 @@ void ent_free(Entity* ent)
 void ent_add_gravity(Entity* ent)
 {
 	// acceleration and velocity
-	ent->body.velocity.x += ent->accel.x * 0.00000002;
-	ent->body.velocity.y += ent->accel.y * 0.00000002;
+	ent->body.velocity.x = ent->accel.x * 0.0002;
+	ent->body.velocity.y = ent->accel.y * 0.0002;
 	
-	if (ent->body.position.z > 2)
+	if (ent->body.position.z > 2) // if ground entity = true
 		ent->body.velocity.z -= ent->gravity * 0.00000002;
 	else
 		ent->body.velocity.z = 0;
@@ -164,7 +164,7 @@ Entity *ent_player(Vec3D position, const char *name)
         return NULL;
     }
 	
-	ent->model = obj_load("resources/level2.obj");
+	//ent->model = obj_load("resources/level2.obj");
 	ent->texture = sprite_load("resources/mountain_text.png",1024,1024);
     vec3d_cpy(ent->body.position,position);
     cube_set(ent->body.bounds,-1,-1,-1,2,2,2);

@@ -58,7 +58,7 @@ void physics_collision(Body *body)
 		{
 			if (other->owner)
 			{
-				printf("%s\n", other->owner->name);
+				//printf("%s\n", other->owner->name);
 			}
 		}
 

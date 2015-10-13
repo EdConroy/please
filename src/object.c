@@ -419,7 +419,7 @@ void obj_draw(
     
     if (obj == NULL)
     {
-        slog("cannot draw obj, none specified!");
+        //slog("cannot draw obj, none specified!");
         return;
     }
     glPushMatrix();
