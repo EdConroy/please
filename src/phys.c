@@ -58,7 +58,8 @@ void physics_collision(Body *body)
 		{
 			if (other->owner)
 			{
-				//printf("%s\n", other->owner->name);
+				if (strcmp(other->owner->name, "obstacle1") == 0)
+					printf("%s", other->owner->name);
 			}
 		}
 

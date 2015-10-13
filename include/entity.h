@@ -67,11 +67,18 @@ int ent_is_real(void* data);
 Entity *ent_floor(Vec3D position, const char *name);
 
 /**
- * @brief creates teh player
+ * @brief create teh player
  * @param initial position
  * @param name
  */
 Entity *ent_player(Vec3D position, const char *name);
+
+/**
+ * @brief creates an obstacle
+ * @param initial position
+ * @param name
+ */
+Entity *ent_obstacle(Vec3D position, const char *name);
 
 /**
  * @brief draws an entity

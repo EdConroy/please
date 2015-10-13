@@ -143,14 +143,15 @@ Entity *ent_floor(Vec3D position, const char *name)
         return NULL;
     }
 	
-	ent->model = obj_load("resources/level2.obj");
-	ent->texture = sprite_load("resources/mountain_text.png",1024,1024);
+	ent->model = obj_load("resources/floortwo.obj");
+	ent->texture = sprite_load("resources/seamless_tile_floor_1_by_ttrlabs-d4ojzlu.png",1024,1024);
     vec3d_cpy(ent->body.position,position);
     cube_set(ent->body.bounds,-1,-1,-1,2,2,2);
     sprintf(ent->name,"%s",name);
 	ent->movetype = MTYPE_NONE;
 	ent->gravity = 0;
     //mgl_callback_set(&ent->body.touch,touch_callback,ent);
+	ent->body.owner = ent;
 	physics_add_body(&ent->body);
 	return ent;
 }
@@ -164,13 +165,35 @@ Entity *ent_player(Vec3D position, const char *name)
         return NULL;
     }
 	
-	//ent->model = obj_load("resources/level2.obj");
-	ent->texture = sprite_load("resources/mountain_text.png",1024,1024);
-    vec3d_cpy(ent->body.position,position);
+	ent->model = obj_load("resources/cube.obj");
+	//ent->texture = sprite_load("resources/mountain_text.png",1024,1024);
+    vec3d_cpy(ent->body.position, position);
     cube_set(ent->body.bounds,-1,-1,-1,2,2,2);
     sprintf(ent->name,"%s",name);
 	ent->movetype = MTYPE_ENT;
 	ent->gravity = 15;
+    //mgl_callback_set(&ent->body.touch,touch_callback,ent);
+	physics_add_body(&ent->body);
+	ent->body.owner = ent;
+	return ent;
+}
+
+Entity *ent_obstacle(Vec3D position, const char *name)
+{
+	Entity * ent;
+	ent = ent_init();
+    if (!ent)
+    {
+        return NULL;
+    }
+	
+	ent->model = obj_load("resources/cube.obj");
+	ent->texture = sprite_load("resources/cube_text.png",1024,1024);
+    vec3d_cpy(ent->body.position, position);
+    cube_set(ent->body.bounds,-1,-1,-1,2,2,2);
+    sprintf(ent->name,"%s",name);
+	ent->movetype = MTYPE_ENT;
+	ent->gravity = 0;
     //mgl_callback_set(&ent->body.touch,touch_callback,ent);
 	physics_add_body(&ent->body);
 	ent->body.owner = ent;

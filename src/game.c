@@ -10,7 +10,8 @@
 GameData game;
 SDL_Event events;
 
-Entity* test;
+Entity* floor1;
+Entity *floor2, *floor3, *obstacle1;
 Entity* player;
 
 GList *it;
@@ -114,29 +115,33 @@ void game_Poll()
 			//mouseOnCamera();
 			SDL_GetMouseState(&mouseX, &mouseY);
 
-			horiz = ((curMouseX - mouseX) - ((1024/2)) * .00000000000000001);
-			verti = ((curMouseY - mouseY) - (768/2)) * .9;
+			horiz = ((curMouseX - mouseX) - (512) * .00000000000000001);
+			verti = ((curMouseY - mouseY) - (384)) * .9;
 
-			printf("%f\n", player->rot.x);
+			//printf("%f\n", player->rot.x);
 
-			//player->rot.z = horiz;
+			player->rot.z = horiz;
 			player->rot.x = verti;
 
 			if (player->rot.x <= -650)
 				player->rot.x = -650;
-			if(player->rot.x >= -560)
-				player->rot.x = -560;
+			if (player->rot.x >= -610)
+				player->rot.x = -610;
+
+			if (player->rot.z >= -300)
+				player->rot.z = -300;
+			if (player->rot.z <= -400)
+				player->rot.z = -400;
 
 			curMouseX = mouseX;
 			curMouseY = mouseY;
-
 		}
 	}
 }
 
 void game_Update()
 {
-	ent_add_gravity(test);
+	ent_add_gravity(floor1);
 	ent_add_gravity(player);
 	
 	for (it = __bodyList; it != NULL; it = g_list_next(it))
@@ -149,7 +154,7 @@ void game_Draw()
 {
 	graphics_clear_frame();
 	glPushMatrix(); // ???
-	set_camera(player->body.position, player->rot); // will change player->rot
+	set_camera(player->body.position, player->rot); // gotta make a position offset
 	ent_draw_all();
 	glPopMatrix();// ???
 	graphics_next_frame();
@@ -179,11 +184,17 @@ int game_Init()
 
 	ent_init_all(255);
 
-	test = ent_floor(vec3d(0,0,0), "test");
-	test->rot = vec3d(100,0,0);
+	// level layout "loadTestLevel();"
+	floor1 = ent_floor(vec3d(0,0,0), "floor1");
+	floor1->rot = vec3d(90,0,0);
+
+	floor2 = ent_floor(vec3d(15.5, 0, 0), "floor2");
+	floor2->rot = vec3d(90, 0, 0);
 	
 	player = ent_player(vec3d(0,0,10), "player");
 	player->rot = vec3d(80,0,0);
+
+	obstacle1 = ent_obstacle(vec3d(5, 0, 1), "obstacle1");
 
 	slog("game initialization finished");
 	return 1;
