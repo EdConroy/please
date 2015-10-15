@@ -131,8 +131,11 @@ void ent_free(Entity* ent)
 }
 
 // use this in the case of an if-statement
+/* gives entity abiliy to move in world, need to rename */
 void ent_add_gravity(Entity* ent)
 {
+	// split up accelearation and velocity???
+
 	// acceleration and velocity
 	ent->body.velocity.x = ent->accel.x * 0.0002;
 	ent->body.velocity.y = ent->accel.y * 0.0002;
@@ -154,9 +157,9 @@ void thnk_back_forth(Entity* ent)
 	float bound2 = ent->origin.y + 5;
 
 	if (ent->body.position.y <= bound1)
-		ent->accel.y = 2;
+		ent->accel.y = 3;
 	if (ent->body.position.y >= bound2)
-		ent->accel.y = -2;
+		ent->accel.y = -3;
 }
 
 /* CREATE ENTITY */

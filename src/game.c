@@ -7,30 +7,34 @@
 #include "game.h"
 #include "entity.h"
 
-GameData game;
-SDL_Event events;
+GameData	game;
+SDL_Event	events;
 
-Entity* floor1;
-Entity *floor2, *floor3, *obstacle1;
-Entity* player;
+Entity*	floor1;
+Entity*	floor2, *floor3, *obstacle1;
+Entity*	player;
 
-GList *it;
+GList	*it;
 
-extern GList* __bodyList;
+// extern: game
+extern int		game_running;
 
-int curMouseX, curMouseY;
+// extern: body
+extern GList*	__bodyList;
 
 // private declarations: camera
-Vec3D camera_position;
-Vec3D camera_rotation;
-
-extern int game_running;
+int		curMouseX, curMouseY;
+Vec3D	camera_position;
+Vec3D	camera_rotation;
 
 // private declarations: game
-void game_Poll();
-void game_Update();
-void game_Draw();
-int Run();
+pbool		game_TimePause; // boolean that determines time
+int		game_IfPausedTime(); // checks if time in game is paused
+void	game_SetPauseTime(); // ability to set time boolean
+void	game_Poll();
+void	game_Update();
+void	game_Draw();
+int		Run();
 
 // needs offset of player's position
 void set_camera(Vec3D position, Vec3D rotation)
@@ -45,72 +49,95 @@ void set_camera(Vec3D position, Vec3D rotation)
 }
 
 // private definitions
+
+// if the game was paused by the player
+pbool game_IfPausedTime()
+{
+	if (!game_TimePause)
+		return false;
+	return true;
+}
+
+void game_SetPauseTime()
+{
+	game_TimePause = !game_TimePause;
+}
+
+// defining what happens for player input
 void game_Poll()
 {
 	int mouseX, mouseY;
 	int horiz, verti;
 
+	//game_TimePause = -1;
+
 	curMouseX = 0;
 	curMouseY = 0;
 
 	while (SDL_PollEvent (&events))
-	{
-		//switch (events.type)
-		
+	{	
 		if (events.type == SDL_QUIT)
 			game_running = false;
+
 		if (events.type == SDL_KEYDOWN)
 			{
 				switch(events.key.keysym.sym)
 				{
 				case SDLK_w:
-						{
+					{
 						player->accel.y = 4;
 						break;
-						}
-						case SDLK_s:
-						{
+					}
+				case SDLK_s:
+					{
 						player->accel.y = -4;
 						break;
-						}
-					case SDLK_a:
-						{
+					}
+				case SDLK_a:
+					{
 						player->accel.x = -4;
 						break;
-						}
-					case SDLK_d:
-						{
+					}
+				case SDLK_d:
+					{
 						player->accel.x = 4;
 						break;
-						}
+					}
+				case SDLK_0:
+					{
+						game_SetPauseTime();
+						break;
+					}
 				}
 			}
+
 		if (events.type == SDL_KEYUP)
 			{
 				switch(events.key.keysym.sym)
 				{
-						case SDLK_w:
-						{
+					case SDLK_w:
+					{
 						player->accel.y = 0;
 						break;
-						}
-						case SDLK_s:
-						{
+					}
+					case SDLK_s:
+					{
 						player->accel.y = 0;
 						break;
-						}
+					}
 					case SDLK_a:
-						{
+					{
 						player->accel.x = 0;
 						break;
-						}
+					}
 					case SDLK_d:
-						{
+					{
 						player->accel.x = 0;
 						break;
-						}
+					}
 				}
 			}
+
 		if (events.type == SDL_MOUSEMOTION)
 		{
 			//mouseOnCamera();
@@ -146,11 +173,14 @@ void game_Poll()
 
 void game_Update()
 {
-	ent_add_gravity(floor1);
 	ent_add_gravity(player);
-	ent_add_gravity(obstacle1);
 
-	ent_thnk_all();
+	if (!game_IfPausedTime())
+	{
+		ent_thnk_all(); // all the functions can think
+
+		ent_add_gravity(obstacle1); // give obstacle the ability to move
+	}
 	
 	for (it = __bodyList; it != NULL; it = g_list_next(it))
 	{

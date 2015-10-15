@@ -9,31 +9,29 @@
 
 typedef struct Entity_S
 {
-	int inuse;
-	int refID;
+	int		inuse;
+	int		refID;
 
-	char name[128];
+	char	name[128];
 
-	Body body; //keep getting a disappearing red underline here
+	int		movetype;	// how i should move
 
-	Vec3D origin;
-	Vec3D accel;
-	Vec3D rot;
-	Vec3D scale;
-	Vec4D color;
+	Body	body;
+
+	Vec3D	origin;
+	Vec3D	accel;
+	Vec3D	rot;
+	Vec3D	scale;
+	Vec4D	color;
 
 	Sprite* texture;	/**<object texture*/
-
-	float speed; // speed relative to time
-
-	//Model* model; // treat same way SDL_Texture was treated
 	Obj*	model;
+	
+	float	speed;		/**speed relative to time*/
+	float	gravity;
 
-	float gravity;
-
-	int movetype;
-
-	void (*think)(struct Entity_S* ent); // think functions
+	int		nextThink;
+	void	(*think)(struct Entity_S* ent); // think function
 	
 }Entity;
 

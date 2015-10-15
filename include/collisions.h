@@ -3,6 +3,8 @@
 
 //rename?
 
+typedef enum {false,true} pbool;
+
 typedef struct Cube_S
 {
     float x,y,z;

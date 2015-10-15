@@ -5,22 +5,8 @@
 #include "graphics.h"
 #include "bool.h"
 
-/*
-typedef struct Camera_S
-{
-	void (*setPosition)(Vec3D position);
-	void (*setRotation)(Vec3D rotation);
-
-}Camera;
-
 /**
- * @brief sets functions for camera
- */
-/*
-void camera_Init();
-
-/**
-* @brief Running the game. Private??
+* @purpse Running the game. Private??
 */
 
 typedef struct gamedata
