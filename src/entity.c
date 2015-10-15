@@ -15,6 +15,9 @@ static int __entity_initialized = 0;
 //private function: shuts down list of entities
 static void entity_deInit();
 
+// extern: game
+extern float game_TimeRate;
+
 void ent_init_all(int max)
 {
     if (__entity_initialized)
@@ -141,11 +144,16 @@ void ent_add_gravity(Entity* ent)
 	ent->body.velocity.y = ent->accel.y * 0.0002;
 	
 	if (ent->body.position.z > 2) // if ground entity = true
-		ent->body.velocity.z -= ent->gravity * 0.00000002;
+		ent->body.velocity.z -= ent->gravity * 0.00002;
 	else
 		ent->body.velocity.z = 0;
+	
 	// vec3d_add(ent->body.velocity, ent->body.velocity, ent->accel);
 
+	/* BULLET TIME */
+	if (!strcmp(ent->name, "player") == 0)
+		vec3d_mult(ent->body.velocity, ent->body.velocity, game_TimeRate);
+	
 	vec3d_add(ent->body.position, ent->body.position, ent->body.velocity);
 
 }
@@ -200,7 +208,7 @@ Entity *ent_player(Vec3D position, const char *name)
     cube_set(ent->body.bounds,-1,-1,-1,2,2,2);
     sprintf(ent->name,"%s",name);
 	ent->movetype = MTYPE_ENT;
-	ent->gravity = 15;
+	ent->gravity = 1;
     //mgl_callback_set(&ent->body.touch,touch_callback,ent);
 	physics_add_body(&ent->body);
 	ent->body.owner = ent;

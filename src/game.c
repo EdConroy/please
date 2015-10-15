@@ -27,14 +27,23 @@ int		curMouseX, curMouseY;
 Vec3D	camera_position;
 Vec3D	camera_rotation;
 
-// private declarations: game
+// private declarations: game_time
+float		game_TimeRate;
+
 pbool		game_TimePause; // boolean that determines time
-int		game_IfPausedTime(); // checks if time in game is paused
-void	game_SetPauseTime(); // ability to set time boolean
-void	game_Poll();
-void	game_Update();
-void	game_Draw();
-int		Run();
+pbool		game_IfPausedTime(); // checks if time in game is paused
+void		game_SetPauseTime(); // ability to set time boolean
+
+pbool		game_BulletTime; // boolean that determine bulletTime
+pbool		game_IfBulletTime(); // checks bulletTime boolean
+void		game_SetBulletTime(); // ability to set bulletTime
+
+
+// private declarations: game
+void		game_Poll();
+void		game_Update();
+void		game_Draw();
+int			Run();
 
 // needs offset of player's position
 void set_camera(Vec3D position, Vec3D rotation)
@@ -61,6 +70,18 @@ pbool game_IfPausedTime()
 void game_SetPauseTime()
 {
 	game_TimePause = !game_TimePause;
+}
+
+pbool game_IfBulletTime()
+{
+	if (!game_BulletTime)
+		return false;
+	return true;
+}
+
+void game_SetBulletTime()
+{
+	game_BulletTime = !game_BulletTime;
 }
 
 // defining what happens for player input
@@ -106,6 +127,11 @@ void game_Poll()
 				case SDLK_0:
 					{
 						game_SetPauseTime();
+						break;
+					}
+				case SDLK_1:
+					{
+						game_SetBulletTime();
 						break;
 					}
 				}
@@ -182,6 +208,12 @@ void game_Update()
 		ent_add_gravity(obstacle1); // give obstacle the ability to move
 	}
 	
+	/* BULLET TIME */
+	if (game_IfBulletTime())
+		game_TimeRate = .4;
+	else
+		game_TimeRate = 1;
+
 	for (it = __bodyList; it != NULL; it = g_list_next(it))
 	{
 		physics_collision((Body*) it->data);
@@ -221,6 +253,8 @@ int game_Init()
 	}
 
 	ent_init_all(255);
+
+	game_TimeRate = 1;
 
 	// level layout "loadTestLevel();"
 	floor1 = ent_floor(vec3d(0,0,0), "floor1");
