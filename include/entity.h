@@ -16,6 +16,7 @@ typedef struct Entity_S
 
 	Body body; //keep getting a disappearing red underline here
 
+	Vec3D origin;
 	Vec3D accel;
 	Vec3D rot;
 	Vec3D scale;
@@ -31,6 +32,8 @@ typedef struct Entity_S
 	float gravity;
 
 	int movetype;
+
+	void (*think)(struct Entity_S* ent); // think functions
 	
 }Entity;
 
@@ -44,6 +47,11 @@ void ent_init_all(int max);
  * @brief draws all active entities
  */
 void ent_draw_all();
+
+/**
+ * @brief draws all active entities
+ */
+void ent_thnk_all();
 
 /**
  * @brief get a pointer to a new entity
@@ -93,7 +101,11 @@ void ent_free(Entity* ent);
 
 /**
  * @brief set what kind of entity it is
+ * not used yet
  */
 void ent_set_type(Entity* ent);
+
+/*	THINK FUNC	*/
+void	thnk_back_forth(Entity* ent);
 
 #endif

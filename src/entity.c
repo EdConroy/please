@@ -46,6 +46,19 @@ static void entity_deInit()
 	}
 }
 
+void ent_thnk_all()
+{
+	int i;
+
+	for (i = 0; i < __entity_max; i++)
+	{
+		if(__entity_list[i].inuse && __entity_list[i].think)
+		{
+			__entity_list[i].think(&__entity_list[i]);
+		}
+	}
+}
+
 void ent_draw_all()
 {
 	int i;
@@ -134,6 +147,19 @@ void ent_add_gravity(Entity* ent)
 
 }
 
+/* THINK FUNC */
+void thnk_back_forth(Entity* ent)
+{
+	float bound1 = ent->origin.y;
+	float bound2 = ent->origin.y + 5;
+
+	if (ent->body.position.y <= bound1)
+		ent->accel.y = 2;
+	if (ent->body.position.y >= bound2)
+		ent->accel.y = -2;
+}
+
+/* CREATE ENTITY */
 Entity *ent_floor(Vec3D position, const char *name)
 {
 	Entity * ent;
@@ -194,8 +220,11 @@ Entity *ent_obstacle(Vec3D position, const char *name)
     sprintf(ent->name,"%s",name);
 	ent->movetype = MTYPE_ENT;
 	ent->gravity = 0;
+	ent->origin = position;
     //mgl_callback_set(&ent->body.touch,touch_callback,ent);
 	physics_add_body(&ent->body);
 	ent->body.owner = ent;
+	ent->think = thnk_back_forth;
+
 	return ent;
 }

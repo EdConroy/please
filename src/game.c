@@ -32,6 +32,7 @@ void game_Update();
 void game_Draw();
 int Run();
 
+// needs offset of player's position
 void set_camera(Vec3D position, Vec3D rotation)
 {
 	glRotatef(-rotation.x, 1.0f, 0.0f, 0.0f);
@@ -113,26 +114,30 @@ void game_Poll()
 		if (events.type == SDL_MOUSEMOTION)
 		{
 			//mouseOnCamera();
+
 			SDL_GetMouseState(&mouseX, &mouseY);
 
-			horiz = ((curMouseX - mouseX) - (512) * .00000000000000001);
-			verti = ((curMouseY - mouseY) - (384)) * .9;
+			// get new positions
+			// highly inaccurate
+			horiz = ((((curMouseX - mouseX)) + (1024/2)));
+			verti = ((curMouseY - mouseY) - (768/2)) * .8;
 
-			//printf("%f\n", player->rot.x);
-
+			// set new positions
 			player->rot.z = horiz;
 			player->rot.x = verti;
 
+			// clamping
 			if (player->rot.x <= -650)
 				player->rot.x = -650;
 			if (player->rot.x >= -610)
 				player->rot.x = -610;
 
-			if (player->rot.z >= -300)
-				player->rot.z = -300;
-			if (player->rot.z <= -400)
-				player->rot.z = -400;
+			//if (player->rot.z >= -300)
+				//player->rot.z = -300;
+			//if (player->rot.z <= -400)
+				//player->rot.z = -400;
 
+			// save old positions
 			curMouseX = mouseX;
 			curMouseY = mouseY;
 		}
@@ -143,6 +148,9 @@ void game_Update()
 {
 	ent_add_gravity(floor1);
 	ent_add_gravity(player);
+	ent_add_gravity(obstacle1);
+
+	ent_thnk_all();
 	
 	for (it = __bodyList; it != NULL; it = g_list_next(it))
 	{
@@ -194,7 +202,7 @@ int game_Init()
 	player = ent_player(vec3d(0,0,10), "player");
 	player->rot = vec3d(80,0,0);
 
-	obstacle1 = ent_obstacle(vec3d(5, 0, 1), "obstacle1");
+	obstacle1 = ent_obstacle(vec3d(5, 0, 1.6), "obstacle1");
 
 	slog("game initialization finished");
 	return 1;
