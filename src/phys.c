@@ -58,8 +58,21 @@ void physics_collision(Body *body)
 		{
 			if (other->owner)
 			{
+				// touch/callback 1
+				if (strcmp(other->owner->name, "floor1") == 0)
+				{
+					if (strcmp(body->owner->name, "player") == 0)
+						body->done = 1;
+					//body->needsFixing = 1;
+				}
+
+				// touch/callback 2
 				if (strcmp(other->owner->name, "obstacle1") == 0)
-					printf("%s", other->owner->name);
+					if (strcmp(body->owner->name, "player") == 0)
+					{
+						if (body->owner->inventory[0].attack)
+							printf("WE MADE IT");
+					}
 			}
 		}
 

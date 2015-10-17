@@ -15,6 +15,13 @@ static int __entity_initialized = 0;
 //private function: shuts down list of entities
 static void entity_deInit();
 
+// private declaration: weapon
+Vec3D weap_offset;
+Vec3D offset; // sum of player position and weap_offset
+
+// private function: weapon
+void weapon_setup(Entity* ent);
+
 // extern: game
 extern float game_TimeRate;
 
@@ -77,14 +84,14 @@ void ent_draw_all()
 
 Entity* ent_init()
 {
-	int i;
+	int i,j;
 	for (i = 0; i < __entity_max; i++)
 	{
 		if (!__entity_list[i].inuse)
 		{
 			// go to this spot in memory, put nothing in there, with the memory size of an entity
-			// in c++, this would look like "__entity_list[i] = new Entity();"
 			memset(&__entity_list[i], 0, sizeof(Entity));
+
 			__entity_list[i].inuse = 1;
 			vec3d_set(__entity_list[i].scale, 1, 1, 1);
 			vec4d_set(__entity_list[i].color, 1, 1, 1, 1);
@@ -96,8 +103,10 @@ Entity* ent_init()
 
 void ent_draw(Entity *ent)
 {
-	if (!ent) return;
+	int i;
+	//temp
 
+	if (!ent) return;
 	
 	obj_draw
 		(
@@ -108,6 +117,32 @@ void ent_draw(Entity *ent)
 		ent->color, 
 		ent->texture
 		);
+
+	// draw weapons to the screen
+	for (i = 0; i < 3; i++)
+	{
+		if (ent->inventory)
+		{
+			// temp, to make weapon show up next to player
+			vec3d_add(offset, ent->body.position, weap_offset);
+
+			if (ent->inventory[i].attack)
+				vec3d_add(offset, offset, vec3d(0,3,0));
+
+			if (ent->inventory[i].active)
+			{
+			obj_draw
+				(
+					ent->inventory[i].model, 
+					offset,
+					vec3d(ent->rot.x, ent->rot.y, 0), 
+					vec3d(.09,.09,.09), 
+					ent->color, 
+					ent->texture
+				);
+			}
+		}
+	}
 	
 }
 
@@ -129,36 +164,39 @@ void ent_free(Entity* ent)
 	}
 
 	ent->inuse = 0;
-	//obj_free(ent->model);
-	//sprite_free(ent->texture);
+	obj_free(ent->model);
+	sprite_free(ent->texture);
 }
 
-// use this in the case of an if-statement
+// split up accelearation and velocity???
 /* gives entity abiliy to move in world, need to rename */
-void ent_add_gravity(Entity* ent)
+void ent_add_gravity(Body* body)
 {
-	// split up accelearation and velocity???
+	// acceleration and velocity; will change to the button line of code
+	body->velocity.x = body->owner->accel.x * 0.0002;
+	body->velocity.y = body->owner->accel.y * 0.0002;
+	// vec3d_add(ent->body.velocity, body->owner->accel, worldGravity);
+	
+	// will be "if ground entity = true"
+	if (body->done == 0) 
+	{
+		body->velocity.z -= body->owner->gravity * 0.0000002;
+	}
 
-	// acceleration and velocity
-	ent->body.velocity.x = ent->accel.x * 0.0002;
-	ent->body.velocity.y = ent->accel.y * 0.0002;
-	
-	if (ent->body.position.z > 2) // if ground entity = true
-		ent->body.velocity.z -= ent->gravity * 0.00002;
-	else
-		ent->body.velocity.z = 0;
-	
-	// vec3d_add(ent->body.velocity, ent->body.velocity, ent->accel);
+	if (body->done == 1)
+		body->velocity.z = 0;
 
-	/* BULLET TIME */
-	if (!strcmp(ent->name, "player") == 0)
-		vec3d_mult(ent->body.velocity, ent->body.velocity, game_TimeRate);
+	// bullet time
+	if (!strcmp(body->owner->name, "player") == 0)
+		vec3d_mult(body->velocity, body->velocity, game_TimeRate);
+	//if (strcmp(body->owner->name, "player") == 0)
+		//printf("%i\n", body->done);
 	
-	vec3d_add(ent->body.position, ent->body.position, ent->body.velocity);
+	vec3d_add(body->position, body->position, body->velocity);
 
 }
 
-/* THINK FUNC */
+/* THINK FUNCTIONS */
 void thnk_back_forth(Entity* ent)
 {
 	float bound1 = ent->origin.y;
@@ -170,7 +208,7 @@ void thnk_back_forth(Entity* ent)
 		ent->accel.y = -3;
 }
 
-/* CREATE ENTITY */
+/* CREATE ENTITIES */
 Entity *ent_floor(Vec3D position, const char *name)
 {
 	Entity * ent;
@@ -183,7 +221,7 @@ Entity *ent_floor(Vec3D position, const char *name)
 	ent->model = obj_load("resources/floortwo.obj");
 	ent->texture = sprite_load("resources/seamless_tile_floor_1_by_ttrlabs-d4ojzlu.png",1024,1024);
     vec3d_cpy(ent->body.position,position);
-    cube_set(ent->body.bounds,-1,-1,-1,2,2,2);
+    cube_set(ent->body.bounds,0,0,0,8,8,0.2);
     sprintf(ent->name,"%s",name);
 	ent->movetype = MTYPE_NONE;
 	ent->gravity = 0;
@@ -196,22 +234,25 @@ Entity *ent_floor(Vec3D position, const char *name)
 Entity *ent_player(Vec3D position, const char *name)
 {
 	Entity * ent;
+	int i;
 	ent = ent_init();
     if (!ent)
     {
         return NULL;
     }
-	
-	ent->model = obj_load("resources/cube.obj");
-	//ent->texture = sprite_load("resources/mountain_text.png",1024,1024);
+
+	//ent->model = obj_load("resources/cube.obj");
     vec3d_cpy(ent->body.position, position);
     cube_set(ent->body.bounds,-1,-1,-1,2,2,2);
     sprintf(ent->name,"%s",name);
 	ent->movetype = MTYPE_ENT;
 	ent->gravity = 1;
-    //mgl_callback_set(&ent->body.touch,touch_callback,ent);
+
 	physics_add_body(&ent->body);
 	ent->body.owner = ent;
+
+	weapon_setup(ent);
+
 	return ent;
 }
 
@@ -232,10 +273,60 @@ Entity *ent_obstacle(Vec3D position, const char *name)
 	ent->movetype = MTYPE_ENT;
 	ent->gravity = 0;
 	ent->origin = position;
-    //mgl_callback_set(&ent->body.touch,touch_callback,ent);
 	physics_add_body(&ent->body);
 	ent->body.owner = ent;
 	ent->think = thnk_back_forth;
 
 	return ent;
+}
+
+/** weapon **/
+void weapon_setup(Entity* ent)
+{
+	// this information would normally be put in a .txt file
+	// hard coding because it's easier for me for now
+
+	weap_offset = vec3d(0, -4.6, 0);
+
+	ent->inventory[0].model = obj_load("resources/Knife.obj");
+	ent->inventory[0].weaponType = WEAP_MELEE;
+	ent->inventory[0].active = true;
+	ent->inventory[0].maxAmmo = 10;
+	ent->inventory[0].ammo = ent->inventory[0].maxAmmo;
+	ent->inventory[0].cooldown = 100;
+	physics_add_body(&ent->inventory[0].body);
+	ent->inventory[0].body.owner = ent;
+	
+	ent->inventory[1].model = obj_load("resources/Cube.obj");
+	ent->inventory[1].weaponType = WEAP_FIREARM;
+	ent->inventory[1].active = false;
+	ent->inventory[1].maxAmmo = 20;
+	ent->inventory[1].ammo = ent->inventory[1].maxAmmo;
+	ent->inventory[1].cooldown = 100;
+	
+	ent->inventory[2].model = obj_load("resources/cube.obj");
+	ent->inventory[2].weaponType = WEAP_THROW;
+	ent->inventory[2].active = false;
+	ent->inventory[2].maxAmmo = 25;
+	ent->inventory[2].ammo = ent->inventory[2].maxAmmo;
+	ent->inventory[2].cooldown = 100;
+}
+
+void weap_switch(Entity* ent)
+{
+	int curWeap;
+
+	for (curWeap = 0; curWeap < 3; curWeap++)
+	{
+		if (ent->inventory[curWeap].active)
+		{
+			ent->inventory[curWeap].active = !ent->inventory[curWeap].active;
+			
+			if (curWeap == 2)
+				ent->inventory[0].active = !ent->inventory[curWeap++].active;
+			else
+				ent->inventory[curWeap++].active = !ent->inventory[curWeap++].active;
+			return;
+		}
+	}
 }

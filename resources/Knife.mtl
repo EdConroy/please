@@ -1,0 +1,23 @@
+# Blender MTL File: 'FinalKnife.blend'
+# Material Count: 2
+
+newmtl Material.001
+Ns 827.450980
+Ka 1.000000 1.000000 1.000000
+Kd 0.550435 0.550435 0.550435
+Ks 0.790422 0.790422 0.790422
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Documents and Settings\user\My Documents\knifetut\side.jpg
+
+newmtl Material.004
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1

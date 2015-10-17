@@ -70,7 +70,7 @@ static void obj_delete(Obj *obj)
     {
         free(obj->triangle_array);
     }
-    memset(obj,0,sizeof(Model)); // ???
+    memset(obj,0,sizeof(Model)); // size of model?
 }
 
 void obj_free(Obj *obj)
@@ -367,6 +367,10 @@ Obj *obj_load(char *filename)
 {
     FILE *file;
     Obj *objFile;
+	Vec3D min = {0,0,0};
+	Vec3D max = {0,0,0};
+	Vec3D size= {0,0,0};
+	int i;
     
     objFile = obj_get_by_filename(filename);
     if (objFile)
@@ -398,6 +402,22 @@ Obj *obj_load(char *filename)
     
     obj_allocate(objFile);
     obj_file_parse(objFile, file);
+
+	for (i = 0; i < objFile->num_vertices; i++)
+	{
+		if (objFile->vertex_array[i*3+0] < min.x) min.x = objFile->vertex_array[i*3+0];
+		if (objFile->vertex_array[i*3+0] > min.x) min.x = objFile->vertex_array[i*3+0];
+
+		if (objFile->vertex_array[i*3+0] < min.y) min.x = objFile->vertex_array[i*3+0];
+		if (objFile->vertex_array[i*3+0] < min.y) min.x = objFile->vertex_array[i*3+0];
+
+		if (objFile->vertex_array[i*3+0] < min.z) min.x = objFile->vertex_array[i*3+0];
+		if (objFile->vertex_array[i*3+0] < min.z) min.x = objFile->vertex_array[i*3+0];
+	}
+
+	size.x = max.x - min.x;
+	size.y = max.y - min.y;
+	size.z = max.z - min.z;
     
     fclose(file);
     

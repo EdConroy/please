@@ -22,6 +22,9 @@ extern int		game_running;
 // extern: body
 extern GList*	__bodyList;
 
+// extern: entity/weapon
+extern Vec3D	offset;
+
 // private declarations: camera
 int		curMouseX, curMouseY;
 Vec3D	camera_position;
@@ -90,8 +93,9 @@ void game_Poll()
 	int mouseX, mouseY;
 	int horiz, verti;
 
-	//game_TimePause = -1;
+	int i;
 
+	i = 0;
 	curMouseX = 0;
 	curMouseY = 0;
 
@@ -122,6 +126,11 @@ void game_Poll()
 				case SDLK_d:
 					{
 						player->accel.x = 4;
+						break;
+					}
+				case SDLK_z:
+					{
+						weap_switch(player);
 						break;
 					}
 				case SDLK_0:
@@ -194,30 +203,48 @@ void game_Poll()
 			curMouseX = mouseX;
 			curMouseY = mouseY;
 		}
+
+		if (events.type == SDL_MOUSEBUTTONDOWN)
+		{
+			if (player->inventory)
+			{
+				for (i = 0; i < 3; i++)
+				{
+					if (player->inventory[i].active)
+					{
+						if (player->inventory[i].weaponType == WEAP_MELEE)
+						{
+							// UseKnife();
+							player->inventory[i].attack = true;
+						}
+					}
+				}
+			}
+		}
+
+		player->inventory[i].attack = false;
 	}
 }
 
 void game_Update()
 {
-	ent_add_gravity(player);
+	// give gravity/accel
+	ent_add_gravity(&player->body);
 
+	// if player stopped time
 	if (!game_IfPausedTime())
 	{
 		ent_thnk_all(); // all the functions can think
-
-		ent_add_gravity(obstacle1); // give obstacle the ability to move
+		ent_add_gravity(&obstacle1->body); // give obstacle the ability to move
 	}
 	
-	/* BULLET TIME */
 	if (game_IfBulletTime())
 		game_TimeRate = .4;
 	else
 		game_TimeRate = 1;
 
 	for (it = __bodyList; it != NULL; it = g_list_next(it))
-	{
 		physics_collision((Body*) it->data);
-	}
 }
 
 void game_Draw()
@@ -225,7 +252,7 @@ void game_Draw()
 	graphics_clear_frame();
 	glPushMatrix(); // ???
 	set_camera(player->body.position, player->rot); // gotta make a position offset
-	ent_draw_all();
+	ent_draw_all(); // also draws weapons
 	glPopMatrix();// ???
 	graphics_next_frame();
 }

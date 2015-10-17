@@ -7,6 +7,32 @@
 
 #define MAX_ENT 255
 
+typedef struct Weapon_S
+{
+	Obj*	model;
+	Sprite*	texture;
+	Body	body;
+
+	int		ammo;
+	int		maxAmmo;
+
+	int		weaponType;
+	
+	float	cooldown;
+
+	pbool	active;
+	pbool	attack;
+}Weapon;
+
+enum
+{
+	WEAP_FIREARM,
+	WEAP_MELEE,
+	WEAP_THROW
+
+}WEAPONTYPE;
+
+/* Basic structure for anything in space that interacts */
 typedef struct Entity_S
 {
 	int		inuse;
@@ -15,6 +41,8 @@ typedef struct Entity_S
 	char	name[128];
 
 	int		movetype;	// how i should move
+	
+	Weapon	inventory[3];
 
 	Body	body;
 
@@ -34,6 +62,8 @@ typedef struct Entity_S
 	void	(*think)(struct Entity_S* ent); // think function
 	
 }Entity;
+
+
 
 /**
  * @brief initialize the entity sub system
@@ -57,7 +87,7 @@ void ent_thnk_all();
  */
 Entity* ent_init();
 
-void ent_add_gravity(Entity* ent);
+void ent_add_gravity(Body* body);
 
 /**
  * @brief boolean that checks if data that was sent to the function is an entity
@@ -104,6 +134,10 @@ void ent_free(Entity* ent);
 void ent_set_type(Entity* ent);
 
 /*	THINK FUNC	*/
-void	thnk_back_forth(Entity* ent);
+void thnk_back_forth(Entity* ent);
+void playerRun(Entity *ent);
+
+/* WEAPON */
+void weap_switch(Entity* ent);
 
 #endif
