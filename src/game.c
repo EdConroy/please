@@ -131,6 +131,7 @@ void game_Poll()
 				case SDLK_z:
 					{
 						weap_switch(player);
+						slog("weapon swtiched");
 						break;
 					}
 				case SDLK_0:
@@ -212,9 +213,22 @@ void game_Poll()
 				{
 					if (player->inventory[i].active)
 					{
+						// ActivateKnife(); #knife
 						if (player->inventory[i].weaponType == WEAP_MELEE)
 						{
-							// UseKnife();
+							player->inventory[i].attack = true;
+						}
+
+						//ActivateGun(); #gun #firearm
+						if( player->inventory[i].weaponType == WEAP_FIREARM)
+						{
+							player->inventory[i].attack = true;
+							ShootProjectile(player);
+						}
+
+						// ActivateShield() #shield #rekt
+						if( player->inventory[i].weaponType == WEAP_SHEILD)
+						{
 							player->inventory[i].attack = true;
 						}
 					}
@@ -222,27 +236,35 @@ void game_Poll()
 			}
 		}
 
-		player->inventory[i].attack = false;
+		if (events.type == SDL_MOUSEBUTTONUP)
+		{
+			// SetOriginalPosition(); - set back to non-attack position
+			player->inventory[0].attack = false;
+			player->inventory[1].attack = false;
+			player->inventory[2].attack = false;
+		}
 	}
 }
 
 void game_Update()
 {
-	// give gravity/accel
+	// give entity physics ability, to be renamed body_add_physics()
 	ent_add_gravity(&player->body);
 
-	// if player stopped time
+	// froze time
 	if (!game_IfPausedTime())
 	{
 		ent_thnk_all(); // all the functions can think
 		ent_add_gravity(&obstacle1->body); // give obstacle the ability to move
 	}
 	
+	// bullet time
 	if (game_IfBulletTime())
 		game_TimeRate = .4;
 	else
 		game_TimeRate = 1;
 
+	// check collisions
 	for (it = __bodyList; it != NULL; it = g_list_next(it))
 		physics_collision((Body*) it->data);
 }

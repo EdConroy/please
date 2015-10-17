@@ -28,7 +28,7 @@ enum
 {
 	WEAP_FIREARM,
 	WEAP_MELEE,
-	WEAP_THROW
+	WEAP_SHEILD // more of a punch
 
 }WEAPONTYPE;
 
@@ -135,9 +135,10 @@ void ent_set_type(Entity* ent);
 
 /*	THINK FUNC	*/
 void thnk_back_forth(Entity* ent);
-void playerRun(Entity *ent);
+void thnk_push(Entity* ent);
 
 /* WEAPON */
 void weap_switch(Entity* ent);
+void ShootProjectile(Entity* ent);
 
 #endif

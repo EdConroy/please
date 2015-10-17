@@ -6,7 +6,8 @@
 typedef enum
 {
 	MTYPE_NONE,	// movetype for teh floor 
-	MTYPE_ENT	// movetype for all living entities, use gravity when jumped and/or in air
+	MTYPE_ENT,	// movetype for all living entities, use gravity when jumped and/or in air
+	MTYPE_PROJ
 
 } movetype;
 

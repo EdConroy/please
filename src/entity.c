@@ -66,6 +66,11 @@ void ent_thnk_all()
 		{
 			__entity_list[i].think(&__entity_list[i]);
 		}
+
+		if(__entity_list[i].inuse && __entity_list[i].movetype == MTYPE_PROJ)
+		{
+			ent_add_gravity(&__entity_list[i].body);
+		}
 	}
 }
 
@@ -126,9 +131,11 @@ void ent_draw(Entity *ent)
 			// temp, to make weapon show up next to player
 			vec3d_add(offset, ent->body.position, weap_offset);
 
+			// #knife attack
 			if (ent->inventory[i].attack)
 				vec3d_add(offset, offset, vec3d(0,3,0));
 
+			// show all weapons
 			if (ent->inventory[i].active)
 			{
 			obj_draw
@@ -168,16 +175,16 @@ void ent_free(Entity* ent)
 	sprite_free(ent->texture);
 }
 
-// split up accelearation and velocity???
-/* gives entity abiliy to move in world, need to rename */
+/*	impulse function: body_add_physics()
+	gives entity ability to move in world */
 void ent_add_gravity(Body* body)
 {
-	// acceleration and velocity; will change to the button line of code
+	// acceleration and velocity; will change to the bottom line of code
 	body->velocity.x = body->owner->accel.x * 0.0002;
 	body->velocity.y = body->owner->accel.y * 0.0002;
 	// vec3d_add(ent->body.velocity, body->owner->accel, worldGravity);
 	
-	// will be "if ground entity = true"
+	// if "ground entity" = true
 	if (body->done == 0) 
 	{
 		body->velocity.z -= body->owner->gravity * 0.0000002;
@@ -189,9 +196,8 @@ void ent_add_gravity(Body* body)
 	// bullet time
 	if (!strcmp(body->owner->name, "player") == 0)
 		vec3d_mult(body->velocity, body->velocity, game_TimeRate);
-	//if (strcmp(body->owner->name, "player") == 0)
-		//printf("%i\n", body->done);
 	
+	// move object
 	vec3d_add(body->position, body->position, body->velocity);
 
 }
@@ -206,6 +212,14 @@ void thnk_back_forth(Entity* ent)
 		ent->accel.y = 3;
 	if (ent->body.position.y >= bound2)
 		ent->accel.y = -3;
+}
+
+void thnk_push(Entity* ent)
+{
+	if(ent->accel.y >= -3)
+		ent->accel.y = -18;
+	if(ent->accel.y <= 3)
+		ent->accel.y = 18;
 }
 
 /* CREATE ENTITIES */
@@ -280,6 +294,38 @@ Entity *ent_obstacle(Vec3D position, const char *name)
 	return ent;
 }
 
+Entity *ent_projectile(Vec3D position, const char *name)
+{
+	Entity * ent;
+	ent = ent_init();
+    if (!ent)
+    {
+        return NULL;
+    }
+	
+	ent->model = obj_load("resources/sphere.obj");
+	ent->texture = sprite_load("resources/metal_txt.png",1024,1024);
+    vec3d_cpy(ent->body.position, position);
+    cube_set(ent->body.bounds,-1,-1,-1,2,2,2);
+    sprintf(ent->name,"%s",name);
+	ent->movetype = MTYPE_PROJ;
+	ent->gravity = 0;
+	ent->accel.y = 1;
+	ent->scale = vec3d(.1,.1,.1);
+	ent->origin = position;
+	physics_add_body(&ent->body);
+	ent->body.owner = ent;
+	//ent->think = thnk_back_forth;
+
+	return ent;
+}
+
+/* temp spawn projectile */
+void ShootProjectile(Entity* ent)
+{
+	Entity* proj = ent_projectile(ent->body.position, "projectile");
+}
+
 /** weapon **/
 void weapon_setup(Entity* ent)
 {
@@ -287,7 +333,7 @@ void weapon_setup(Entity* ent)
 	// hard coding because it's easier for me for now
 
 	weap_offset = vec3d(0, -4.6, 0);
-
+	// #knife
 	ent->inventory[0].model = obj_load("resources/Knife.obj");
 	ent->inventory[0].weaponType = WEAP_MELEE;
 	ent->inventory[0].active = true;
@@ -305,7 +351,7 @@ void weapon_setup(Entity* ent)
 	ent->inventory[1].cooldown = 100;
 	
 	ent->inventory[2].model = obj_load("resources/cube.obj");
-	ent->inventory[2].weaponType = WEAP_THROW;
+	ent->inventory[2].weaponType = WEAP_SHEILD;
 	ent->inventory[2].active = false;
 	ent->inventory[2].maxAmmo = 25;
 	ent->inventory[2].ammo = ent->inventory[2].maxAmmo;

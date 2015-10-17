@@ -4,7 +4,7 @@
 #include "collisions.h"
 #include "simple_logger.h"
 
-//rename 'class'?
+// rename 'class'?
 
 GList* __bodyList;
 
@@ -43,7 +43,8 @@ void physics_collision(Body *body)
 		if (!it->data) continue;
 		if (it->data == body) continue;
 
-		other = (Body*) it->data; // cast data as a body, because it is from __bodyList
+		// cast data as a body, because it is from __bodyList
+		other = (Body*) it->data;
 
 		vec3d_cpy(b, other->position);
 
@@ -58,20 +59,35 @@ void physics_collision(Body *body)
 		{
 			if (other->owner)
 			{
-				// touch/callback 1
+				// touch/callback 1 for floor collision
 				if (strcmp(other->owner->name, "floor1") == 0)
-				{
 					if (strcmp(body->owner->name, "player") == 0)
+					{
 						body->done = 1;
-					//body->needsFixing = 1;
-				}
+					}
 
-				// touch/callback 2
+				// touch/callback 2 for #knife attack
 				if (strcmp(other->owner->name, "obstacle1") == 0)
 					if (strcmp(body->owner->name, "player") == 0)
 					{
 						if (body->owner->inventory[0].attack)
-							printf("WE MADE IT");
+							ent_free(other->owner);
+					}
+
+				// touch/callback 3 for firearm attack
+				if (strcmp(other->owner->name, "obstacle1") == 0)
+					if (strcmp(body->owner->name, "player") == 0)
+					{
+						if (body->owner->inventory[1].attack)
+							ent_free(other->owner);
+					}
+
+				// touch/callback 3 for throw attack
+				if (strcmp(other->owner->name, "obstacle1") == 0)
+					if (strcmp(body->owner->name, "player") == 0)
+					{
+						if (body->owner->inventory[2].attack)
+							other->owner->think = thnk_push;
 					}
 			}
 		}

@@ -1,5 +1,7 @@
 #include "body.h"	// vector.h is included in body.h
 
+// not being used
+
 void body_reset(Body *body)
 {
     if (!body)return;
