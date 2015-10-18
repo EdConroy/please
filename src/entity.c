@@ -4,7 +4,7 @@
 #include "simple_logger.h"
 
 // LIST OF ENTITIES
-static Entity* __entity_list = NULL;
+Entity* __entity_list = NULL;
 
 // MAXIMUM AMOUNT OF ENITIES, TO BE SET
 static int __entity_max = 0;

@@ -24,6 +24,7 @@ extern GList*	__bodyList;
 
 // extern: entity/weapon
 extern Vec3D	offset;
+extern Entity*	__entity_list;
 
 // private declarations: camera
 int		curMouseX, curMouseY;
@@ -43,6 +44,9 @@ void		game_SetBulletTime(); // ability to set bulletTime
 
 
 // private declarations: game
+pbool		game_SaveState();
+pbool		game_LoadState();
+
 void		game_Poll();
 void		game_Update();
 void		game_Draw();
@@ -85,6 +89,66 @@ pbool game_IfBulletTime()
 void game_SetBulletTime()
 {
 	game_BulletTime = !game_BulletTime;
+}
+
+pbool game_SaveState()
+{
+	// open file for writing
+	// for every entity in game, put in txt file
+	// close file
+
+	FILE* file;
+	int i;
+	file = fopen("state.txt", "w");
+
+	for (i = 0; i < MAX_ENT; i++)
+	{
+		if (__entity_list[i].inuse)
+		{
+			fprintf(file, __entity_list[i].name);
+			fprintf(file, "\n");
+			fprintf(file, "%f\t", __entity_list[i].body.position.x);
+			fprintf(file, "%f\t", __entity_list[i].body.position.y);
+			fprintf(file, "%f\n", __entity_list[i].body.position.z);
+
+			fprintf(file, "-\n\n");
+		}
+	}
+
+	fclose(file);
+
+	return true;
+}
+
+// can only load positions for now
+pbool game_LoadState()
+{
+	// open file for parsing
+	// for every entity in game, put in txt file
+	// close file
+
+	FILE* file;
+	int i,j;
+	float x,y,z;
+	char buf[24];
+	file = fopen("state.txt", "r");
+
+	for (i = 0; i < MAX_ENT; i++)
+	{
+		fscanf(file, "%s", buf);
+		for (j = 0; j < MAX_ENT; j++)
+		{
+			if (strcmp(buf, __entity_list[j].name) == 0)
+			{
+				fscanf(file, "%f %f %f", &x, &y, &z);
+				__entity_list[j].body.position = vec3d(x, y, z);
+			}
+		}
+	}
+
+	fclose(file);
+
+	return true;
 }
 
 // defining what happens for player input
@@ -132,6 +196,16 @@ void game_Poll()
 					{
 						weap_switch(player);
 						slog("weapon swtiched");
+						break;
+					}
+				case SDLK_x:
+					{
+						game_SaveState(); // right now, saves all positions of all entities
+						break;
+					}
+				case SDLK_l:
+					{
+						game_LoadState(); // right now, will load all positions of all entities
 						break;
 					}
 				case SDLK_0:
