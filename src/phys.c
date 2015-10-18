@@ -5,8 +5,11 @@
 #include "game.h"
 #include "collisions.h"
 #include "simple_logger.h"
-/*
 
+// extern: game
+extern GameData	game;
+
+/*
 physics.c
 1. create body
 2. add body to body list
@@ -37,6 +40,7 @@ void physics_free();
 void physics_init(Physics* space)
 {
 	space = (Physics *)calloc(1, sizeof(struct Physics_S));
+	slog("Physics initiated");
 	atexit(physics_free);
 }
 
@@ -263,9 +267,10 @@ void physics_do_step(Physics *space)
 
 void physics_free()
 {
-    //if (!game->physics)return;
+    if (!game.physics)return;
 	// clear body list too
-    //free(game->physics);
+    free(game.physics);
+	slog("physics closed");
 }
 
 void physics_add_body(Physics *space, Body* body)

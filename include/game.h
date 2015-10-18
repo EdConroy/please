@@ -13,6 +13,7 @@
 typedef struct gamedata
 {
 	int		(*Run)(); /***<function pointer that will run the game> **/
+	Physics	*physics;
 
 }GameData;
 
