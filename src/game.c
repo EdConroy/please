@@ -18,9 +18,6 @@ GList	*it;
 // extern: game
 extern int		game_running;
 
-// extern: body
-extern GList*	__bodyList;
-
 // extern: entity/weapon
 extern Vec3D	offset;
 extern Entity*	__entity_list;
@@ -31,14 +28,12 @@ Vec3D	camera_position;
 Vec3D	camera_rotation;
 
 // private declarations: game_time
-float		game_TimeRate;
-
 pbool		game_TimePause; // boolean that determines time
-pbool		game_IfPausedTime(); // checks if time in game is paused
+
 void		game_SetPauseTime(); // ability to set time boolean
 
 pbool		game_BulletTime; // boolean that determine bulletTime
-pbool		game_IfBulletTime(); // checks bulletTime boolean
+
 void		game_SetBulletTime(); // ability to set bulletTime
 
 
@@ -66,7 +61,7 @@ void set_camera(Vec3D position, Vec3D rotation)
 // private definitions
 
 // if the game was paused by the player
-pbool game_IfPausedTime()
+pbool game_PausedTime()
 {
 	if (!game_TimePause)
 		return false;
@@ -78,7 +73,7 @@ void game_SetPauseTime()
 	game_TimePause = !game_TimePause;
 }
 
-pbool game_IfBulletTime()
+pbool game_BulletTimed()
 {
 	if (!game_BulletTime)
 		return false;
@@ -376,7 +371,7 @@ int game_Init()
 
 	ent_init_all(255);
 
-	game_TimeRate = 1;
+	//game_TimeRate = 1;
 
 	// level layout "loadTestLevel();"
 	floor1 = ent_floor(vec3d(0,0,0), "floor1");

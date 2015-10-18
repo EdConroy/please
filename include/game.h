@@ -16,7 +16,11 @@ typedef struct gamedata
 
 }GameData;
 
+// public functions: game
 int game_Init();
 void game_Exit();
 
+// public functions: game, powerups
+pbool		game_PausedTime(); // checks if time in game is paused
+pbool		game_BulletTimed(); // checks bulletTime boolean
 #endif

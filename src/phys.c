@@ -1,98 +1,10 @@
 #include <glib.h>
 #include <stdio.h>
-//#include "phys.h"
+#include "entity.h"
+#include "phys.h"
+#include "game.h"
 #include "collisions.h"
 #include "simple_logger.h"
-
-GList* __bodyList;
-
-/*
-void physics_add_body(Body *body)
-{
-	if (!body) return;
-	__bodyList = g_list_append(__bodyList, body);
-}
-
-void physics_remove_body(Body *body)
-{
-	if (!body) return;
-	__bodyList = g_list_remove(__bodyList, body);
-}
-
-// check all collisions, calls touch functions
-void physics_collision(Body *body)
-{
-	GList *it;
-
-	Cube a,b; // 3d bounding boxes
-	Body *other;
-
-	// vec3d_cpy(a, a, body->position.x + body->bounds)
-	a.x = body->position.x + body->bounds.x;
-	a.y = body->position.y + body->bounds.y;
-    a.z = body->position.z + body->bounds.z;
-
-	a.w = body->bounds.w;
-    a.h = body->bounds.h;
-    a.d = body->bounds.d;
-
-	for (it = __bodyList; it != NULL; it = g_list_next(it))
-	{
-		if (!it->data) continue;
-		if (it->data == body) continue;
-
-		// cast data as a body, because it is from __bodyList
-		other = (Body*) it->data;
-
-		vec3d_cpy(b, other->position);
-
-		b.w = other->bounds.w;
-        b.h = other->bounds.h;
-        b.d = other->bounds.d;
-		
-		vec3d_add(b,b,other->bounds);
-
-		// bounding box collision detection
-		if (cube_cube_intersection(a, b))
-		{
-			if (other->owner)
-			{
-				// touch/callback 1 for floor collision
-				if (strcmp(other->owner->name, "floor1") == 0)
-					if (strcmp(body->owner->name, "player") == 0)
-					{
-						body->done = 1;
-					}
-
-				// touch/callback 2 for #knife attack
-				if (strcmp(other->owner->name, "obstacle1") == 0)
-					if (strcmp(body->owner->name, "player") == 0)
-					{
-						if (body->owner->inventory[0].attack)
-							ent_free(other->owner);
-					}
-
-				// touch/callback 3 for firearm attack
-				if (strcmp(other->owner->name, "obstacle1") == 0)
-					if (strcmp(body->owner->name, "player") == 0)
-					{
-						if (body->owner->inventory[1].attack)
-							ent_free(other->owner);
-					}
-
-				// touch/callback 3 for throw attack
-				if (strcmp(other->owner->name, "obstacle1") == 0)
-					if (strcmp(body->owner->name, "player") == 0)
-					{
-						if (body->owner->inventory[2].attack)
-							other->owner->think = thnk_push;
-					}
-			}
-		}
-
-	}
-}
-
 /*
 
 physics.c
@@ -102,7 +14,7 @@ physics.c
 4. if gravity bool is set, they have gravity
 5. if acceleration bool is set, accel
 6. if collision bool is set, collide
-
+*/
 //////////////////////////////////////////////////////
 //////////		    Physical Space			//////////
 //////////////////////////////////////////////////////
@@ -115,15 +27,16 @@ struct Physics_S
 	int stepsTaken;		
 
 	float stepFactor;
+	Vec3D stepVector;
 
-	Vec3D gravity;		
+	//Vec3D gravity;		
 };
 
-void physics_free(Physics *space);
+void physics_free();
 
 void physics_init(Physics* space)
 {
-	space = (Space *)calloc(1, sizeof(struct Physics_S));
+	space = (Physics *)calloc(1, sizeof(struct Physics_S));
 	atexit(physics_free);
 }
 
@@ -144,10 +57,9 @@ static void physics_collision(Physics *space, Body *body)
     GList *it;
     Cube a,b;
     Body *other;
-    //Vec3D stepVector;
     //Vec3D stepOffVector;
     
-    if ((!body) || (body->_done))return;
+	if ((!body) || (body->done))return;
 
 	// if the owner of my body says i can't do this, don't do this
 	if (!body->owner->canCollide)return;
@@ -156,7 +68,7 @@ static void physics_collision(Physics *space, Body *body)
     //vec3d_scale(stepVector,body->velocity,space->stepFactor);
     //vec3d_negate(stepOffVector,stepVector);
 
-	vec3d_add(body->position,body->position,stepVector);
+	vec3d_add(body->position,body->position,space->stepVector);
     
     a.x = body->position.x + body->bounds.x;
     a.y = body->position.y + body->bounds.y;
@@ -165,7 +77,7 @@ static void physics_collision(Physics *space, Body *body)
     a.h = body->bounds.h;
     a.d = body->bounds.d;
     
-    for (it = space->bodylist;it != NULL;it = g_list_next(it))
+	for (it = space->bodyList;it != NULL;it = g_list_next(it))
     {
         if (!it->data)continue;
         if (it->data == body)continue;
@@ -180,9 +92,9 @@ static void physics_collision(Physics *space, Body *body)
         if (cube_cube_intersection(a,b))
         {
             // back the fuck off
-            vec3d_cpy(body->_stepOffVector,stepOffVector);
-            body->_done = 1;
-            body->_needsBackoff = 1;
+            //vec3d_cpy(body->_stepOffVector,stepOffVector);
+            //body->_done = 1;
+            //body->_needsBackoff = 1;
             if (body->touch.function)
             {
 				// call touch functions
@@ -192,6 +104,7 @@ static void physics_collision(Physics *space, Body *body)
     }
 }
 
+/*
 void physics_collision(Body *body)
 {
 	GList *it;
@@ -264,11 +177,11 @@ void physics_collision(Body *body)
 
 	}
 }
-
+*/
 
 static void physics_gravity(Body *body)
 {
-	if ((!body || (!body->owner->canGravity)) return;
+	if ((!body) || (!body->owner->canGravity)) return;
 
 	// if in the air
 	if (body->done == 0) 
@@ -289,15 +202,15 @@ static void physics_acceleration(Body *body)
 }
 
 
-static void physics_checkpowerups(Body *body)
+static void physics_checkpowerups(Physics *space, Body *body)
 {
 	if (!body) return;
 
 	if (game_PausedTime()) 
-		vec3d_scale(stepVector, stepVector, 0f)
+		vec3d_scale(space->stepVector, space->stepVector, 0.0);
 
 	if (!game_BulletTimed()) 
-		vec3d_scale(stepVector, stepVector, 0.1);
+		vec3d_scale(space->stepVector, space->stepVector, 0.1);
 }
 
 // velocity/accel
@@ -306,7 +219,7 @@ static void physics_update(Physics *space)
     GList	*it;
 	Body	*body;
 
-    for (it = space->bodylist;it != NULL;it = g_list_next(it))
+    for (it = space->bodyList; it != NULL;it = g_list_next(it))
     {
         if (!it->data)continue;
 
@@ -318,61 +231,55 @@ static void physics_update(Physics *space)
 		physics_acceleration(body);
 
 		// applies specified physics time rate to all bodies
-		vec3d_scale(stepVector,body->velocity,space->stepFactor);
-		vec3d_add(body->position,body->position,stepVector);
+		vec3d_scale(space->stepVector,body->velocity,space->stepFactor);
+		vec3d_add(body->position,body->position,space->stepVector);
 
-		physics_checkpowerups(body);
+		physics_checkpowerups(space, body);
 
 		// applies physics to object with changes from the 4 func. if any
 		vec3d_add(body->position, body->position, body->velocity);
 
     }
-    
- //	for (it = space->bodylist;it != NULL;it = g_list_next(it))
- //   {
- //       if (!it->data)continue;
- //       body_process((Body *)it->data);
- //   }
 }
 
 void physics_do_step(Physics *space)
 {
 	GList *it;
     if (!space)return;
-    if (space->stepstaken == space->steps)
+	if (space->stepsTaken == space->steps)
     {
-        space->stepstaken = 0;
+        space->stepsTaken = 0;
         
-        for (it = space->bodylist;it != NULL;it = g_list_next(it))
+		for (it = space->bodyList;it != NULL;it = g_list_next(it))
         {
             if (!it->data)continue;
             body_reset((Body *)it->data);
         }
     }
     
-    space_update(space);
-    space->stepstaken++;
+	physics_update(space);
+    space->stepsTaken++;
 }
 
-void physics_free(Physics *space)
+void physics_free()
 {
-    if (!space)return;
+    //if (!game->physics)return;
 	// clear body list too
-    free(space);
+    //free(game->physics);
 }
 
 void physics_add_body(Physics *space, Body* body)
 {
 	if (!space)return;
     if (!body)return;
-    space->bodylist = g_list_append(space->bodylist,body);
+	space->bodyList = g_list_append(space->bodyList,body);
 }
 
 void physics_remove_body(Physics *space, Body* body)
 {
 	if (!space)return;
     if (!body)return;
-    space->bodylist = g_list_remove(space->bodylist,body);
+	space->bodyList = g_list_remove(space->bodyList,body);
 }
 
 //////////////////////////////////////////////////////
@@ -411,5 +318,3 @@ int cube_cube_intersection(
 	}
 	return true;
 }
-
-*/

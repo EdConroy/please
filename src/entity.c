@@ -21,9 +21,6 @@ Vec3D offset; // sum of player position and weap_offset
 // private function: weapon
 void weapon_setup(Entity* ent);
 
-// extern: game
-extern float game_TimeRate;
-
 void ent_init_all(int max)
 {
     if (__entity_initialized)
