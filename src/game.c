@@ -174,22 +174,22 @@ void game_Poll()
 				{
 				case SDLK_w:
 					{
-						player->accel.y = 4;
+						player->accel.y = 10;
 						break;
 					}
 				case SDLK_s:
 					{
-						player->accel.y = -4;
+						player->accel.y = -10;
 						break;
 					}
 				case SDLK_a:
 					{
-						player->accel.x = -4;
+						player->accel.x = -10;
 						break;
 					}
 				case SDLK_d:
 					{
-						player->accel.x = 4;
+						player->accel.x = 10;
 						break;
 					}
 				case SDLK_z:

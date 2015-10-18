@@ -175,16 +175,13 @@ void ent_free(Entity* ent)
 	sprite_free(ent->texture);
 }
 
-/*	impulse function: body_add_physics()
+/*	will be put in physics update function
 	gives entity ability to move in world */
 void ent_add_gravity(Body* body)
 {
-	// acceleration and velocity; will change to the bottom line of code
-	body->velocity.x = body->owner->accel.x * 0.0002;
-	body->velocity.y = body->owner->accel.y * 0.0002;
-	// vec3d_add(ent->body.velocity, body->owner->accel, worldGravity);
+	body->velocity.x = body->owner->accel.x * 0.002;
+	body->velocity.y = body->owner->accel.y * 0.002;
 	
-	// if "ground entity" = true
 	if (body->done == 0) 
 	{
 		body->velocity.z -= body->owner->gravity * 0.0000002;
@@ -197,7 +194,6 @@ void ent_add_gravity(Body* body)
 	if (!strcmp(body->owner->name, "player") == 0)
 		vec3d_mult(body->velocity, body->velocity, game_TimeRate);
 	
-	// move object
 	vec3d_add(body->position, body->position, body->velocity);
 
 }
@@ -259,8 +255,8 @@ Entity *ent_player(Vec3D position, const char *name)
     vec3d_cpy(ent->body.position, position);
     cube_set(ent->body.bounds,-1,-1,-1,2,2,2);
     sprintf(ent->name,"%s",name);
-	ent->movetype = MTYPE_ENT;
-	ent->gravity = 1;
+	ent->movetype = MTYPE_PLAYER;
+	ent->gravity = 20;
 
 	physics_add_body(&ent->body);
 	ent->body.owner = ent;

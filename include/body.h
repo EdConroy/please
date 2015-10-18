@@ -9,7 +9,7 @@
 
 typedef struct Body_S
 {
-	struct Entity_S* owner; /**<owner of this body*/ // entity has body, but body needs ref. to entity
+	struct Entity_S* owner; /**<owner of this body*/
 
 	Vec3D position;
 	Vec3D velocity;
@@ -17,9 +17,8 @@ typedef struct Body_S
 
 	Cube bounds; /**<bounding box*/
 	
-	MglCallback touch;
+	MglCallback touch;  /**<function to be called after specified event*/
 
-	// ___naming convention????
 	bool needsFixing; /**<needs the position to be fixed*/
 	bool done;
 }Body;

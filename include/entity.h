@@ -7,6 +7,7 @@
 
 #define MAX_ENT 255
 
+/* Structure for weapons */
 typedef struct Weapon_S
 {
 	Obj*	model;
@@ -24,11 +25,12 @@ typedef struct Weapon_S
 	pbool	attack;
 }Weapon;
 
+/* Enumeratio for weapon types */
 enum
 {
 	WEAP_FIREARM,
 	WEAP_MELEE,
-	WEAP_SHEILD // more of a punch
+	WEAP_SHEILD // ended up being more of a punch
 
 }WEAPONTYPE;
 
@@ -46,6 +48,10 @@ typedef struct Entity_S
 
 	Body	body;
 
+	bool	canGravity; // if i can activate gravity on this ent
+	bool	canAccel;
+	bool	canCollide;
+
 	Vec3D	origin;
 	Vec3D	accel;
 	Vec3D	rot;
@@ -62,7 +68,6 @@ typedef struct Entity_S
 	void	(*think)(struct Entity_S* ent); // think function
 	
 }Entity;
-
 
 
 /**
@@ -87,6 +92,9 @@ void ent_thnk_all();
  */
 Entity* ent_init();
 
+/**
+ * @brief gives and entity's body physics
+ */
 void ent_add_gravity(Body* body);
 
 /**
