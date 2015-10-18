@@ -3,8 +3,6 @@
 #include <SDL.h>
 #include <GL\glew.h>
 #include "mgl_callback.h"
-#include "collisions.h"
-#include "entity.h"
 
 MglCallback mgl_callback(void (*function)(void *data,void *context),void *data)
 {

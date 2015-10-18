@@ -1,6 +1,5 @@
 ﻿#include <stdio.h>
 #include "entity.h"
-#include "phys.h"
 #include "simple_logger.h"
 
 // LIST OF ENTITIES
@@ -48,7 +47,7 @@ static void entity_deInit()
 		if ( __entity_list[i].inuse)
 		{
 			ent_free(&__entity_list[i]); // free memory where entity is in use
-			physics_remove_body(&__entity_list[i].body);
+			//physics_remove_body(&__entity_list[i].body);
 		}
 		free(__entity_list); // free entire entity list from memory
 		__entity_max = 0;
@@ -179,22 +178,22 @@ void ent_free(Entity* ent)
 	gives entity ability to move in world */
 void ent_add_gravity(Body* body)
 {
-	body->velocity.x = body->owner->accel.x * 0.002;
-	body->velocity.y = body->owner->accel.y * 0.002;
+	//body->velocity.x = body->owner->accel.x * 0.002;
+	//body->velocity.y = body->owner->accel.y * 0.002;
 	
-	if (body->done == 0) 
-	{
-		body->velocity.z -= body->owner->gravity * 0.0000002;
-	}
+	//if (body->done == 0) 
+	//{
+		//body->velocity.z -= body->owner->gravity * 0.0000002;
+	//}
 
-	if (body->done == 1)
-		body->velocity.z = 0;
+	//if (body->done == 1)
+		//body->velocity.z = 0;
 
 	// bullet time
-	if (!strcmp(body->owner->name, "player") == 0)
-		vec3d_mult(body->velocity, body->velocity, game_TimeRate);
+	//if (!strcmp(body->owner->name, "player") == 0)
+		//vec3d_mult(body->velocity, body->velocity, game_TimeRate);
 	
-	vec3d_add(body->position, body->position, body->velocity);
+	//vec3d_add(body->position, body->position, body->velocity);
 
 }
 
@@ -237,7 +236,7 @@ Entity *ent_floor(Vec3D position, const char *name)
 	ent->gravity = 0;
     //mgl_callback_set(&ent->body.touch,touch_callback,ent);
 	ent->body.owner = ent;
-	physics_add_body(&ent->body);
+	//physics_add_body(&ent->body);
 	return ent;
 }
 
@@ -258,7 +257,7 @@ Entity *ent_player(Vec3D position, const char *name)
 	ent->movetype = MTYPE_PLAYER;
 	ent->gravity = 20;
 
-	physics_add_body(&ent->body);
+	//physics_add_body(&ent->body);
 	ent->body.owner = ent;
 
 	weapon_setup(ent);
@@ -283,7 +282,7 @@ Entity *ent_obstacle(Vec3D position, const char *name)
 	ent->movetype = MTYPE_ENT;
 	ent->gravity = 0;
 	ent->origin = position;
-	physics_add_body(&ent->body);
+	//physics_add_body(&ent->body);
 	ent->body.owner = ent;
 	ent->think = thnk_back_forth;
 
@@ -309,7 +308,7 @@ Entity *ent_projectile(Vec3D position, const char *name)
 	ent->accel.y = 1;
 	ent->scale = vec3d(.1,.1,.1);
 	ent->origin = position;
-	physics_add_body(&ent->body);
+	//physics_add_body(&ent->body);
 	ent->body.owner = ent;
 	//ent->think = thnk_back_forth;
 
@@ -336,7 +335,7 @@ void weapon_setup(Entity* ent)
 	ent->inventory[0].maxAmmo = 10;
 	ent->inventory[0].ammo = ent->inventory[0].maxAmmo;
 	ent->inventory[0].cooldown = 100;
-	physics_add_body(&ent->inventory[0].body);
+	//physics_add_body(&ent->inventory[0].body);
 	ent->inventory[0].body.owner = ent;
 	
 	ent->inventory[1].model = obj_load("resources/Cube.obj");

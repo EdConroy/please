@@ -2,7 +2,6 @@
 #include <SDL.h>
 #include <glib.h>
 #include "graphics.h"
-#include "phys.h"
 #include "simple_logger.h"
 #include "game.h"
 #include "entity.h"
@@ -323,24 +322,24 @@ void game_Poll()
 void game_Update()
 {
 	// give entity physics ability, to be renamed body_add_physics()
-	ent_add_gravity(&player->body);
+	//ent_add_gravity(&player->body);
 
 	// froze time
-	if (!game_IfPausedTime())
-	{
-		ent_thnk_all(); // all the functions can think
-		ent_add_gravity(&obstacle1->body); // give obstacle the ability to move
-	}
+	//if (!game_IfPausedTime())
+	//{
+		//ent_thnk_all(); // all the functions can think
+		//ent_add_gravity(&obstacle1->body); // give obstacle the ability to move
+	//}
 	
 	// bullet time
-	if (game_IfBulletTime())
-		game_TimeRate = .4;
-	else
-		game_TimeRate = 1;
+	//if (game_IfBulletTime())
+		//game_TimeRate = .4;
+	//else
+		//game_TimeRate = 1;
 
 	// check collisions
-	for (it = __bodyList; it != NULL; it = g_list_next(it))
-		physics_collision((Body*) it->data);
+	//for (it = __bodyList; it != NULL; it = g_list_next(it))
+		//physics_collision((Body*) it->data);
 }
 
 void game_Draw()

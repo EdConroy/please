@@ -1,9 +1,9 @@
 #ifndef _ENTITY_H_
 #define _ENTITY_H_
 
-#include "vector.h"
+#include "phys.h"
+#include "collisions.h"
 #include "object.h"
-#include "body.h"
 
 #define MAX_ENT 255
 
@@ -48,9 +48,9 @@ typedef struct Entity_S
 
 	Body	body;
 
-	bool	canGravity; // if i can activate gravity on this ent
-	bool	canAccel;
-	bool	canCollide;
+	pbool	canGravity; // if i can activate gravity on this ent
+	pbool	canAccel;
+	pbool	canCollide;
 
 	Vec3D	origin;
 	Vec3D	accel;

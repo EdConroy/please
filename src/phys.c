@@ -1,12 +1,12 @@
 #include <glib.h>
 #include <stdio.h>
-#include "phys.h"
+//#include "phys.h"
 #include "collisions.h"
 #include "simple_logger.h"
 
 GList* __bodyList;
 
-// add bodies to physics
+/*
 void physics_add_body(Body *body)
 {
 	if (!body) return;

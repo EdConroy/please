@@ -21,7 +21,6 @@
     SOFTWARE.
  */
 
-
 /**
  * @brief Callbacks are data, function pointer pairs to be used whenever a callback is appropriate
  *
