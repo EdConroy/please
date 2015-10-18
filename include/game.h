@@ -23,5 +23,7 @@ void game_Exit();
 
 // public functions: game, powerups
 pbool		game_PausedTime(); // checks if time in game is paused
+void		game_SetPauseTime(); // ability to set time boolean
 pbool		game_BulletTimed(); // checks bulletTime boolean
+void		game_SetBulletTime(); // ability to set bulletTime
 #endif

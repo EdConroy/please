@@ -30,11 +30,7 @@ Vec3D	camera_rotation;
 // private declarations: game_time
 pbool		game_TimePause; // boolean that determines time
 
-void		game_SetPauseTime(); // ability to set time boolean
-
 pbool		game_BulletTime; // boolean that determine bulletTime
-
-void		game_SetBulletTime(); // ability to set bulletTime
 
 
 // private declarations: game
@@ -168,22 +164,22 @@ void game_Poll()
 				{
 				case SDLK_w:
 					{
-						player->accel.y = 10;
+						player->accel.y = 1;
 						break;
 					}
 				case SDLK_s:
 					{
-						player->accel.y = -10;
+						player->accel.y = -1;
 						break;
 					}
 				case SDLK_a:
 					{
-						player->accel.x = -10;
+						player->accel.x = -1;
 						break;
 					}
 				case SDLK_d:
 					{
-						player->accel.x = 10;
+						player->accel.x = 1;
 						break;
 					}
 				case SDLK_z:

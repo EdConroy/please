@@ -71,12 +71,6 @@ static void physics_collision(Physics *space, Body *body)
 	// if the owner of my body says i can't do this, don't do this
 	if (!body->owner->canCollide)return;
     
-	// i do not understand
-    //vec3d_scale(stepVector,body->velocity,space->stepFactor);
-    //vec3d_negate(stepOffVector,stepVector);
-
-	vec3d_add(body->position,body->position,space->stepVector);
-    
     a.x = body->position.x + body->bounds.x;
     a.y = body->position.y + body->bounds.y;
     a.z = body->position.z + body->bounds.z;
@@ -98,13 +92,43 @@ static void physics_collision(Physics *space, Body *body)
 
         if (cube_cube_intersection(a,b))
         {
+			// will probably start checking movetypes
+
 			if (other->owner)
 			{
 				// touch/callback 1 for floor collision
+				// HitFloor() callback function
 				if (strcmp(other->owner->name, "floor1") == 0)
 					if (strcmp(body->owner->name, "player") == 0)
 					{
 						body->done = 1;
+					}
+
+				// touch/callback 2 for #knife attack
+
+				// All statements with inventory checks will go in
+				// to one function called Attacked()
+				if (strcmp(other->owner->name, "obstacle1") == 0)
+					if (strcmp(body->owner->name, "player") == 0)
+					{
+						if (body->owner->inventory[0].attack)
+							ent_free(other->owner);
+					}
+
+				// touch/callback 3 for firearm attack
+				if (strcmp(other->owner->name, "obstacle1") == 0)
+					if (strcmp(body->owner->name, "player") == 0)
+					{
+						if (body->owner->inventory[1].attack)
+							ent_free(other->owner);
+					}
+
+				// touch/callback 4 for throw attack
+				if (strcmp(other->owner->name, "obstacle1") == 0)
+					if (strcmp(body->owner->name, "player") == 0)
+					{
+						if (body->owner->inventory[2].attack)
+							other->owner->think = thnk_push;
 					}
 			}
         }
@@ -212,12 +236,8 @@ static void physics_acceleration(Body *body)
 static void physics_checkpowerups(Physics *space, Body *body)
 {
 	if (!body) return;
-
-	if (game_PausedTime()) 
-		vec3d_scale(space->stepVector, space->stepVector, 0.0);
-
-	if (!game_BulletTimed()) 
-		vec3d_scale(space->stepVector, space->stepVector, 0.1);
+	
+	//vec3d_scale(space->stepVector, space->stepVector, 0.1);
 }
 
 // velocity/accel
@@ -234,17 +254,19 @@ static void physics_update(Physics *space)
 
 		// physics attribute modifiers
         physics_collision(space, body);
+
 		physics_gravity(body);
 		physics_acceleration(body);
 
 		// applies specified physics time rate to all bodies
 		vec3d_scale(space->stepVector,body->velocity,space->stepFactor);
+
+				//vec3d_mult(space->stepVector, space->stepVector, 0.9);
+
 		vec3d_add(body->position,body->position,space->stepVector);
 
-		physics_checkpowerups(space, body);
-
 		// applies physics to object with changes from the 4 func. if any
-		vec3d_add(body->position, body->position, body->velocity);
+		//vec3d_add(body->position, body->position, body->velocity);
 
     }
 }

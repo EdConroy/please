@@ -108,8 +108,8 @@ Entity* ent_init()
 
 void ent_draw(Entity *ent)
 {
-	int i;
 	//temp
+	int i;
 
 	if (!ent) return;
 	
@@ -123,7 +123,7 @@ void ent_draw(Entity *ent)
 		ent->texture
 		);
 
-	// draw weapons to the screen
+	// DrawAllPlayerWeapons() #weapons
 	for (i = 0; i < 3; i++)
 	{
 		if (ent->inventory)
@@ -205,9 +205,9 @@ void thnk_back_forth(Entity* ent)
 	float bound2 = ent->origin.y + 5;
 
 	if (ent->body.position.y <= bound1)
-		ent->accel.y = 3;
+		ent->accel.y = 20;
 	if (ent->body.position.y >= bound2)
-		ent->accel.y = -3;
+		ent->accel.y = -20;
 }
 
 void thnk_push(Entity* ent)
@@ -255,7 +255,7 @@ Entity *ent_player(Vec3D position, const char *name)
     cube_set(ent->body.bounds,-1,-1,-1,2,2,2);
     sprintf(ent->name,"%s",name);
 	ent->movetype = MTYPE_PLAYER;
-	ent->gravity = 1;
+	ent->gravity = 10;
 
 	physics_add_body(game.physics, &ent->body);
 	ent->canGravity = true;
@@ -283,7 +283,6 @@ Entity *ent_obstacle(Vec3D position, const char *name)
     cube_set(ent->body.bounds,-1,-1,-1,2,2,2);
     sprintf(ent->name,"%s",name);
 	ent->movetype = MTYPE_ENT;
-	ent->gravity = 0;
 	ent->origin = position;
 	physics_add_body(game.physics, &ent->body);
 	ent->body.owner = ent;
@@ -317,7 +316,9 @@ Entity *ent_projectile(Vec3D position, const char *name)
 	ent->origin = position;
 	physics_add_body(game.physics, &ent->body);
 	ent->body.owner = ent;
-	ent->think = thnk_back_forth;
+
+	ent->canCollide = true;
+	ent->canAccel = true;
 
 	return ent;
 }
