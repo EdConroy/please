@@ -37,11 +37,14 @@ struct Physics_S
 
 void physics_free();
 
-void physics_init(Physics* space)
+Physics* physics_init()
 {
+	Physics *space;
+
 	space = (Physics *)calloc(1, sizeof(struct Physics_S));
 	slog("Physics initiated");
 	atexit(physics_free);
+	return space;
 }
 
 void physics_set_steps(Physics *space, int steps)
@@ -95,15 +98,15 @@ static void physics_collision(Physics *space, Body *body)
 
         if (cube_cube_intersection(a,b))
         {
-            // back the fuck off
-            //vec3d_cpy(body->_stepOffVector,stepOffVector);
-            //body->_done = 1;
-            //body->_needsBackoff = 1;
-            if (body->touch.function)
-            {
-				// call touch functions
-                body->touch.function(body->touch.data,other);
-            }
+			if (other->owner)
+			{
+				// touch/callback 1 for floor collision
+				if (strcmp(other->owner->name, "floor1") == 0)
+					if (strcmp(body->owner->name, "player") == 0)
+					{
+						body->done = 1;
+					}
+			}
         }
     }
 }

@@ -33,7 +33,7 @@ typedef struct Cube_S
     float w,h,d;
 }Cube;
 
-void physics_init(Physics* space);
+Physics* physics_init();
 void physics_set_steps(Physics *space, int steps);
 void physics_do_step(Physics *space);
 
@@ -51,7 +51,7 @@ typedef struct Body_S
 	MglCallback touch;		/**<function to be called after specified event*/
 
 	pbool needsFixing;		/**<if i need my position to be fixed*/	
-	pbool done;
+	int done;
 }Body;
 
 /**
@@ -66,8 +66,8 @@ void body_reset(Body *body);
  */
 void body_process(Body *body);
 
-void physics_add_body(Body* body);
-void physics_remove_body(Body* body);
+void physics_add_body(Physics *space, Body* body);
+void physics_remove_body(Physics *space, Body* body);
 
 /* physical bounding shape
 typedef struct Cube_S

@@ -1,5 +1,6 @@
 ﻿#include <stdio.h>
 #include "entity.h"
+#include "game.h"
 #include "simple_logger.h"
 
 // LIST OF ENTITIES
@@ -11,7 +12,10 @@ static int __entity_max = 0;
 // AMT OF ENTITIES INIT'D
 static int __entity_initialized = 0;
 
-//private function: shuts down list of entities
+// extern: game
+extern GameData	game;
+
+// private function: shuts down list of entities
 static void entity_deInit();
 
 // private declaration: weapon
@@ -230,16 +234,15 @@ Entity *ent_floor(Vec3D position, const char *name)
     cube_set(ent->body.bounds,0,0,0,8,8,0.2);
     sprintf(ent->name,"%s",name);
 	ent->movetype = MTYPE_NONE;
-	ent->gravity = 0;
-    //mgl_callback_set(&ent->body.touch,touch_callback,ent);
+	ent->canCollide = true;
 	ent->body.owner = ent;
-	//physics_add_body(&ent->body);
+	physics_add_body(game.physics, &ent->body);
 	return ent;
 }
 
 Entity *ent_player(Vec3D position, const char *name)
 {
-	Entity * ent;
+	Entity *ent;
 	int i;
 	ent = ent_init();
     if (!ent)
@@ -252,9 +255,12 @@ Entity *ent_player(Vec3D position, const char *name)
     cube_set(ent->body.bounds,-1,-1,-1,2,2,2);
     sprintf(ent->name,"%s",name);
 	ent->movetype = MTYPE_PLAYER;
-	ent->gravity = 20;
+	ent->gravity = 1;
 
-	//physics_add_body(&ent->body);
+	physics_add_body(game.physics, &ent->body);
+	ent->canGravity = true;
+	ent->canCollide = true;
+	ent->canAccel = true;
 	ent->body.owner = ent;
 
 	weapon_setup(ent);
@@ -279,9 +285,13 @@ Entity *ent_obstacle(Vec3D position, const char *name)
 	ent->movetype = MTYPE_ENT;
 	ent->gravity = 0;
 	ent->origin = position;
-	//physics_add_body(&ent->body);
+	physics_add_body(game.physics, &ent->body);
 	ent->body.owner = ent;
 	ent->think = thnk_back_forth;
+
+	ent->canGravity = true;
+	ent->canCollide = true;
+	ent->canAccel = true;
 
 	return ent;
 }
@@ -305,9 +315,9 @@ Entity *ent_projectile(Vec3D position, const char *name)
 	ent->accel.y = 1;
 	ent->scale = vec3d(.1,.1,.1);
 	ent->origin = position;
-	//physics_add_body(&ent->body);
+	physics_add_body(game.physics, &ent->body);
 	ent->body.owner = ent;
-	//ent->think = thnk_back_forth;
+	ent->think = thnk_back_forth;
 
 	return ent;
 }
@@ -332,7 +342,7 @@ void weapon_setup(Entity* ent)
 	ent->inventory[0].maxAmmo = 10;
 	ent->inventory[0].ammo = ent->inventory[0].maxAmmo;
 	ent->inventory[0].cooldown = 100;
-	//physics_add_body(&ent->inventory[0].body);
+	physics_add_body(game.physics, &ent->inventory[0].body);
 	ent->inventory[0].body.owner = ent;
 	
 	ent->inventory[1].model = obj_load("resources/Cube.obj");

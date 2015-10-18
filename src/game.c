@@ -316,25 +316,8 @@ void game_Poll()
 
 void game_Update()
 {
-	// give entity physics ability, to be renamed body_add_physics()
-	//ent_add_gravity(&player->body);
-
-	// froze time
-	//if (!game_IfPausedTime())
-	//{
-		//ent_thnk_all(); // all the functions can think
-		//ent_add_gravity(&obstacle1->body); // give obstacle the ability to move
-	//}
-	
-	// bullet time
-	//if (game_IfBulletTime())
-		//game_TimeRate = .4;
-	//else
-		//game_TimeRate = 1;
-
-	// check collisions
-	//for (it = __bodyList; it != NULL; it = g_list_next(it))
-		//physics_collision((Body*) it->data);
+	ent_thnk_all(); // all the entities can think
+	physics_do_step(game.physics); // make physics happen
 }
 
 void game_Draw()
@@ -371,7 +354,8 @@ int game_Init()
 
 	ent_init_all(255);
 
-	physics_init(game.physics);
+	game.physics = physics_init();
+	physics_set_steps(game.physics, 100);
 
 	// level layout "loadTestLevel();"
 	floor1 = ent_floor(vec3d(0,0,0), "floor1");
