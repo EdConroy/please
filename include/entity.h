@@ -141,6 +141,8 @@ void ent_free(Entity* ent);
  */
 void ent_set_type(Entity* ent);
 
+void CreateEntity(Vec3D position, const char *name);
+
 /*	THINK FUNC	*/
 void thnk_back_forth(Entity* ent);
 void thnk_push(Entity* ent);

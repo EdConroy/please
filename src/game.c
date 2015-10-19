@@ -128,20 +128,35 @@ pbool game_LoadState()
 	// close file
 
 	FILE* file;
-	int i,j;
+	int i,j,k,no_match;
 	float x,y,z;
 	char buf[24];
 	file = fopen("state.txt", "r");
 
 	for (i = 0; i < MAX_ENT; i++)
 	{
+		no_match = 0;
 		fscanf(file, "%s", buf);
-		for (j = 0; j < MAX_ENT; j++)
+		for (j = 0; j < 5; j++)
 		{
-			if (strcmp(buf, __entity_list[j].name) == 0)
+			if ((buf != NULL) && (!strcmp(buf, "-") == 0 ))
 			{
-				fscanf(file, "%f %f %f", &x, &y, &z);
-				__entity_list[j].body.position = vec3d(x, y, z);
+				if (strcmp(buf, __entity_list[j].name) == 0)
+				{
+					fscanf(file, "%f %f %f", &x, &y, &z);
+					__entity_list[j].body.position = vec3d(x, y, z);
+				}
+				else
+					no_match++;
+				
+				// checking if there is an entity in the file, that is no longer in the list
+				if (no_match == 5)
+				{
+					// recreate that entity, only works for obstacles now, since that is the only thing
+					// that can be killed right now
+					fscanf(file, "%f %f %f", &x, &y, &z);
+					CreateEntity(vec3d(x,y,z), buf);
+				}
 			}
 		}
 	}
@@ -174,22 +189,22 @@ void game_Poll()
 				{
 				case SDLK_w:
 					{
-						player->accel.y = 10;
+						player->accel.y = 5;
 						break;
 					}
 				case SDLK_s:
 					{
-						player->accel.y = -10;
+						player->accel.y = -5;
 						break;
 					}
 				case SDLK_a:
 					{
-						player->accel.x = -10;
+						player->accel.x = -5;
 						break;
 					}
 				case SDLK_d:
 					{
-						player->accel.x = 10;
+						player->accel.x = 5;
 						break;
 					}
 				case SDLK_z:

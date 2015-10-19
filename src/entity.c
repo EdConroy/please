@@ -173,6 +173,20 @@ void ent_free(Entity* ent)
 	ent->inuse = 0;
 	obj_free(ent->model);
 	sprite_free(ent->texture);
+	memset(ent->name, 0, sizeof(char)*128);
+	ent->movetype = 0;
+	memset(ent->inventory, 0, sizeof(Weapon)*3);
+	physics_remove_body(&ent->body);
+	ent->origin = vec3d(0,0,0);
+	ent->accel = vec3d(0,0,0);
+	ent->rot = vec3d(0,0,0);
+	ent->scale = vec3d(0,0,0);
+	ent->color = vec4d(0,0,0,0);
+	ent->speed = 0;
+	ent->gravity = 0;
+	ent->nextThink = NULL;
+	ent->think = NULL;
+	ent = NULL;
 }
 
 /*	will be put in physics update function
@@ -256,7 +270,7 @@ Entity *ent_player(Vec3D position, const char *name)
     cube_set(ent->body.bounds,-1,-1,-1,2,2,2);
     sprintf(ent->name,"%s",name);
 	ent->movetype = MTYPE_PLAYER;
-	ent->gravity = 20;
+	ent->gravity = 10;
 
 	physics_add_body(&ent->body);
 	ent->body.owner = ent;
@@ -320,6 +334,11 @@ Entity *ent_projectile(Vec3D position, const char *name)
 void ShootProjectile(Entity* ent)
 {
 	Entity* proj = ent_projectile(ent->body.position, "projectile");
+}
+
+void CreateEntity(Vec3D position, const char *name)
+{
+	Entity* ent = ent_obstacle(position, name);
 }
 
 /** weapon **/
