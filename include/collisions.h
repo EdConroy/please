@@ -1,10 +1,10 @@
 #ifndef __COLLISIONS_H__
 #define __COLLISIONS_H__
 
-// shape.h
-
+// boolean type, should be moved to game
 typedef enum {false,true} pbool;
 
+// structure for cubes
 typedef struct Cube_S
 {
     float x,y,z;

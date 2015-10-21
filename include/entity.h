@@ -25,7 +25,7 @@ typedef struct Weapon_S
 	pbool	attack;
 }Weapon;
 
-/* Enumeratio for weapon types */
+/* Enumeration for weapon types */
 enum
 {
 	WEAP_FIREARM,
@@ -43,6 +43,8 @@ typedef struct Entity_S
 	char	name[128];
 
 	int		movetype;	// how i should move
+
+	int		health;
 	
 	Weapon	inventory[3];
 
@@ -141,14 +143,15 @@ void ent_free(Entity* ent);
  */
 void ent_set_type(Entity* ent);
 
+// create an enitity without a designated pointer
 void CreateEntity(Vec3D position, const char *name);
 
 /*	THINK FUNC	*/
-void thnk_back_forth(Entity* ent);
-void thnk_push(Entity* ent);
+void thnk_back_forth(Entity* ent); /** move back and forth **/
+void thnk_push(Entity* ent); /** pushed **/
 
 /* WEAPON */
-void weap_switch(Entity* ent);
-void ShootProjectile(Entity* ent);
+void weap_switch(Entity* ent); /** switch to next weapon in inventory **/
+void ShootProjectile(Entity* ent); /** initiate new projectile entity **/
 
 #endif

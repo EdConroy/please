@@ -22,6 +22,8 @@ static GLuint			__graphics_shader_program;
 // frame delay
 static Uint32			__graphics_frame_delay = 33;
 
+// temp
+
 // private function: close graphics system
 void graphics_end();
 
@@ -93,7 +95,7 @@ int graphics_init(int sw,int sh,int fullscreen,const char *project, Uint32 frame
         return -1;
     }
 	
-
+	//glUseProgram(__graphics_shader_program);
 	glViewport(0,0,sw, sh);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -107,6 +109,7 @@ int graphics_init(int sw,int sh,int fullscreen,const char *project, Uint32 frame
 
 	glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
+	//glDepthFunc(GL_LESS);
 
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
@@ -136,6 +139,9 @@ void graphics_next_frame()
 	Uint32 now;
 
 	glPopMatrix();
+
+	//glUseProgram(__graphics_shader_program);
+	//glUseProgram(0);
 
 	SDL_GL_SwapWindow(__graphics_window); // update frames
 

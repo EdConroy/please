@@ -43,6 +43,10 @@
     <ClInclude Include="include\vector.h" />
     <ClInclude Include="src\body.c" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\fs1.glsl" />
+    <None Include="resources\shaders\vs1.glsl" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D60C6D41-407D-4D73-9C4B-213C7276BCBB}</ProjectGuid>
     <RootNamespace>please</RootNamespace>
@@ -73,7 +77,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)\</OutDir>
     <IntDir>$(ProjectDir)\</IntDir>
-    <IncludePath>C:\Libraries\SDL2-2.0.3\include;C:\Libraries\SDL2_image-2.0.0\include;C:\Libraries\glew-1.12.0\include;C:\Users\iwh-pc\Documents\College\fall2015\it485\please\please\include;C:\Libraries\glib-2.28\include\glib-2.0;C:\Libraries\glib-2.28\lib\glib-2.0\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Libraries\SDL2-2.0.3\include;C:\Libraries\SDL2_image-2.0.0\include;C:\Libraries\glew-1.12.0\include;C:\Users\iwh-pc\Documents\College\fall2015\it485\please\please\include;C:\Libraries\glib-2.28\include\glib-2.0;C:\Libraries\glib-2.28\lib\glib-2.0\include;C:\Libraries\glm-0.9.7.1\glm;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Libraries\SDL2-2.0.3\lib\x86;C:\Libraries\SDL2_image-2.0.0\lib\x86;C:\Libraries\glew-1.12.0\lib\Release\Win32;C:\Libraries\glib-2.28\lib;$(LibraryPath)</LibraryPath>
     <SourcePath>C:\Users\iwh-pc\Documents\College\fall2015\it485\please\please\src;$(SourcePath)</SourcePath>
     <ExecutablePath>C:\Users\iwh-pc\Documents\College\fall2015\it485\please\please;$(ExecutablePath)</ExecutablePath>

@@ -3,6 +3,8 @@
 #include "vector.h"
 #include "space.h"
 
+// this is not used in this branch
+
 struct Space_S
 {
 	//GList *bodyList;	/**<hash map of all bodies in space*/

@@ -6,6 +6,8 @@
 
 GList* __bodyList;
 
+// subject to major changes in new_physics branch on git
+
 // add bodies to physics
 void physics_add_body(Body *body)
 {
@@ -13,6 +15,7 @@ void physics_add_body(Body *body)
 	__bodyList = g_list_append(__bodyList, body);
 }
 
+// don't add bodies to physics
 void physics_remove_body(Body *body)
 {
 	if (!body) return;
@@ -70,6 +73,11 @@ void physics_collision(Body *body)
 					{
 						if (body->owner->inventory[0].attack)
 							ent_free(other->owner);
+						else
+						{
+							body->owner->health--;
+							slog("player health: %d", body->owner->health);
+						}
 					}
 
 				// touch/callback 3 for firearm attack

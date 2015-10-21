@@ -17,7 +17,7 @@ Entity*	player;
 GList	*it;
 
 // extern: game
-extern int		game_running;
+extern int		game_running; // is the game running?
 
 // extern: body
 extern GList*	__bodyList;
@@ -31,7 +31,7 @@ int		curMouseX, curMouseY;
 Vec3D	camera_position;
 Vec3D	camera_rotation;
 
-// private declarations: game_time
+// private declarations: game - time
 float		game_TimeRate;
 
 pbool		game_TimePause; // boolean that determines time
@@ -44,15 +44,15 @@ void		game_SetBulletTime(); // ability to set bulletTime
 
 
 // private declarations: game
-pbool		game_SaveState();
-pbool		game_LoadState();
+pbool		game_SaveState(); // saves positions of all entities presently in the game
+pbool		game_LoadState(); // loads positions of all entities that were saved
 
 void		game_Poll();
 void		game_Update();
 void		game_Draw();
 int			Run();
 
-// needs offset of player's position
+// reminder: needs offset of player's position, called in game_Draw()
 void set_camera(Vec3D position, Vec3D rotation)
 {
 	glRotatef(-rotation.x, 1.0f, 0.0f, 0.0f);
@@ -64,9 +64,9 @@ void set_camera(Vec3D position, Vec3D rotation)
                  -position.z);
 }
 
-// private definitions
+// private definitions: game - time
 
-// if the game was paused by the player
+// if the game was paused by the player, called in game_Update()
 pbool game_IfPausedTime()
 {
 	if (!game_TimePause)
@@ -74,11 +74,13 @@ pbool game_IfPausedTime()
 	return true;
 }
 
+// called in game_Poll()
 void game_SetPauseTime()
 {
 	game_TimePause = !game_TimePause;
 }
 
+// called in game_Update()
 pbool game_IfBulletTime()
 {
 	if (!game_BulletTime)
@@ -86,6 +88,7 @@ pbool game_IfBulletTime()
 	return true;
 }
 
+// called in game_Poll()
 void game_SetBulletTime()
 {
 	game_BulletTime = !game_BulletTime;
@@ -120,11 +123,10 @@ pbool game_SaveState()
 	return true;
 }
 
-// can only load positions for now
 pbool game_LoadState()
 {
 	// open file for parsing
-	// for every entity in game, put in txt file
+	// for every entity in file, put in game
 	// close file
 
 	FILE* file;
@@ -149,7 +151,7 @@ pbool game_LoadState()
 				else
 					no_match++;
 				
-				// checking if there is an entity in the file, that is no longer in the list
+				// checking if there is an entity in the file, that is no longer in the entity list
 				if (no_match == 5)
 				{
 					// recreate that entity, only works for obstacles now, since that is the only thing
@@ -215,12 +217,12 @@ void game_Poll()
 					}
 				case SDLK_x:
 					{
-						game_SaveState(); // right now, saves all positions of all entities
+						game_SaveState();
 						break;
 					}
 				case SDLK_l:
 					{
-						game_LoadState(); // right now, will load all positions of all entities
+						game_LoadState();
 						break;
 					}
 				case SDLK_0:
@@ -300,24 +302,37 @@ void game_Poll()
 			{
 				for (i = 0; i < 3; i++)
 				{
+					// checking the weapon i am currently using with the active boolean (pbool)
 					if (player->inventory[i].active)
 					{
-						// ActivateKnife(); #knife
+						// ActivateKnife(); to be put in player files or weapon files
 						if (player->inventory[i].weaponType == WEAP_MELEE)
 						{
+							// i can attack with the knife 
+							// moving the knife happens in ent_draw for now
+							// the attack is checked in physics
+
 							player->inventory[i].attack = true;
+							//#knife
 						}
 
-						//ActivateGun(); #gun #firearm
+						//ActivateGun(); 
 						if( player->inventory[i].weaponType == WEAP_FIREARM)
 						{
+							// i can attack with this weapon 
+							// the attack is checked in physics
+
 							player->inventory[i].attack = true;
 							ShootProjectile(player);
+							// #gun #firearm
 						}
 
 						// ActivateShield() #shield #rekt
 						if( player->inventory[i].weaponType == WEAP_SHEILD)
 						{
+							// i can attack with this weapon 
+							// the attack is checked in physics
+
 							player->inventory[i].attack = true;
 						}
 					}
@@ -356,16 +371,23 @@ void game_Update()
 	// check collisions
 	for (it = __bodyList; it != NULL; it = g_list_next(it))
 		physics_collision((Body*) it->data);
+
+	if (player->health <= 0)
+	{
+		player->health = 2000;
+		game_LoadState();
+	}
 }
 
 void game_Draw()
 {
-	graphics_clear_frame();
-	glPushMatrix(); // ???
+	graphics_clear_frame(); // clear everything for the next draw
+	glPushMatrix(); // save all current matrices and continue
 	set_camera(player->body.position, player->rot); // gotta make a position offset
 	ent_draw_all(); // also draws weapons
-	glPopMatrix();// ???
-	graphics_next_frame();
+	//ent_weap_draw();
+	glPopMatrix();// reload previous matrices
+	graphics_next_frame(); // show the next frame
 }
 
 // private definitions
@@ -380,7 +402,7 @@ int Run()
 
 int game_Init()
 {
-	// init everything here
+	// init everything here, tells game struct what function to use for running
 	game.Run = Run;
 
 	init_logger("please_log.log");	// log for errors and such
@@ -392,7 +414,7 @@ int game_Init()
 
 	ent_init_all(255);
 
-	game_TimeRate = 1;
+	game_TimeRate = 1; // initial time rate
 
 	// level layout "loadTestLevel();"
 	floor1 = ent_floor(vec3d(0,0,0), "floor1");
@@ -412,6 +434,6 @@ int game_Init()
 
 void game_Exit()
 {
-	// deInit everything here
+	// deInit everything here, don't call run anymore
 	game.Run = NULL;
 }

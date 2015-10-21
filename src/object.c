@@ -138,10 +138,10 @@ void obj_file_get_counts(Obj* model, FILE* file)
                 break;
         }
     }
-    model->num_tris = numfaces;
-    model->num_vertices = numvertices;
-    model->num_texels = numtexcoords;
-    model->num_normals = numnormals;
+    model->num_tris = numfaces;			// faces
+    model->num_vertices = numvertices;	// vertices
+    model->num_texels = numtexcoords;	// texels
+    model->num_normals = numnormals;	// normals
 }
 
 void obj_allocate(Obj *model) // ???
@@ -436,6 +436,8 @@ void obj_draw(
     int i;
     ObjTriangle* triangle;
     float trans[4];
+
+	GLuint colorBuffer;
     
     if (obj == NULL)
     {
@@ -467,7 +469,8 @@ void obj_draw(
     
     glColor3f(color.x,color.y,color.z);
     glBegin(GL_TRIANGLES);
-    for (i = 0; i < obj->num_tris; i++)
+    
+for (i = 0; i < obj->num_tris; i++)
     {
         triangle = &obj->triangle_array[i];
         if (obj->normal_array)
@@ -534,6 +537,25 @@ void obj_draw(
     }
     glEnd();
     
+	// draw via shader
+	/*glDrawArrays(GL_TRIANGLES, 0, obj->num_vertices * 3);
+
+	glGenBuffers(1, &colorBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(obj->vertex_array), obj->vertex_array, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+	glVertexAttribPointer
+		(
+		1,
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		0,
+		(void *)0
+		);
+
     glColor4f(1,1,1,1);
     glDisable(GL_LIGHTING);
     glDisable(GL_BLEND);
@@ -541,7 +563,7 @@ void obj_draw(
     if(texture != NULL)
     {
         glDisable(GL_TEXTURE_2D);
-    }    
+    }    */
     glPopMatrix();
 }
 

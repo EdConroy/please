@@ -108,4 +108,12 @@
       <Filter>Main Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\fs1.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resources\shaders\vs1.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

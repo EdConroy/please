@@ -4,7 +4,7 @@
 
 GLuint BuildShaderProgram(const char *vsPath, const char *fsPath)
 {
-	    GLint infoLogLength;
+	GLint infoLogLength;
     GLuint vertexShader;
     GLuint fragmentShader;
     GLuint tempProgram;
