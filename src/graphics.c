@@ -88,12 +88,12 @@ int graphics_init(int sw,int sh,int fullscreen,const char *project, Uint32 frame
         return -1;
     }
 
-	//__graphics_shader_program = BuildShaderProgram("resources/shaders/vs1.glsl", "resources/shaders/fs1.glsl");
-    //if (__graphics_shader_program == -1)
-    //{
-		//slog("failed to load shaders.\n");
-        //return -1;
-    //}
+	__graphics_shader_program = BuildShaderProgram("resources/shaders/vs1.glsl", "resources/shaders/fs1.glsl");
+    if (__graphics_shader_program == -1)
+    {
+		slog("failed to load shaders.\n");
+        return -1;
+    }
 	
 	//glUseProgram(__graphics_shader_program);
 	glViewport(0,0,sw, sh);
@@ -140,8 +140,8 @@ void graphics_next_frame()
 
 	glPopMatrix();
 
-	//glUseProgram(__graphics_shader_program);
-	//glUseProgram(0);
+	glUseProgram(__graphics_shader_program);
+	glUseProgram(0);
 
 	SDL_GL_SwapWindow(__graphics_window); // update frames
 

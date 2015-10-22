@@ -34,8 +34,8 @@ GLuint BuildShaderProgram(const char *vsPath, const char *fsPath)
         return 0;
     }
     
-    glDetachShader(tempProgram, vertexShader);
-    glDetachShader(tempProgram, fragmentShader);
+    //glDetachShader(tempProgram, vertexShader);
+    //glDetachShader(tempProgram, fragmentShader);
     
     return tempProgram;
 }

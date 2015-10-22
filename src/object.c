@@ -469,7 +469,7 @@ void obj_draw(
     
     glColor3f(color.x,color.y,color.z);
     glBegin(GL_TRIANGLES);
-    
+ /*  
 for (i = 0; i < obj->num_tris; i++)
     {
         triangle = &obj->triangle_array[i];
@@ -535,10 +535,10 @@ for (i = 0; i < obj->num_tris; i++)
             obj->vertex_array[triangle->p[2].v * 3 + 2]);
         
     }
-    glEnd();
+    glEnd();*/
     
-	// draw via shader
-	/*glDrawArrays(GL_TRIANGLES, 0, obj->num_vertices * 3);
+	// draw via shader, breaks here
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, obj->num_vertices * 3); // renders something???
 
 	glGenBuffers(1, &colorBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
@@ -559,10 +559,11 @@ for (i = 0; i < obj->num_tris; i++)
     glDisable(GL_LIGHTING);
     glDisable(GL_BLEND);
     glDisable(GL_COLOR_MATERIAL);
+
     if(texture != NULL)
     {
         glDisable(GL_TEXTURE_2D);
-    }    */
+    }
 
 
     glPopMatrix();
