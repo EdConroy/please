@@ -87,15 +87,7 @@ int graphics_init(int sw,int sh,int fullscreen,const char *project, Uint32 frame
         slog("Error: %s", glewGetErrorString(glew_status));
         return -1;
     }
-
-	__graphics_shader_program = BuildShaderProgram("resources/shaders/vs1.glsl", "resources/shaders/fs1.glsl");
-    if (__graphics_shader_program == -1)
-    {
-		slog("failed to load shaders.\n");
-        return -1;
-    }
 	
-	//glUseProgram(__graphics_shader_program);
 	glViewport(0,0,sw, sh);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
