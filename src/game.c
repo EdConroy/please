@@ -4,6 +4,7 @@
 #include "graphics.h"
 #include "phys.h"
 #include "simple_logger.h"
+#include "shader.h"
 #include "game.h"
 #include "entity.h"
 
@@ -30,6 +31,10 @@ extern Entity*	__entity_list;
 int		curMouseX, curMouseY;
 Vec3D	camera_position;
 Vec3D	camera_rotation;
+
+// new stuff for camera
+Vec3D	camera_offset = {0, -3, 2};
+Vec3D	next_camera_pos;
 
 // private declarations: game - time
 float		game_TimeRate;
@@ -353,13 +358,13 @@ void game_Poll()
 void game_Update()
 {
 	// give entity physics ability, to be renamed body_add_physics()
-	ent_add_gravity(&player->body);
+	ent_add_physics(&player->body);
 
 	// froze time
 	if (!game_IfPausedTime())
 	{
 		ent_thnk_all(); // all the functions can think
-		ent_add_gravity(&obstacle1->body); // give obstacle the ability to move
+		ent_add_physics(&obstacle1->body); // give obstacle the ability to move
 	}
 	
 	// bullet time

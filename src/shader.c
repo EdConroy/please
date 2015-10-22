@@ -2,6 +2,8 @@
 #include "simple_logger.h"
 #include "shader.h"
 
+unsigned int vertexShader, fragmentShader, programID;
+
 GLuint BuildShaderProgram(const char *vsPath, const char *fsPath)
 {
 	GLint infoLogLength;
@@ -95,4 +97,15 @@ GLuint CreateShader(GLenum eShaderType, const char *strShaderFile)
     }
     
     return shader;
+}
+
+void shader_make()
+{
+	const char* vertexShaderFile = "resources/shaders/vs1.glsl";
+	const char* fragmentShaderFile = "resources/shaders/fs1.glsl";
+
+	GLint compiled = 0;
+
+	vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 }

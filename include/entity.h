@@ -97,7 +97,7 @@ Entity* ent_init();
 /**
  * @brief gives and entity's body physics
  */
-void ent_add_gravity(Body* body);
+void ent_add_physics(Body* body);
 
 /**
  * @brief boolean that checks if data that was sent to the function is an entity

@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
@@ -14,6 +10,10 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="Main Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
       <UniqueIdentifier>{bd6648e5-3d15-4e04-8440-46c023889441}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -37,7 +37,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\body.c">
-      <Filter>Main Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="include\mgl_callback.h">
       <Filter>Header Files</Filter>
@@ -69,43 +69,43 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\entity.c">
-      <Filter>Main Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\object.c">
-      <Filter>Main Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\mgl_callback.c">
-      <Filter>Main Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\vector.c">
-      <Filter>Main Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\simple_logger.c">
-      <Filter>Main Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\game.c">
+    <ClCompile Include="src\object.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mgl_callback.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vector.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\simple_logger.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.c">
       <Filter>Main Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game.c">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics.c">
-      <Filter>Main Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\shader.c">
-      <Filter>Main Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\sprite.c">
-      <Filter>Main Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\space.c">
-      <Filter>Main Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\phys.c">
-      <Filter>Main Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\collisions.c">
-      <Filter>Main Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

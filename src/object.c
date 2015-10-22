@@ -544,8 +544,7 @@ for (i = 0; i < obj->num_tris; i++)
 	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(obj->vertex_array), obj->vertex_array, GL_STATIC_DRAW);
 
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+	glEnableVertexAttribArray(0);
 	glVertexAttribPointer
 		(
 		1,
@@ -564,6 +563,8 @@ for (i = 0; i < obj->num_tris; i++)
     {
         glDisable(GL_TEXTURE_2D);
     }    */
+
+
     glPopMatrix();
 }
 

@@ -71,7 +71,7 @@ void ent_thnk_all()
 
 		if(__entity_list[i].inuse && __entity_list[i].movetype == MTYPE_PROJ)
 		{
-			ent_add_gravity(&__entity_list[i].body);
+			ent_add_physics(&__entity_list[i].body);
 		}
 	}
 }
@@ -198,7 +198,7 @@ void ent_free(Entity* ent)
 /*	this function is incorrectly named.
 	it not only does acceleration, but does
 	gravity as well as check if powerups are on */
-void ent_add_gravity(Body* body)
+void ent_add_physics(Body* body)
 {
 	body->velocity.x = body->owner->accel.x * 0.002;
 	body->velocity.y = body->owner->accel.y * 0.002;

@@ -38,4 +38,7 @@ GLuint BuildShaderProgram(const char *vsPath, const char *fsPath);
  */
 GLuint CreateShader(GLenum eShaderType, const char *strShaderFile);
 
+
+
+void shader_make();
 #endif
