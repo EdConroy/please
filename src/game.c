@@ -386,10 +386,23 @@ void game_Update()
 
 void game_Draw()
 {
+	int i;
+	 
 	graphics_clear_frame(); // clear everything for the next draw
 	glPushMatrix(); // save all current matrices and continue
 	set_camera(player->body.position, player->rot); // gotta make a position offset
 	ent_draw_all(); // also draws weapons
+
+
+	for(i = 0; i < NUM_LIGHTS; ++i) {
+		/* render sphere with the light's color/position */
+		glPushMatrix();
+		glTranslatef(g_lightPosition[i * 3 + 0], g_lightPosition[i * 3 + 1], g_lightPosition[i * 3 + 2]);
+		glColor3fv(g_lightColor + (i * 3));
+		//glutSolidSphere(0.04, 36, 36);
+		glPopMatrix();
+	}
+
 	//ent_weap_draw();
 	glPopMatrix();// reload previous matrices
 	graphics_next_frame(); // show the next frame
@@ -407,6 +420,10 @@ int Run()
 
 int game_Init()
 {
+	GLint result; // shader
+	GLint length;
+	char *log;
+	
 	// init everything here, tells game struct what function to use for running
 	game.Run = Run;
 
@@ -416,6 +433,39 @@ int game_Init()
 		slog("graphics didn't load up very well");
 		return -1;
 	}
+
+	/* shader */
+	g_program = glCreateProgram();
+
+	shad_attach(g_program, GL_VERTEX_SHADER, "resources/shaders/vs1.glsl");
+	shad_attach(g_program, GL_FRAGMENT_SHADER, "resources/shaders/fs1.glsl");
+
+	glLinkProgram(g_program);
+	glGetProgramiv(g_program, GL_LINK_STATUS, &result);
+
+	if (result == GL_FALSE)
+	{
+		glGetProgramiv(g_program, GL_INFO_LOG_LENGTH, &length);
+		log = malloc(length);
+		glGetProgramInfoLog(g_program, length, &result, log);
+
+		slog("stuff messd up %s\n", log);
+		free(log);
+
+		/* abort program */
+		glDeleteProgram(g_program);
+		g_program = 0;
+	}
+
+	g_programLightPositionLocation = glGetUniformLocation(g_program, "lightPostition");
+	g_programLightColorLocation = glGetUniformLocation(g_program, "lightColor");
+
+	/* set up red/green/blue lights */
+	g_lightColor[0] = 1.0f; g_lightColor[1] = 0.0f; g_lightColor[2] = 0.0f;
+	g_lightColor[3] = 0.0f; g_lightColor[4] = 1.0f; g_lightColor[5] = 0.0f;
+	g_lightColor[6] = 0.0f; g_lightColor[7] = 0.0f; g_lightColor[8] = 1.0f;
+
+	g_lightRotation = 0.0f;
 
 	ent_init_all(255);
 

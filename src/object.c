@@ -15,6 +15,8 @@ static Model ModelList[__model_max];
 
 static void model_close();
 
+static GLuint g_drawid;
+
 void obj_init_all()
 {
     memset(ObjList,0,sizeof(Obj)*__obj_max);
@@ -434,6 +436,9 @@ void obj_draw(
              )
 {
     int i;
+	unsigned int k, size;
+	const int floatsPerVertex = 3;
+	float *v;
     ObjTriangle* triangle;
     float trans[4];
 
@@ -535,13 +540,27 @@ for (i = 0; i < obj->num_tris; i++)
             obj->vertex_array[triangle->p[2].v * 3 + 2]);
         
     }
+
+	glGenBuffers(1, &g_drawid);
+	glBindBuffer(GL_ARRAY_BUFFER, g_drawid);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(obj->texel_array), obj->texel_array, GL_STATIC_DRAW);
+	//free(v);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
+
+	glVertexPointer(3, GL_FLOAT, sizeof(float) * floatsPerVertex, 0);
+	glNormalPointer(GL_FLOAT, sizeof(float) * floatsPerVertex, (const GLvoid*)(sizeof(float) * 3));
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, obj->num_texels);
+	glUseProgram(0);
+
     glEnd();
 
     if(texture != NULL)
     {
         glDisable(GL_TEXTURE_2D);
     }
-
 
     glPopMatrix();
 }
