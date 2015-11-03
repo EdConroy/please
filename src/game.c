@@ -113,11 +113,24 @@ pbool game_SaveState()
 	{
 		if (__entity_list[i].inuse)
 		{
+			// entity name
 			fprintf(file, __entity_list[i].name);
 			fprintf(file, "\n");
+			// entity position
 			fprintf(file, "%f\t", __entity_list[i].body.position.x);
 			fprintf(file, "%f\t", __entity_list[i].body.position.y);
 			fprintf(file, "%f\n", __entity_list[i].body.position.z);
+			// entity think function
+			if (__entity_list[i].think == thnk_back_forth)
+			{
+				fprintf(file, "thnk_back_forth\n");
+			}
+			else if (__entity_list[i].think == thnk_push)
+			{
+				fprintf(file, "thnk_push\n");
+			}
+			else
+				fprintf(file, "no_think\n");
 
 			fprintf(file, "-\n\n");
 		}
@@ -137,7 +150,7 @@ pbool game_LoadState()
 	FILE* file;
 	int i,j,k,no_match;
 	float x,y,z;
-	char buf[24];
+	char buf[24], think[24];
 	file = fopen("state.txt", "r");
 
 	for (i = 0; i < MAX_ENT; i++)
@@ -146,12 +159,31 @@ pbool game_LoadState()
 		fscanf(file, "%s", buf);
 		for (j = 0; j < 5; j++)
 		{
-			if ((buf != NULL) && (!strcmp(buf, "-") == 0 ))
+			if ((buf != NULL) 
+				&& (!strcmp(buf, "-") == 0) 
+				&& (!strcmp(buf, "thnk_back_forth") == 0)
+				&& (!strcmp(buf, "thnk_push") == 0)) // isolating everything and finding the entity name
 			{
+				// find the name
 				if (strcmp(buf, __entity_list[j].name) == 0)
 				{
+					// get the vector
 					fscanf(file, "%f %f %f", &x, &y, &z);
+					// get the think
+					fscanf(file, "%s", think);
+					// set the vec
 					__entity_list[j].body.position = vec3d(x, y, z);
+					
+					// checking what the think func is
+					if (strcmp(think, "thnk_back_forth") == 0)
+					{
+						// set the think
+						__entity_list[j].think = thnk_back_forth;
+					}
+					else if (strcmp(think, "thnk_push") == 0)
+					{
+						__entity_list[j].think = thnk_push;
+					}
 				}
 				else
 					no_match++;
