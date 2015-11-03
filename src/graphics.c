@@ -121,12 +121,6 @@ void graphics_clear_frame()
 {
     glClearColor(0.0,0.0,0.0,0.0);
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-	
-	/* shader */
-	glUseProgram(g_program);
-	glUniform3fv(g_programLightPositionLocation, NUM_LIGHTS, g_lightPosition);
-	glUniform3fv(g_programLightColorLocation, NUM_LIGHTS, g_lightColor);
-
     glLoadIdentity();
     glPushMatrix();
 }
@@ -137,8 +131,6 @@ void graphics_next_frame()
 	Uint32 now;
 
 	glPopMatrix();
-
-
 
 	SDL_GL_SwapWindow(__graphics_window); // update frames
 
