@@ -164,22 +164,22 @@ void game_Poll()
 				{
 				case SDLK_w:
 					{
-						player->accel.y = 1;
+						player->accel.y = 10;
 						break;
 					}
 				case SDLK_s:
 					{
-						player->accel.y = -1;
+						player->accel.y = -10;
 						break;
 					}
 				case SDLK_a:
 					{
-						player->accel.x = -1;
+						player->accel.x = -10;
 						break;
 					}
 				case SDLK_d:
 					{
-						player->accel.x = 1;
+						player->accel.x = 10;
 						break;
 					}
 				case SDLK_z:
@@ -351,7 +351,6 @@ int game_Init()
 	ent_init_all(255);
 
 	game.physics = physics_init();
-	physics_set_steps(game.physics, 100);
 
 	// level layout "loadTestLevel();"
 	floor1 = ent_floor(vec3d(0,0,0), "floor1");
@@ -364,6 +363,8 @@ int game_Init()
 	player->rot = vec3d(80,0,0);
 
 	obstacle1 = ent_obstacle(vec3d(5, 0, 1.6), "obstacle1");
+
+	physics_set_steps(game.physics, 10);
 
 	slog("game initialization finished");
 	return 1;

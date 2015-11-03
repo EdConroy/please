@@ -9,6 +9,9 @@
 // extern: game
 extern GameData	game;
 
+// extern: entity
+extern Entity* player;
+
 /*
 physics.c
 1. create body
@@ -56,7 +59,7 @@ void physics_set_steps(Physics *space, int steps)
         return;
     }
     space->steps = steps;
-    space->stepFactor = 1.0/steps;
+    space->stepFactor = 1.0/steps; // speed in game doesn't seem constant
 }
 
 static void physics_collision(Physics *space, Body *body)
@@ -64,7 +67,6 @@ static void physics_collision(Physics *space, Body *body)
     GList *it;
     Cube a,b;
     Body *other;
-    //Vec3D stepOffVector;
     
 	if ((!body) || (body->done))return;
 
@@ -92,17 +94,35 @@ static void physics_collision(Physics *space, Body *body)
 
         if (cube_cube_intersection(a,b))
         {
-			// will probably start checking movetypes
+			// will probably start checking movetypes instead of classnames
 
 			if (other->owner)
 			{
+				// if the player is not part of any collisions
+				// set body->done = 0, so gravity will act
+				// if (body_no_collision())
+				if(strcmp(body->owner->name, "player") != 0)
+					player->body.done = 0;
+
 				// touch/callback 1 for floor collision
 				// HitFloor() callback function
 				if (strcmp(other->owner->name, "floor1") == 0)
+				{
 					if (strcmp(body->owner->name, "player") == 0)
 					{
 						body->done = 1;
+						slog("%i", player->body.done);
 					}
+				}
+
+				if (strcmp(other->owner->name, "floor2") == 0)
+				{
+					if (strcmp(body->owner->name, "player") == 0)
+					{
+						body->done = 1;
+						//printf("boop2");
+					}
+				}
 
 				// touch/callback 2 for #knife attack
 
@@ -134,81 +154,6 @@ static void physics_collision(Physics *space, Body *body)
         }
     }
 }
-
-/*
-void physics_collision(Body *body)
-{
-	GList *it;
-
-	Cube a,b; // 3d bounding boxes
-	Body *other;
-
-	// vec3d_cpy(a, a, body->position.x + body->bounds)
-	a.x = body->position.x + body->bounds.x;
-	a.y = body->position.y + body->bounds.y;
-    a.z = body->position.z + body->bounds.z;
-
-	a.w = body->bounds.w;
-    a.h = body->bounds.h;
-    a.d = body->bounds.d;
-
-	for (it = __bodyList; it != NULL; it = g_list_next(it))
-	{
-		if (!it->data) continue;
-		if (it->data == body) continue;
-
-		// cast data as a body, because it is from __bodyList
-		other = (Body*) it->data;
-
-		vec3d_cpy(b, other->position);
-
-		b.w = other->bounds.w;
-        b.h = other->bounds.h;
-        b.d = other->bounds.d;
-		
-		vec3d_add(b,b,other->bounds);
-
-		// bounding box collision detection
-		if (cube_cube_intersection(a, b))
-		{
-			if (other->owner)
-			{
-				// touch/callback 1 for floor collision
-				if (strcmp(other->owner->name, "floor1") == 0)
-					if (strcmp(body->owner->name, "player") == 0)
-					{
-						body->done = 1;
-					}
-
-				// touch/callback 2 for #knife attack
-				if (strcmp(other->owner->name, "obstacle1") == 0)
-					if (strcmp(body->owner->name, "player") == 0)
-					{
-						if (body->owner->inventory[0].attack)
-							ent_free(other->owner);
-					}
-
-				// touch/callback 3 for firearm attack
-				if (strcmp(other->owner->name, "obstacle1") == 0)
-					if (strcmp(body->owner->name, "player") == 0)
-					{
-						if (body->owner->inventory[1].attack)
-							ent_free(other->owner);
-					}
-
-				// touch/callback 3 for throw attack
-				if (strcmp(other->owner->name, "obstacle1") == 0)
-					if (strcmp(body->owner->name, "player") == 0)
-					{
-						if (body->owner->inventory[2].attack)
-							other->owner->think = thnk_push;
-					}
-			}
-		}
-
-	}
-}
-*/
 
 static void physics_gravity(Body *body)
 {
@@ -261,7 +206,7 @@ static void physics_update(Physics *space)
 		// applies specified physics time rate to all bodies
 		vec3d_scale(space->stepVector,body->velocity,space->stepFactor);
 
-				//vec3d_mult(space->stepVector, space->stepVector, 0.9);
+		//vec3d_mult(space->stepVector, space->stepVector, 5);
 
 		vec3d_add(body->position,body->position,space->stepVector);
 
@@ -278,12 +223,12 @@ void physics_do_step(Physics *space)
 	if (space->stepsTaken == space->steps)
     {
         space->stepsTaken = 0;
-        
+		/*
 		for (it = space->bodyList;it != NULL;it = g_list_next(it))
         {
             if (!it->data)continue;
             body_reset((Body *)it->data);
-        }
+        }*/
     }
     
 	physics_update(space);

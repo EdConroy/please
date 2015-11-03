@@ -231,7 +231,7 @@ Entity *ent_floor(Vec3D position, const char *name)
 	ent->model = obj_load("resources/floortwo.obj");
 	ent->texture = sprite_load("resources/seamless_tile_floor_1_by_ttrlabs-d4ojzlu.png",1024,1024);
     vec3d_cpy(ent->body.position,position);
-    cube_set(ent->body.bounds,0,0,0,8,8,0.2);
+    cube_set(ent->body.bounds,-8,-8,-8,16,16,8);
     sprintf(ent->name,"%s",name);
 	ent->movetype = MTYPE_NONE;
 	ent->canCollide = true;
@@ -250,7 +250,7 @@ Entity *ent_player(Vec3D position, const char *name)
         return NULL;
     }
 
-	//ent->model = obj_load("resources/cube.obj");
+	ent->model = obj_load("resources/cube.obj");
     vec3d_cpy(ent->body.position, position);
     cube_set(ent->body.bounds,-1,-1,-1,2,2,2);
     sprintf(ent->name,"%s",name);
