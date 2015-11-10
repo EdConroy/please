@@ -5,14 +5,6 @@
 #include "vector.h"
 #include "collisions.h"
 
-typedef enum
-{
-	MTYPE_NONE,	// movetype for teh floor
-	MTYPE_PLAYER,
-	MTYPE_ENT,	// movetype for all living entities, use gravity when jumped and/or in air
-	MTYPE_PROJ
-
-} movetype;
 /*
 
 new physics structure
@@ -25,6 +17,16 @@ new physics structure
 6. if collision bool is set, collide
 
 */
+
+typedef enum
+{
+	MTYPE_NONE,	// movetype for teh floor
+	MTYPE_PLAYER,
+	MTYPE_ENT,	// movetype for all living entities, use gravity when jumped and/or in air
+	MTYPE_PROJ
+
+} movetype;
+
 // physical space, private structure
 typedef struct Physics_S Physics;
 typedef struct Cube_S
@@ -68,6 +70,8 @@ void body_process(Body *body);
 
 void physics_add_body(Physics *space, Body* body);
 void physics_remove_body(Physics *space, Body* body);
+
+// remember to remove body from memory
 
 /* physical bounding shape
 typedef struct Cube_S

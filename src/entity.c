@@ -67,10 +67,10 @@ void ent_thnk_all()
 			__entity_list[i].think(&__entity_list[i]);
 		}
 
-		if(__entity_list[i].inuse && __entity_list[i].movetype == MTYPE_PROJ)
+		/*if(__entity_list[i].inuse && __entity_list[i].movetype == MTYPE_PROJ)
 		{
 			ent_add_gravity(&__entity_list[i].body);
-		}
+		}*/
 	}
 }
 
@@ -170,32 +170,11 @@ void ent_free(Entity* ent)
 		return;
 	}
 
+	physics_remove_body(game.physics, &ent->body);
 	ent->inuse = 0;
 	obj_free(ent->model);
 	sprite_free(ent->texture);
-}
-
-/*	will be put in physics update function
-	gives entity ability to move in world */
-void ent_add_gravity(Body* body)
-{
-	//body->velocity.x = body->owner->accel.x * 0.002;
-	//body->velocity.y = body->owner->accel.y * 0.002;
-	
-	//if (body->done == 0) 
-	//{
-		//body->velocity.z -= body->owner->gravity * 0.0000002;
-	//}
-
-	//if (body->done == 1)
-		//body->velocity.z = 0;
-
-	// bullet time
-	//if (!strcmp(body->owner->name, "player") == 0)
-		//vec3d_mult(body->velocity, body->velocity, game_TimeRate);
-	
-	//vec3d_add(body->position, body->position, body->velocity);
-
+	ent = NULL;
 }
 
 /* THINK FUNCTIONS */
