@@ -15,6 +15,7 @@
     <ClCompile Include="src\entity.c" />
     <ClCompile Include="src\game.c" />
     <ClCompile Include="src\graphics.c" />
+    <ClCompile Include="src\graphics3.c" />
     <ClCompile Include="src\main.c" />
     <ClCompile Include="src\mgl_callback.c" />
     <ClCompile Include="src\object.c" />
@@ -32,6 +33,7 @@
     <ClInclude Include="include\entity.h" />
     <ClInclude Include="include\game.h" />
     <ClInclude Include="include\graphics.h" />
+    <ClInclude Include="include\graphics3.h" />
     <ClInclude Include="include\include.h" />
     <ClInclude Include="include\mgl_callback.h" />
     <ClInclude Include="include\object.h" />
@@ -73,8 +75,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)\</OutDir>
     <IntDir>$(ProjectDir)\</IntDir>
-    <IncludePath>C:\Libraries\SDL2-2.0.3\include;C:\Libraries\SDL2_image-2.0.0\include;C:\Libraries\glew-1.12.0\include;C:\Users\iwh-pc\Documents\College\fall2015\it485\please\please\include;C:\Libraries\glib-2.28\include\glib-2.0;C:\Libraries\glib-2.28\lib\glib-2.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Libraries\SDL2-2.0.3\lib\x86;C:\Libraries\SDL2_image-2.0.0\lib\x86;C:\Libraries\glew-1.12.0\lib\Release\Win32;C:\Libraries\glib-2.28\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Libraries\SDL2-2.0.3\include;C:\Libraries\SDL2_image-2.0.0\include;C:\Libraries\glew-1.12.0\include;C:\Users\iwh-pc\Documents\College\fall2015\it485\please\please\include;C:\Libraries\glib-2.28\include\glib-2.0;C:\Libraries\glib-2.28\lib\glib-2.0\include;C:\Libraries\glfw-3.1.2.bin.WIN32\glfw-3.1.2.bin.WIN32\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Libraries\SDL2-2.0.3\lib\x86;C:\Libraries\SDL2_image-2.0.0\lib\x86;C:\Libraries\glew-1.12.0\lib\Release\Win32;C:\Libraries\glib-2.28\lib;C:\Libraries\glfw-3.1.2.bin.WIN32\glfw-3.1.2.bin.WIN32\lib-vc2010;$(LibraryPath)</LibraryPath>
     <SourcePath>C:\Users\iwh-pc\Documents\College\fall2015\it485\please\please\src;$(SourcePath)</SourcePath>
     <ExecutablePath>C:\Users\iwh-pc\Documents\College\fall2015\it485\please\please;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
@@ -91,7 +93,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;opengl32.lib;glew32.lib;glu32.lib;glib-2.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;opengl32.lib;glew32.lib;glu32.lib;glib-2.0.lib;glfw3.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>

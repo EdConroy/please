@@ -66,6 +66,9 @@
     <ClInclude Include="include\phys.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\graphics3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\entity.c">
@@ -105,6 +108,9 @@
       <Filter>Main Files</Filter>
     </ClCompile>
     <ClCompile Include="src\collisions.c">
+      <Filter>Main Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics3.c">
       <Filter>Main Files</Filter>
     </ClCompile>
   </ItemGroup>
