@@ -6,6 +6,7 @@
 #include "game.h"
 #include "entity.h"
 
+/*
 GameData	game;
 SDL_Event	events;
 
@@ -375,3 +376,4 @@ void game_Exit()
 	// deInit everything here
 	game.Run = NULL;
 }
+*/

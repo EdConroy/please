@@ -14,6 +14,7 @@
     <ClCompile Include="src\collisions.c" />
     <ClCompile Include="src\entity.c" />
     <ClCompile Include="src\game.c" />
+    <ClCompile Include="src\game3.c" />
     <ClCompile Include="src\graphics.c" />
     <ClCompile Include="src\graphics3.c" />
     <ClCompile Include="src\main.c" />

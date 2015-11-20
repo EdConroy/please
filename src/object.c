@@ -421,6 +421,9 @@ Obj *obj_load(char *filename)
     
     fclose(file);
     
+	/*new stuff*/
+	//glBufferData(GL_ARRAY_BUFFER, 3 * objFile->num_tris * sizeof(GLfloat), objFile->triangle_array, GL_STATIC_DRAW);
+
     return objFile;
 }
 
