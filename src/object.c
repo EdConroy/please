@@ -533,7 +533,6 @@ for (i = 0; i < obj->num_tris; i++)
             obj->vertex_array[triangle->p[2].v * 3],
             obj->vertex_array[triangle->p[2].v * 3 + 1],
             obj->vertex_array[triangle->p[2].v * 3 + 2]);
-        
     }
 
     glEnd();

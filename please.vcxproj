@@ -15,6 +15,7 @@
     <ClCompile Include="src\entity.c" />
     <ClCompile Include="src\game.c" />
     <ClCompile Include="src\graphics.c" />
+    <ClCompile Include="src\level.c" />
     <ClCompile Include="src\main.c" />
     <ClCompile Include="src\mgl_callback.c" />
     <ClCompile Include="src\object.c" />
@@ -28,17 +29,20 @@
   <ItemGroup>
     <ClInclude Include="include\body.h" />
     <ClInclude Include="include\bool.h" />
+    <ClInclude Include="include\bsp.h" />
     <ClInclude Include="include\collisions.h" />
     <ClInclude Include="include\entity.h" />
     <ClInclude Include="include\game.h" />
     <ClInclude Include="include\graphics.h" />
     <ClInclude Include="include\include.h" />
+    <ClInclude Include="include\level.h" />
     <ClInclude Include="include\mgl_callback.h" />
     <ClInclude Include="include\object.h" />
     <ClInclude Include="include\phys.h" />
     <ClInclude Include="include\shader.h" />
     <ClInclude Include="include\simple_logger.h" />
     <ClInclude Include="include\space.h" />
+    <ClInclude Include="include\spawn.h" />
     <ClInclude Include="include\sprite.h" />
     <ClInclude Include="include\vector.h" />
     <ClInclude Include="src\body.c" />

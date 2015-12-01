@@ -418,11 +418,12 @@ void game_Update()
 
 void game_Draw()
 {
-	int i;
+	//nt i;
 	 
 	graphics_clear_frame(); // clear everything for the next draw
 	glPushMatrix(); // save all current matrices and continue
 	set_camera(player->body.position, player->rot); // gotta make a position offset
+	// this is around where we would do the binary search to see what exactly needs to be drawn from the #bsp tree
 	ent_draw_all(); // also draws weapons
 
 	//ent_weap_draw();
@@ -466,7 +467,7 @@ int game_Init()
 	player = ent_player(vec3d(0,0,10), "player");
 	player->rot = vec3d(80,0,0);
 
-	obstacle1 = ent_obstacle(vec3d(5, 0, 1.6), "obstacle1");
+	obstacle1 = ent_obstacle(vec3d(5, 0, 1.6f), "obstacle1");
 
 	slog("game initialization finished");
 	return 1;

@@ -148,7 +148,7 @@ void ent_draw(Entity *ent)
 					ent->inventory[i].model, 
 					offset,
 					vec3d(ent->rot.x, ent->rot.y, 0), 
-					vec3d(.09,.09,.09), 
+					vec3d(.09f,.09f,.09f), 
 					ent->color, 
 					ent->texture
 				);
@@ -190,14 +190,15 @@ void ent_free(Entity* ent)
 	ent->color = vec4d(0,0,0,0);
 	ent->speed = 0;
 	ent->gravity = 0;
-	ent->nextThink = NULL;
+	ent->nextThink = 0;
 	ent->think = NULL;
 	ent = NULL;
 }
 
-/*	this function is incorrectly named.
+/*	this function was incorrectly named.
 	it not only does acceleration, but does
 	gravity as well as check if powerups are on */
+
 void ent_add_physics(Body* body)
 {
 	body->velocity.x = body->owner->accel.x * 0.002;

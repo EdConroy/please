@@ -66,6 +66,15 @@
     <ClInclude Include="include\phys.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\level.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\bsp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spawn.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\entity.c">
@@ -105,6 +114,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\collisions.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\level.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

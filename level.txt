@@ -1,0 +1,42 @@
+// bsp
+as player manuevers through game, add player to corresponding part of tree
+check only those parts of the tree
+
+how are those parts made?????
+how would splitting the polygons or boxes look in code???
+
+
+//gl 4
+give game one single buffers
+generate buffers on init
+set projection on init
+find appropriate gl math lib for c, preferably one with matrix
+matrix for model at 1.0f
+create arrays for vertex, texel, bary, and uvs
+bind each array to a buffer
+don't forget to bind texture
+
+
+
+
+// map
+original controls for camera
+arrow keys for selecting item to place
+to place things under ceilings, don't draw ceilings (the sims) should be a toggle
+
+make new map instance
+create new file
+
+move around via camera, (not mouse dat shyt is jank af)
+place things with space button
+need to find some way to draw wireframe cube where objects will be placed, or just show obj
+will always place object at offset of camera, can be changed (the z axis, i think) with arrow keys up and down
+left right switches items
+
+when done placing things, press esc and level will save
+
+if level system is working good enough, play level will always play map made in map editor
+
+layout for map file
+
+name
