@@ -3,11 +3,9 @@
 #include "shader.h"
 #include "simple_logger.h"
 
-// WARNING IN CASE OF UNRESOLVED EXTERNAL SYMBOLS
-// IF YOUR .H OR .C FILE WAS ORIGINALLY OF ANOTHER FORMAT,
-// CREATE ENTIRE NEW FILE (IT MUST BE .H OR .C TO BEGIN WITH)
-// OR ELSE UNUSUAL ERRORS WILL APPEAR (EX. GLuint as <error-tyoe>
-// or unresolved external symbol error for defined functions)
+GLint	view[4];
+GLdouble model[16];
+GLdouble projection[16];
 
 // "Think of a context as an object that holds all of OpenGL; 
 // when a context is destroyed, OpenGL is destroyed."
@@ -21,8 +19,6 @@ static GLuint			__graphics_shader_program;
 
 // frame delay
 static Uint32			__graphics_frame_delay = 33;
-
-// temp
 
 // private function: close graphics system
 void graphics_end();
@@ -107,6 +103,11 @@ int graphics_init(int sw,int sh,int fullscreen,const char *project, Uint32 frame
 
 	graphics_setup_default_light();
 
+	// save mvp in variables
+	glGetIntegerv(GL_VIEWPORT, view);
+	glGetDoublev(GL_MODELVIEW_MATRIX, model);
+	glGetDoublev(GL_PROJECTION_MATRIX, projection);
+
 	atexit(graphics_end);
 	return 0;
 }
@@ -184,4 +185,17 @@ void graphics_setup_default_light()
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHT1);
     glEnable(GL_DEPTH_TEST);
+}
+
+void windowToGL(GLint x, GLint y, GLdouble z, const GLdouble * model, const GLdouble * proj, const GLint * view, GLdouble * glx, GLdouble * gly, GLdouble * glz)
+{
+	GLdouble srcx, srcy;
+	srcx = (GLdouble)x;
+
+	// windows coordinates start with 0,0 (top left), but OpenGL starts at the lower left
+	// which is why we subtract 
+	srcy = view[3] - (GLdouble)y;
+
+	// gimme the coordinates, store in glx, gly, glz
+	gluUnProject(srcx, srcy, z, model, proj, view, glx, gly, glz);
 }

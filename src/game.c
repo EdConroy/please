@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <math.h>
 #include <SDL.h>
 #include <glib.h>
 #include "graphics.h"
@@ -6,7 +7,9 @@
 #include "simple_logger.h"
 #include "shader.h"
 #include "game.h"
+#include "level.h"
 #include "entity.h"
+#include "text.h"
 
 GameData	game;
 SDL_Event	events;
@@ -14,6 +17,7 @@ SDL_Event	events;
 Entity*	floor1;
 Entity*	floor2, *floor3, *obstacle1;
 Entity*	player;
+Entity* editor;
 
 GList	*it;
 
@@ -217,12 +221,90 @@ void game_Poll()
 	curMouseX = 0;
 	curMouseY = 0;
 
+	//game.gamestate = EDIT_GAME;
+
 	while (SDL_PollEvent (&events))
 	{	
 		if (events.type == SDL_QUIT)
 			game_running = false;
 
-		if (events.type == SDL_KEYDOWN)
+		if(game.gamestate == EDIT_GAME) // if im in level edit
+		{
+			if (events.type == SDL_KEYDOWN)
+			{
+				switch (events.key.keysym.sym)
+				{
+					case SDLK_w:
+					{
+						vec3d_add(
+							editor->body.position,
+							editor->body.position,
+							vec3d(
+							-sin(editor->rot.z * DEGTORAD),
+								cos(editor->rot.z * DEGTORAD),
+								0
+							)); break;
+					}
+					case SDLK_s:
+					{
+						vec3d_add(
+							editor->body.position,
+							editor->body.position,
+							vec3d(
+							sin(editor->rot.z * DEGTORAD),
+								-cos(editor->rot.z * DEGTORAD),
+								0
+							)); break;
+					}
+					case SDLK_d:
+					{
+						vec3d_add(
+							editor->body.position,
+							editor->body.position,
+							vec3d(
+								cos(editor->rot.z * DEGTORAD),
+								sin(editor->rot.z * DEGTORAD),
+								0
+							)); break;
+					}
+					case SDLK_a:
+					{
+						vec3d_add(
+							editor->body.position,
+							editor->body.position,
+							vec3d(
+								-cos(editor->rot.z * DEGTORAD),
+								-sin(editor->rot.z * DEGTORAD),
+								0
+							)); break;
+					}
+
+					case SDLK_2:
+					{
+						editor->body.position.z++;
+						break;
+					}
+
+					case SDLK_x:
+					{
+						editor->body.position.z--;
+						break;
+					}
+
+					case SDLK_INSERT:
+					{
+						game.gamestate = PLAY_GAME;
+						game_Init();
+						slog("boop");
+						return;
+					}
+				}
+			}
+		}
+
+		if(game.gamestate == PLAY_GAME)
+		{
+			if (events.type == SDL_KEYDOWN)
 			{
 				switch(events.key.keysym.sym)
 				{
@@ -272,10 +354,17 @@ void game_Poll()
 						game_SetBulletTime();
 						break;
 					}
+				case SDLK_INSERT:
+					{
+						game.gamestate = EDIT_GAME;
+						mapEditorSetup();
+						slog("boop");
+						return;
+					}
 				}
 			}
 
-		if (events.type == SDL_KEYUP)
+			if (events.type == SDL_KEYUP)
 			{
 				switch(events.key.keysym.sym)
 				{
@@ -302,129 +391,148 @@ void game_Poll()
 				}
 			}
 
-		if (events.type == SDL_MOUSEMOTION)
-		{
-			//mouseOnCamera();
-
-			SDL_GetMouseState(&mouseX, &mouseY);
-
-			// get new positions
-			// highly inaccurate
-			horiz = ((((curMouseX - mouseX)) + (1024/2)));
-			verti = ((curMouseY - mouseY) - (768/2)) * .8;
-
-			// set new positions
-			player->rot.z = horiz;
-			player->rot.x = verti;
-
-			// clamping
-			if (player->rot.x <= -650)
-				player->rot.x = -650;
-			if (player->rot.x >= -610)
-				player->rot.x = -610;
-
-			//if (player->rot.z >= -300)
-				//player->rot.z = -300;
-			//if (player->rot.z <= -400)
-				//player->rot.z = -400;
-
-			// save old positions
-			curMouseX = mouseX;
-			curMouseY = mouseY;
-		}
-
-		if (events.type == SDL_MOUSEBUTTONDOWN)
-		{
-			if (player->inventory)
+			if (events.type == SDL_MOUSEMOTION)
 			{
-				for (i = 0; i < 3; i++)
+				//mouseOnCamera();
+
+				SDL_GetMouseState(&mouseX, &mouseY);
+
+				// get new positions
+				// highly inaccurate
+				horiz = ((((curMouseX - mouseX)) + (1024/2)));
+				verti = ((curMouseY - mouseY) - (768/2)) * .8;
+
+				// set new positions
+				player->rot.z = horiz;
+				player->rot.x = verti;
+
+				// clamping
+				if (player->rot.x <= -650)
+					player->rot.x = -650;
+				if (player->rot.x >= -610)
+					player->rot.x = -610;
+
+				//if (player->rot.z >= -300)
+					//player->rot.z = -300;
+				//if (player->rot.z <= -400)
+					//player->rot.z = -400;
+
+				// save old positions
+				curMouseX = mouseX;
+				curMouseY = mouseY;
+			}
+
+			if (events.type == SDL_MOUSEBUTTONDOWN)
+			{
+				if (player->inventory)
 				{
-					// checking the weapon i am currently using with the active boolean (pbool)
-					if (player->inventory[i].active)
+					for (i = 0; i < 3; i++)
 					{
-						// ActivateKnife(); to be put in player files or weapon files
-						if (player->inventory[i].weaponType == WEAP_MELEE)
+						// checking the weapon i am currently using with the active boolean (pbool)
+						if (player->inventory[i].active)
 						{
-							// i can attack with the knife 
-							// moving the knife happens in ent_draw for now
-							// the attack is checked in physics
+							// ActivateKnife(); to be put in player files or weapon files
+							if (player->inventory[i].weaponType == WEAP_MELEE)
+							{
+								// i can attack with the knife 
+								// moving the knife happens in ent_draw for now
+								// the attack is checked in physics
 
-							player->inventory[i].attack = true;
-							//#knife
-						}
+								player->inventory[i].attack = true;
+								//#knife
+							}
 
-						//ActivateGun(); 
-						if( player->inventory[i].weaponType == WEAP_FIREARM)
-						{
-							// i can attack with this weapon 
-							// the attack is checked in physics
+							//ActivateGun(); 
+							if( player->inventory[i].weaponType == WEAP_FIREARM)
+							{
+								// i can attack with this weapon 
+								// the attack is checked in physics
 
-							player->inventory[i].attack = true;
-							ShootProjectile(player);
-							// #gun #firearm
-						}
+								player->inventory[i].attack = true;
+								ShootProjectile(player);
+								// #gun #firearm
+							}
 
-						// ActivateShield() #shield #rekt
-						if( player->inventory[i].weaponType == WEAP_SHEILD)
-						{
-							// i can attack with this weapon 
-							// the attack is checked in physics
+							// ActivateShield() #shield #rekt
+							if( player->inventory[i].weaponType == WEAP_SHEILD)
+							{
+								// i can attack with this weapon 
+								// the attack is checked in physics
 
-							player->inventory[i].attack = true;
+								player->inventory[i].attack = true;
+							}
 						}
 					}
 				}
 			}
-		}
 
-		if (events.type == SDL_MOUSEBUTTONUP)
-		{
-			// SetOriginalPosition(); - set back to non-attack position
-			player->inventory[0].attack = false;
-			player->inventory[1].attack = false;
-			player->inventory[2].attack = false;
+			if (events.type == SDL_MOUSEBUTTONUP)
+			{
+				// SetOriginalPosition(); - set back to non-attack position
+				player->inventory[0].attack = false;
+				player->inventory[1].attack = false;
+				player->inventory[2].attack = false;
+			}
 		}
 	}
 }
 
 void game_Update()
 {
-	// give entity physics ability, to be renamed body_add_physics()
-	ent_add_physics(&player->body);
+	Vec3D rotation;
 
-	// froze time
-	if (!game_IfPausedTime())
+	if (game.gamestate == PLAY_GAME)
 	{
-		ent_thnk_all(); // all the functions can think
-		ent_add_physics(&obstacle1->body); // give obstacle the ability to move
-	}
-	
-	// bullet time
-	if (game_IfBulletTime())
-		game_TimeRate = .4;
-	else
-		game_TimeRate = 1;
+		// give entity physics ability, to be renamed body_add_physics()
+		ent_add_physics(&player->body);
 
-	// check collisions
+		// froze time
+		if (!game_IfPausedTime())
+		{
+			ent_thnk_all(); // all the functions can think
+			ent_add_physics(&obstacle1->body); // give obstacle the ability to move
+		}
+	
+		// bullet time
+		if (game_IfBulletTime())
+			game_TimeRate = .4;
+		else
+			game_TimeRate = 1;
+	}
+
+	// check collisions, don't want things overlapping each other in edit mode
 	for (it = __bodyList; it != NULL; it = g_list_next(it))
 		physics_collision((Body*) it->data);
 
-	if (player->health <= 0)
+	if (game.gamestate == PLAY_GAME)
 	{
-		player->health = 2000;
-		game_LoadState();
+		if (player->health <= 0)
+		{
+			player->health = 2000;
+			game_LoadState();
+		}
+	}
+	
+	// mapEditorUpdate()
+	if (game.gamestate == EDIT_GAME)
+	{
+		camera_position = editor->body.position;
+		rotation = vec_scale(vec3d(sin(camera_rotation.z * DEGTORAD),-cos(camera_rotation.z * DEGTORAD),0), 10);
+		rotation.z = 5;
+		// do the scale * 10 thing i did before, gives the camera an offset for the lvledit ent
+		vec3d_add(camera_position, camera_position, rotation);
 	}
 }
 
 void game_Draw()
 {
-	//nt i;
-	 
 	graphics_clear_frame(); // clear everything for the next draw
 	glPushMatrix(); // save all current matrices and continue
-	set_camera(player->body.position, player->rot); // gotta make a position offset
+	if (game.gamestate == PLAY_GAME) set_camera(player->body.position, player->rot); // gotta make a position offset
+	if (game.gamestate == EDIT_GAME) set_camera(camera_position, camera_rotation);
 	// this is around where we would do the binary search to see what exactly needs to be drawn from the #bsp tree
 	ent_draw_all(); // also draws weapons
+	OMGAboutToDrawThisShytLIVE("a",1, 32, 32);
 
 	//ent_weap_draw();
 	glPopMatrix();// reload previous matrices
@@ -443,31 +551,42 @@ int Run()
 
 int game_Init()
 {
-	// init everything here, tells game struct what function to use for running
-	game.Run = Run;
-
-	init_logger("please_log.log");	// log for errors and such
-	if (graphics_init(640,480,1,"please", 33) != 0)
+	if (!game.hasLoaded)
 	{
-		slog("graphics didn't load up very well");
-		return -1;
-	}
+		// if game is already on, skip these steps
+		game.Run = Run;
 
+		init_logger("please_log.log");
+		if (graphics_init(640,480,1,"please", 33) != 0)
+		{
+			slog("graphics didn't load up very well");
+			return -1;
+		}
+
+		game_TimeRate = 1; // initial time rate
+	}	
+
+	entity_deInit();
 	ent_init_all(255);
-
-	game_TimeRate = 1; // initial time rate
+	obj_init_all();
+	sprite_init_all();
 
 	// level layout "loadTestLevel();"
-	floor1 = ent_floor(vec3d(0,0,0), "floor1");
+	floor1 = ent_floor(vec3d(0,0,0), "floor1", PLAY_GAME);
 	floor1->rot = vec3d(90,0,0);
 
-	floor2 = ent_floor(vec3d(15.5, 0, 0), "floor2");
+	floor2 = ent_floor(vec3d(15.5, 0, 0), "floor2", PLAY_GAME);
 	floor2->rot = vec3d(90, 0, 0);
 	
-	player = ent_player(vec3d(0,0,10), "player");
+	player = ent_player(vec3d(0,0,10), "player", PLAY_GAME);
 	player->rot = vec3d(80,0,0);
 
-	obstacle1 = ent_obstacle(vec3d(5, 0, 1.6f), "obstacle1");
+	obstacle1 = ent_obstacle(vec3d(5, 0, 1.6f), "obstacle1", PLAY_GAME);
+	
+	// ents are given different types depending on what mode their in
+	// so copies aren't added to the map file
+
+	load_ascii();
 
 	slog("game initialization finished");
 	return 1;

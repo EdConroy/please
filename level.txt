@@ -1,4 +1,4 @@
-// bsp
+// bsp -  don't understand
 as player manuevers through game, add player to corresponding part of tree
 check only those parts of the tree
 
@@ -6,37 +6,53 @@ how are those parts made?????
 how would splitting the polygons or boxes look in code???
 
 
-//gl 4
+//gl 4 - didn't work
 give game one single buffers
 generate buffers on init
 set projection on init
-find appropriate gl math lib for c, preferably one with matrix
+find appropriate gl math lib for c, preferably one with matrix (attempted with linear.h"
 matrix for model at 1.0f
-create arrays for vertex, texel, bary, and uvs
+create arrays for vertex, texel, barycenter, and uvs
 bind each array to a buffer
 don't forget to bind texture
-
-
 
 
 // map
 original controls for camera
 arrow keys for selecting item to place
+
 to place things under ceilings, don't draw ceilings (the sims) should be a toggle
 
-make new map instance
-create new file
-
-move around via camera, (not mouse dat shyt is jank af)
 place things with space button
 need to find some way to draw wireframe cube where objects will be placed, or just show obj
-will always place object at offset of camera, can be changed (the z axis, i think) with arrow keys up and down
-left right switches items
+will always place object at offset of camera, can be changed (the z axis, I think) with arrow keys up and down
+left, right switches items
 
-when done placing things, press esc and level will save
-
-if level system is working good enough, play level will always play map made in map editor
+/////////////////////////////////////////////////////////////////////////////////
+it is become evident that loading the same level for editng and playing will be less time-consuming
 
 layout for map file
+<name of map>
+{
+	spawn <classname>
+	Vec3D <position>
+	Vec3D <rotation>
+	char <state>
+}
+<end message>
 
-name
+how it works
+player starts in play mode [PLAY_GAME]
+game loads map file with spawn stuff into game
+player plays game
+player presses insert button to go into map editor
+everything is unloaded and reset
+player is now in edit mode [EDIT_GAME]
+game loads same map file with spawn stuff
+since in edit mode, do not attach think functions
+the only thing that will happen in game_update is collision checking
+player edits map
+player presses insert again to go back
+unloaded and reset
+game loads map file with spawn stuff into game
+we are now back into play mode

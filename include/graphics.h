@@ -59,4 +59,7 @@ void graphics_clear_frame();
  */
 void graphics_next_frame();
 
+// can get stuff like pos. of mouse on an opengl window to find out where i clicked in 3d space
+void windowToGL(GLint x, GLint y, GLdouble z, const GLdouble * model, const GLdouble * proj, const GLint * view, GLdouble * glx, GLdouble * gly, GLdouble * glz);
+
 #endif

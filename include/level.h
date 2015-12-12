@@ -16,7 +16,9 @@ typedef struct Map_S
 	Spawn *spawnList; // array of objects spawned
 }Map;
 
-void mapEditorSetup();
+int mapEditorSetup();
+int loadLevel(char* filename, char* openType);
+void editor_inv_setup();
 
 
 #endif

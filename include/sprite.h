@@ -14,6 +14,7 @@ typedef struct Sprite_S
     int   w, h;                         /**<the width and height of the frames of the sprites, not the file itself*/
     int   color1,color2,color3;         /**<if the file was palette swapped these are the colors that were changed*/
     Uint8 used;                         /**<used by the maintanenc functions to keep track of how many times a single sprite is being used*/
+	double x3D, y3D, z3D;				// wdth, height and depth
 }Sprite;
 
 void sprite_init_all();

@@ -43,6 +43,7 @@ typedef struct Entity_S
 	char	name[128];
 
 	int		movetype;	// how i should move
+	int		ent_type;
 
 	int		health;
 	
@@ -71,12 +72,13 @@ typedef struct Entity_S
 	
 }Entity;
 
-
 /**
  * @brief initialize the entity sub system
  * @param max the maximum number of simultaneously supported entities.
  */
 void ent_init_all(int max);
+
+void entity_deInit();
 
 /**
  * @brief draws all active entities
@@ -110,21 +112,28 @@ int ent_is_real(void* data);
  * @param position for floor
  * @param name for floor
  */
-Entity *ent_floor(Vec3D position, const char *name);
+Entity *ent_floor(Vec3D position, const char *name, int gametype);
 
 /**
  * @brief create teh player
  * @param initial position
  * @param name
  */
-Entity *ent_player(Vec3D position, const char *name);
+Entity *ent_player(Vec3D position, const char *name, int gametype);
+
+/**
+ * @brief creates level editor placer that can place stuff in level
+ * @param initial position
+ * @param name
+ */
+Entity *ent_editor(Vec3D position, const char *name, int gametype);
 
 /**
  * @brief creates an obstacle
  * @param initial position
  * @param name
  */
-Entity *ent_obstacle(Vec3D position, const char *name);
+Entity *ent_obstacle(Vec3D position, const char *name, int gametype);
 
 /**
  * @brief draws an entity

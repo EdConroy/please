@@ -1,0 +1,30 @@
+name test_map
+{
+	floor
+	pos 0,0,0
+	rot 90,0,0
+	NULL
+}
+
+{
+	floor
+	pos 15.5,0,0
+	rot 90,0,0
+	NULL
+}
+
+{
+	player
+	pos 0,0,10
+	rot 80,0,0
+	NULL
+}
+
+{
+	obstacle
+	pos 5,0,1.6
+	rot 0,0,0
+	backforth
+}
+
+end

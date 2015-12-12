@@ -2,6 +2,7 @@
 #include "entity.h"
 #include "phys.h"
 #include "simple_logger.h"
+#include "level.h"
 
 // LIST OF ENTITIES
 Entity* __entity_list = NULL;
@@ -11,9 +12,6 @@ static int __entity_max = 0;
 
 // AMT OF ENTITIES INIT'D
 static int __entity_initialized = 0;
-
-// private function: entity - shuts down list of entities
-static void entity_deInit();
 
 // private declaration: weapon
 Vec3D weap_offset; // for the camera
@@ -41,7 +39,7 @@ void ent_init_all(int max)
 }
 
 // pull a micheal bay on all the ents
-static void entity_deInit()
+void entity_deInit()
 {
 	int i;
 	for (i = 0; i < __entity_max; i++)
@@ -290,6 +288,26 @@ Entity *ent_player(Vec3D position, const char *name)
 	return ent;
 }
 
+Entity *ent_editor(Vec3D position, const char *name)
+{
+	Entity * ent;
+	int i;
+	ent = ent_init();
+    if (!ent)
+    {
+        return NULL;
+    }
+
+	ent->model = obj_load("resources/cube.obj");
+    vec3d_cpy(ent->body.position, position);
+    cube_set(ent->body.bounds,-1,-1,-1,2,2,2);
+    sprintf(ent->name,"%s",name);
+
+	//editor_inv_setup(ent); // level.h
+
+	return ent;
+}
+
 Entity *ent_obstacle(Vec3D position, const char *name)
 {
 	Entity * ent;
@@ -330,8 +348,8 @@ Entity *ent_projectile(Vec3D position, const char *name)
     sprintf(ent->name,"%s",name);
 	ent->movetype = MTYPE_PROJ;
 	ent->gravity = 0;
-	ent->accel.y = 1; // i accelerate constantly, because I am a projectile. that's just what i do. don't question me
-	ent->scale = vec3d(.1,.1,.1); // TOO FRICKIN BIG
+	ent->accel.y = 1; // i accelerate constantly, because I am a projectile. this i do.
+	ent->scale = vec3d(.1,.1,.1); // oh oh oh TOO BIG oh
 	ent->origin = position;
 	physics_add_body(&ent->body);
 	ent->body.owner = ent;
@@ -345,14 +363,13 @@ void ShootProjectile(Entity* ent)
 	Entity* proj = ent_projectile(ent->body.position, "projectile");
 }
 
-/* flesh out this function later */
+/* flesh out this function later for level design, may transfer to level.h */
 void CreateEntity(Vec3D position, const char *name)
 {
 	Entity* ent = ent_obstacle(position, name);
 }
 
-/** weapon **/
-
+/** weapon **/ // weapon.h???
 // called in ent_player which is called in game_Init()
 void weapon_setup(Entity* ent)
 {

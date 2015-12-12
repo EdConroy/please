@@ -24,6 +24,8 @@
     <ClCompile Include="src\simple_logger.c" />
     <ClCompile Include="src\space.c" />
     <ClCompile Include="src\sprite.c" />
+    <ClCompile Include="src\text.c" />
+    <ClCompile Include="src\types.c" />
     <ClCompile Include="src\vector.c" />
   </ItemGroup>
   <ItemGroup>
@@ -44,6 +46,8 @@
     <ClInclude Include="include\space.h" />
     <ClInclude Include="include\spawn.h" />
     <ClInclude Include="include\sprite.h" />
+    <ClInclude Include="include\text.h" />
+    <ClInclude Include="include\types.h" />
     <ClInclude Include="include\vector.h" />
     <ClInclude Include="src\body.c" />
   </ItemGroup>
@@ -81,9 +85,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)\</OutDir>
     <IntDir>$(ProjectDir)\</IntDir>
-    <IncludePath>C:\Libraries\SDL2-2.0.3\include;C:\Libraries\SDL2_image-2.0.0\include;C:\Libraries\glew-1.12.0\include;C:\Users\iwh-pc\Documents\College\fall2015\it485\please\please\include;C:\Libraries\glib-2.28\include\glib-2.0;C:\Libraries\glib-2.28\lib\glib-2.0\include;C:\Libraries\glm-0.9.7.1\glm;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Libraries\gsl-1.8-src\src;C:\Libraries\SDL2-2.0.3\include;C:\Libraries\SDL2_image-2.0.0\include;C:\Libraries\glew-1.12.0\include;C:\Users\iwh-pc\Documents\College\fall2015\it485\please\please\include;C:\Libraries\glib-2.28\include\glib-2.0;C:\Libraries\glib-2.28\lib\glib-2.0\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Libraries\SDL2-2.0.3\lib\x86;C:\Libraries\SDL2_image-2.0.0\lib\x86;C:\Libraries\glew-1.12.0\lib\Release\Win32;C:\Libraries\glib-2.28\lib;$(LibraryPath)</LibraryPath>
-    <SourcePath>C:\Users\iwh-pc\Documents\College\fall2015\it485\please\please\src;$(SourcePath)</SourcePath>
+    <SourcePath>C:\Libraries\gsl-1.8-src\src\gsl\1.8\gsl-1.8;C:\Users\iwh-pc\Documents\College\fall2015\it485\please\please\src;$(SourcePath)</SourcePath>
     <ExecutablePath>C:\Users\iwh-pc\Documents\College\fall2015\it485\please\please;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

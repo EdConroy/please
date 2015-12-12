@@ -13,6 +13,15 @@ Vec3D vec3d(float x,float y, float z)
     return v;
 }
 
+Vec3D vec_scale(Vec3D vec, float num)
+{
+	vec.x *= num;
+	vec.y *= num;
+	vec.z *= num;
+
+	return vec;
+}
+
 Vec4D vec4d(float x,float y, float z, float w)
 {
     Vec4D v = {x,y,z,w};

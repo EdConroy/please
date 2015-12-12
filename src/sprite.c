@@ -1,11 +1,17 @@
 #include <SDL_image.h>
 #include "simple_logger.h"
 #include <stdlib.h>
+#include "graphics.h"
 #include "sprite.h"
 
 #define MAXSPRITES	1024
 
 static Sprite SpriteList[MAXSPRITES];
+
+extern GLint	view[4];
+extern GLdouble model[16];
+extern GLdouble projection[16];
+
 
 void sprite_init_all()
 {
@@ -73,12 +79,19 @@ Sprite *sprite_load(char *filename,int fw, int fh)
     }
     /*set the rest of the data*/
     
+	// i don't know why I need to do this
+    windowToGL(
+		((640 >> 1) + 64),
+		((480 >> 1) + 32),
+		0.99, model, projection, view,
+		&sprite->x3D, &sprite->y3D, &sprite->z3D);
+
     // You should probably use CSurface::OnLoad ... ;)
     //-- and make sure the Surface pointer is good!
     glGenTextures(1, &sprite->texture);
     glBindTexture(GL_TEXTURE_2D, sprite->texture);
-    
-    
+
+
     if(sprite->image->format->BytesPerPixel == 4) {
         Mode = GL_RGBA;
     }
