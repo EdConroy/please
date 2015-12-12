@@ -104,7 +104,103 @@ void OMGAboutToDrawThisShytLIVE(char* ch, int length, int x, int y)
 	glEnable(GL_DEPTH_TEST);
 }
 
+void drawToTheFrigginScreen(Vec2D size, Vec2D pos, GLuint tex_id)
+{
+	Vec2D verts[4]; // points on the screen
+	Vec2D UVs[4];	// coordinates on the texture to draw
 
+	// upper right
+	verts[0].x = size.x/2;
+	verts[0].y = size.y/2;
+
+	// will attempt to change texture coordinates later
+	UVs[0].x = 1;
+	UVs[0].y = 0;
+
+	// upper left
+	verts[1].x = -size.x/2;
+	verts[1].y = size.y/2;
+
+	UVs[1].x = 0;
+	UVs[1].y = 1;
+
+	// bottom left
+	verts[2].x = -size.x/2;
+	verts[2].y = -size.y/2;
+
+	UVs[2].x = 0;
+	UVs[2].y = 0;
+
+	// bottom right
+	verts[3].x = size.x/2;
+	verts[3].y = -size.y/2;
+
+	UVs[3].x = 1;
+	UVs[3].y = 1;
+
+	// 2D
+	glMatrixMode(GL_PROJECTION);
+
+	glPushMatrix();
+
+	glLoadIdentity();
+
+	// maybe orig. method didn't work
+	// because I didn't make a new ortho camera
+	gluOrtho2D(-1, 1, -1, 1);
+
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+
+	glTranslatef(pos.x, pos.y, 0);
+	glRotatef(0, 0, 0, 1);
+
+	glDisable(GL_DEPTH_TEST);
+
+	glEnable(GL_TEXTURE_2D);
+	// or mayb the tex id was wrong
+	glBindTexture(GL_TEXTURE_2D, tex_id);
+
+	// transparecny
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	// Four Points, 2 Triangles
+	// Some points will be drawn twice
+	glBegin(GL_TRIANGLES);
+
+	glTexCoord2f(UVs[0].x,UVs[0].y);
+    glVertex2f(verts[0].x,verts[0].y);
+
+	glTexCoord2f(UVs[1].x,UVs[1].y);
+    glVertex2f(verts[1].x,verts[1].y);
+
+	glTexCoord2f(UVs[2].x,UVs[2].y);
+    glVertex2f(verts[2].x,verts[2].y);
+
+	glTexCoord2f(UVs[0].x,UVs[0].y);
+    glVertex2f(verts[0].x,verts[0].y);
+
+	glTexCoord2f(UVs[2].x,UVs[2].y);
+    glVertex2f(verts[2].x,verts[2].y);
+
+	glTexCoord2f(UVs[3].x,UVs[3].y);
+    glVertex2f(verts[3].x,verts[3].y);
+        
+    glEnd();
+
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_BLEND);
+
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+
+	glPopMatrix();
+
+	glEnable(GL_DEPTH_TEST);
+
+	glMatrixMode(GL_MODELVIEW);
+}
 
 //#define MAX_LENGTH_OF_TEXT 256
 

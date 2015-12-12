@@ -40,6 +40,9 @@ Vec3D	camera_rotation;
 Vec3D	camera_offset = {0, -3, 2};
 Vec3D	next_camera_pos;
 
+// extern: text
+extern Sprite* ascii;
+
 // private declarations: game - time
 float		game_TimeRate;
 
@@ -532,7 +535,7 @@ void game_Draw()
 	if (game.gamestate == EDIT_GAME) set_camera(camera_position, camera_rotation);
 	// this is around where we would do the binary search to see what exactly needs to be drawn from the #bsp tree
 	ent_draw_all(); // also draws weapons
-	OMGAboutToDrawThisShytLIVE("a",1, 32, 32);
+	//OMGAboutToDrawThisShytLIVE("a",1, 32, 32);
 
 	//ent_weap_draw();
 	glPopMatrix();// reload previous matrices

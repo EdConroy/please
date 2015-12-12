@@ -2,10 +2,15 @@
 #include "graphics.h"
 #include "shader.h"
 #include "simple_logger.h"
+#include "text.h"
+
 
 GLint	view[4];
 GLdouble model[16];
 GLdouble projection[16];
+
+// extern: text
+extern Sprite *ascii;
 
 // "Think of a context as an object that holds all of OpenGL; 
 // when a context is destroyed, OpenGL is destroyed."
@@ -130,6 +135,8 @@ void graphics_next_frame()
 {
 	static Uint32 then = 0;
 	Uint32 now;
+
+	drawToTheFrigginScreen(vec2d(58, 14), vec2d(0.8f, -1.0f), ascii->texture);
 
 	glPopMatrix();
 
