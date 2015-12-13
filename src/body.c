@@ -17,3 +17,11 @@ void body_process(Body *body)
         vec3d_add(body->position,body->position,body->posFixVector);
     }
 }
+
+void body_free(Body* body)
+{
+	body->owner = NULL;
+	vec3d_set(body->velocity, 0,0,0);
+	vec3d_set(body->position, 0,0,0);
+	body = NULL;
+}

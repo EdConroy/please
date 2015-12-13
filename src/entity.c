@@ -112,10 +112,41 @@ Entity* ent_init()
 // draw a single entity
 void ent_draw(Entity *ent)
 {
-	int i;
+	int i,j;
+
+	float x, y, z, w, h, d;
 	//temp
 
+	int tris[36] = // i hsav no idab what this is
+					{1,0,2,
+					 2,3,1,
+					 5,4,0,
+					 0,1,5,
+					 5,1,3,
+					 3,7,5,
+					 6,7,2,
+					 7,3,2,
+					 0,4,2,
+					 4,6,2,
+					 4,5,6,
+					 5,7,6};
+
+	Vec3D verts[8];
+
 	if (!ent) return;
+	
+	if (strcmp(ent->name, "editor") == 0)
+	{
+		obj_draw
+		(
+		ent->model_array[ent->selected_model],
+		ent->body.position, 
+		ent->rot, 
+		ent->scale, 
+		ent->color, 
+		ent->texture_array[ent->selected_model]
+		);
+	}else
 	
 	obj_draw
 		(
@@ -127,6 +158,95 @@ void ent_draw(Entity *ent)
 		ent->texture
 		);
 
+	// draw bounding box
+	x = ent->body.bounds.x+ent->body.position.x;
+	y = ent->body.bounds.y+ent->body.position.y;
+	z = ent->body.bounds.z+ent->body.position.z;
+	w = ent->body.bounds.w;
+	h = ent->body.bounds.h;
+	d = ent->body.bounds.d;
+
+	verts[0] = vec3d(x, y+h, z);
+	verts[1] = vec3d(x+w, y+h, z);
+	verts[2] = vec3d(x, y, z);
+	verts[3] = vec3d(x+w, y, z);
+	verts[4] = vec3d(x, y+h, z+d);
+	verts[5] = vec3d(x+w, y+h, z+d);
+	verts[6] = vec3d(x, y, z+d);
+	verts[7] = vec3d(x+w, y, z+d);
+
+	glPushMatrix;
+
+	glEnable(GL_BLEND);
+    glColorMaterial(GL_FRONT,GL_DIFFUSE);
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	glPushMatrix();
+	glRotatef(ent->rot.x, 1.0f, 0.0f, 0.0f);
+    glRotatef(ent->rot.y, 0.0f, 1.0f, 0.0f);
+    glRotatef(ent->rot.z, 0.0f, 0.0f, 1.0f);
+	glBegin(GL_TRIANGLES);
+
+		for(i=0;i<12;i++)
+		{
+			glColor4f(1.0f,0.0f,0.0f,0.25f);
+			glVertex3f(verts[tris[3*i]].x,
+			verts[tris[3*i]].y,
+			verts[tris[3*i]].z);
+
+			glColor4f(1.0f,0.0f,0.0f,0.25f);
+			glVertex3f(verts[tris[3*i+1]].x,
+			verts[tris[3*i+1]].y,
+			verts[tris[3*i+1]].z);
+
+			glColor4f(1.0f,0.0f,0.0f,0.25f);
+			glVertex3f(verts[tris[3*i+2]].x,
+			verts[tris[3*i+2]].y,
+			verts[tris[3*i+2]].z);
+		}
+		glEnd();
+
+		glBegin(GL_LINES);
+
+		for(i=0;i<12;i++)
+		{
+			glColor4f(1.0f,1.0f,0.0f,1.0f);
+			glVertex3f(verts[tris[3*i]].x,
+			verts[tris[3*i]].y,
+			verts[tris[3*i]].z);
+
+			glColor4f(1.0f,1.0f,0.0f,1.0f);
+			glVertex3f(verts[tris[3*i+1]].x,
+			verts[tris[3*i+1]].y,
+			verts[tris[3*i+1]].z);
+
+			glColor4f(1.0f,1.0f,0.0f,1.0f);
+			glVertex3f(verts[tris[3*i+1]].x,
+			verts[tris[3*i+1]].y,
+			verts[tris[3*i+1]].z);
+
+			glColor4f(1.0f,1.0f,0.0f,1.0f);
+			glVertex3f(verts[tris[3*i+2]].x,
+			verts[tris[3*i+2]].y,
+			verts[tris[3*i+2]].z);
+
+			glColor4f(1.0f,1.0f,0.0f,1.0f);
+			glVertex3f(verts[tris[3*i+2]].x,
+			verts[tris[3*i+2]].y,
+			verts[tris[3*i+2]].z);
+
+			glColor4f(1.0f,1.0f,0.0f,1.0f);
+			glVertex3f(verts[tris[3*i]].x,
+			verts[tris[3*i]].y,
+			verts[tris[3*i]].z);
+
+		}
+		glEnd();
+
+	glDisable(GL_BLEND);
+    glDisable(GL_COLOR_MATERIAL);
+	//slog("%s bb (%f,%f,%f,%f,%f,%f)\n",ent->name,x,y,z,ent->body.bounds.w,ent->body.bounds.h,ent->body.bounds.d);
+	glPopMatrix();
+    
 	// draw weapons to the screen
 	for (i = 0; i < 3; i++)
 	{
@@ -250,10 +370,10 @@ Entity *ent_floor(Vec3D position, Vec3D rotation, const char *name, int gametype
         return NULL;
     }
 	
-	ent->model = obj_load("resources/floortwo.obj");
+	ent->model = obj_load("resources/floortfix.obj");
 	ent->texture = sprite_load("resources/seamless_tile_floor_1_by_ttrlabs-d4ojzlu.png",1024,1024);
     vec3d_cpy(ent->body.position,position);
-    cube_set(ent->body.bounds,0,0,0,8,8,0.2);
+    cube_set(ent->body.bounds,-8,-8,-8,16,16,8);
     sprintf(ent->name,"%s",name);
 	ent->movetype = MTYPE_NONE; // floors don't move silly...
 	ent->gravity = 0; // no gravity
@@ -293,19 +413,29 @@ Entity *ent_player(Vec3D position, Vec3D rotation, const char *name, int gametyp
 Entity *ent_editor(Vec3D position, const char *name)
 {
 	Entity * ent;
-	//int i;
 	ent = ent_init();
     if (!ent)
     {
         return NULL;
     }
 
-	ent->model = obj_load("resources/cube.obj");
+	//ent->model = obj_load("resources/cube.obj");
     vec3d_cpy(ent->body.position, position);
     cube_set(ent->body.bounds,-1,-1,-1,2,2,2);
     sprintf(ent->name,"%s",name);
+	ent->body.owner = ent;
 
-	//editor_inv_setup(ent); // level.h
+	//editor_inv_setup();
+	ent->model_array[0] = obj_load("resources/cube.obj");
+	ent->texture_array[0] = sprite_load("resources/cube_text.png",1024,1024);
+
+	ent->model_array[1] = obj_load("resources/floortfix.obj");
+	ent->texture_array[1] = sprite_load("resources/seamless_tile_floor_1_by_ttrlabs-d4ojzlu.png",1024,1024);
+
+	ent->model_array[2] = obj_load("resources/cube.obj");
+	ent->texture_array[2] = sprite_load("resources/metal_txt.png",1024,1024);
+
+	ent->selected_model = 0; // starting model shpould be enemy cube
 
 	return ent;
 }

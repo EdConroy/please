@@ -15,6 +15,7 @@ typedef enum
 void physics_add_body(Body* body);
 void physics_remove_body(Body* body);
 void physics_collision(Body* body);
+void physics_clear_bodies();
 
 /*
 

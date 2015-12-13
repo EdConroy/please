@@ -221,6 +221,9 @@ void game_Poll()
 	int mouseX, mouseY;
 	int horiz, verti;
 
+	Entity* ent;
+	Cube a,b;
+
 	int i;
 
 	i = 0;
@@ -297,15 +300,85 @@ void game_Poll()
 						break;
 					}
 
+					case SDLK_LEFT:
+					{
+						if(editor->selected_model > 0)
+							editor->selected_model--;
+						break;
+					}
+
+					case SDLK_RIGHT:
+					{
+						if(editor->selected_model < 3)
+							editor->selected_model++;
+						break;
+					}
+
 					case SDLK_SPACE:
 					{
-						
+						switch(editor->selected_model)
+						{
+							// placeObject();
+
+							case 0:
+							{
+								CreateEntity("obstacle", editor->body.position, editor->rot, game.gamestate);
+								break;
+							}
+
+							case 1:
+							{
+								CreateEntity("floor", editor->body.position, editor->rot, game.gamestate);
+								break;
+							}
+
+							case 2:
+							{
+								// move the player
+								Player()->body.position = editor->body.position;
+							}
+						}
+						break;
+					}
+
+					case SDLK_BACKSPACE:
+					{
+						// removePlacedObject();
+
+						for(i = 0; i < MAX_ENT; i++)
+						{
+							ent = &__entity_list[i];
+
+							if(ent != editor && ent->inuse)
+							{
+							a.x = editor->body.position.x + editor->body.bounds.x;
+							a.y = editor->body.position.y +	editor->body.bounds.y;
+							a.z = editor->body.position.z + editor->body.bounds.z;
+
+							a.w = editor->body.bounds.w;
+							a.h = editor->body.bounds.h;
+							a.d = editor->body.bounds.d;
+
+							vec3d_cpy(b, ent->body.position);
+
+							b.w = ent->body.bounds.w;
+							b.h = ent->body.bounds.h;
+							b.d = ent->body.bounds.d;
+
+							if (cube_cube_intersection(a, b))
+							{
+								slog("%s would totes be gettin removed", ent->name);
+								ent_free(ent);
+							}
+							}
+						}
 						break;
 					}
 
 					case SDLK_INSERT:
 					{
 						game.gamestate = PLAY_GAME;
+						//SaveLevel();
 						game_Init();
 						slog("boop");
 						return;
@@ -370,7 +443,7 @@ void game_Poll()
 					{
 						game.gamestate = EDIT_GAME;
 						mapEditorSetup();
-						slog("boop");
+						//slog("boop");
 						return;
 					}
 				}
@@ -592,6 +665,7 @@ int game_Init()
 	}	
 
 	entity_deInit();
+	physics_clear_bodies();
 	ent_init_all(255);
 	obj_init_all();
 	sprite_init_all();

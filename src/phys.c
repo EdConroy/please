@@ -1,5 +1,6 @@
 #include <glib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "phys.h"
 #include "collisions.h"
 #include "simple_logger.h"
@@ -22,6 +23,13 @@ void physics_remove_body(Body *body)
 	__bodyList = g_list_remove(__bodyList, body);
 }
 
+void physics_clear_bodies()
+{
+	// trying to make sure the bodies are completely cleard from memory
+	// was having issues with incomplete bodies colliding after mode changes
+	g_list_free(__bodyList);
+}
+
 // check all collisions, calls touch functions
 void physics_collision(Body *body)
 {
@@ -29,6 +37,9 @@ void physics_collision(Body *body)
 
 	Cube a,b; // 3d bounding boxes
 	Body *other;
+
+	if(!body)
+		return;
 
 	// vec3d_cpy(a, a, body->position.x + body->bounds)
 	a.x = body->position.x + body->bounds.x;

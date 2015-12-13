@@ -35,4 +35,10 @@ void body_reset(Body *body);
  */
 void body_process(Body *body);
 
+/**
+ * @brief free body from memory
+ * @param body the body to delete
+ */
+void body_free(Body* body);
+
 #endif

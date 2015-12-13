@@ -3,6 +3,7 @@
 #include "simple_logger.h"
 #include "level.h" //map.h
 #include "entity.h"
+#include "phys.h"
 #include "game.h"
 
 // private declaraton: map (was level)
@@ -31,6 +32,7 @@ int mapEditorSetup()
 	//map->spawnList = NULL;
 	//strcpy(map->mapname, "test_map");
 
+	physics_clear_bodies();
 	entity_deInit();
 	ent_init_all(255);
 	obj_init_all();
@@ -63,14 +65,6 @@ int mapEditorSetup()
 	*/
 
 	editor = ent_editor(vec3d(0,0,0), "editor");
-
-	/* open map file
-	file = fopen ("resources/map/test_map.map", "w");
-	if (file == NULL)
-	{
-		slog("wtf happened?");
-		return 0;
-	}*/
 
 	return 1;
 }

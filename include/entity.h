@@ -43,7 +43,7 @@ typedef struct Entity_S
 	char	name[128];
 
 	int		movetype;	// how i should move
-	int		ent_type;	// ???
+	int		selected_model; // for map editor
 
 	int		health;
 	
@@ -63,6 +63,9 @@ typedef struct Entity_S
 
 	Sprite* texture;	/**<object texture*/
 	Obj*	model;
+
+	Obj*	model_array[MAX_ENT]; // for map editor
+	Sprite* texture_array[MAX_ENT]; // also for map editor
 	
 	float	speed;		/**speed relative to time*/
 	float	gravity;

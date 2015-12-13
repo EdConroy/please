@@ -108,7 +108,7 @@ int graphics_init(int sw,int sh,int fullscreen,const char *project, Uint32 frame
 
 	graphics_setup_default_light();
 
-	// save mvp in variables
+	// save mvp in variables, useless for now
 	glGetIntegerv(GL_VIEWPORT, view);
 	glGetDoublev(GL_MODELVIEW_MATRIX, model);
 	glGetDoublev(GL_PROJECTION_MATRIX, projection);
