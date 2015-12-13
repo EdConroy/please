@@ -5,7 +5,7 @@
 #include "level.h"
 #include "game.h"
 
-// LIST OF ENTITIES
+// list of entities
 Entity* __entity_list = NULL;
 
 // MAXIMUM AMOUNT OF ENITIES, TO BE SET
@@ -23,6 +23,11 @@ void weapon_setup(Entity* ent); /**<sets up all the weapons in the inventory*/
 
 // extern: game
 extern float game_TimeRate; /**<how fast everything in the game runs*/
+
+void free_body(Body* body)
+{
+	body = NULL;
+}
 
 void ent_init_all(int max)
 {
@@ -49,6 +54,7 @@ void entity_deInit()
 		{
 			ent_free(&__entity_list[i]); // free memory where entity is in use
 			physics_remove_body(&__entity_list[i].body);
+			free_body(&__entity_list[i].body);
 		}
 		free(__entity_list); // free entire entity list from memory
 		__entity_max = 0;
@@ -244,7 +250,6 @@ void ent_draw(Entity *ent)
 
 	glDisable(GL_BLEND);
     glDisable(GL_COLOR_MATERIAL);
-	//slog("%s bb (%f,%f,%f,%f,%f,%f)\n",ent->name,x,y,z,ent->body.bounds.w,ent->body.bounds.h,ent->body.bounds.d);
 	glPopMatrix();
     
 	// draw weapons to the screen
@@ -300,6 +305,7 @@ void ent_free(Entity* ent)
 	sprite_free(ent->texture);
 	memset(ent->name, 0, sizeof(char)*128);
 	ent->movetype = 0;
+	physics_remove_body(&ent->inventory[0].body);
 	memset(ent->inventory, 0, sizeof(Weapon)*3);
 	physics_remove_body(&ent->body);
 	ent->origin = vec3d(0,0,0);
@@ -532,8 +538,8 @@ void weapon_setup(Entity* ent)
 	ent->inventory[0].maxAmmo = 10;
 	ent->inventory[0].ammo = ent->inventory[0].maxAmmo;
 	ent->inventory[0].cooldown = 100;
-	physics_add_body(&ent->inventory[0].body);
 	ent->inventory[0].body.owner = ent;
+	physics_add_body(&ent->inventory[0].body);
 	
 	// #gun
 	ent->inventory[1].model = obj_load("resources/Cube.obj");

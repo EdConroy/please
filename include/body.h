@@ -36,6 +36,11 @@ void body_reset(Body *body);
 void body_process(Body *body);
 
 /**
+ * @brief bodies keep causing a problem, will attempt to destroy them all here, must be called after clearing the glist
+ */
+//void body_super_clear();
+
+/**
  * @brief free body from memory
  * @param body the body to delete
  */

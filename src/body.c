@@ -1,6 +1,7 @@
 #include "body.h"	// vector.h is included in body.h
 
-// not being used
+// extern: Entity
+extern Entity* __entity_list;
 
 void body_reset(Body *body)
 {
@@ -17,6 +18,8 @@ void body_process(Body *body)
         vec3d_add(body->position,body->position,body->posFixVector);
     }
 }
+
+
 
 void body_free(Body* body)
 {

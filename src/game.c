@@ -15,8 +15,8 @@
 GameData	game;
 SDL_Event	events;
 
-Entity*	floor1;
-Entity*	floor2, *floor3, *obstacle1;
+//Entity*	floor1;
+//Entity*	floor2, *floor3, *obstacle1;
 Entity*	player;
 Entity* editor;
 
@@ -378,7 +378,7 @@ void game_Poll()
 					case SDLK_INSERT:
 					{
 						game.gamestate = PLAY_GAME;
-						//SaveLevel();
+						saveLevel("resources/map/level.def");
 						game_Init();
 						slog("boop");
 						return;
@@ -666,11 +666,12 @@ int game_Init()
 
 	entity_deInit();
 	physics_clear_bodies();
+	//body_super_clear();
 	ent_init_all(255);
 	obj_init_all();
 	sprite_init_all();
 
-	loadLevel("resources/map/test.def", "r");
+	loadLevel("resources/map/level.def", "r");
 
 	/*
 	floor1 = ent_floor(vec3d(0,0,0), "floor1", PLAY_GAME);

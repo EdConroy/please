@@ -28,6 +28,9 @@ void physics_clear_bodies()
 	// trying to make sure the bodies are completely cleard from memory
 	// was having issues with incomplete bodies colliding after mode changes
 	g_list_free(__bodyList);
+	
+	// THIS seems to fix the unhandled exception
+	__bodyList = g_list_alloc();
 }
 
 // check all collisions, calls touch functions
@@ -39,6 +42,10 @@ void physics_collision(Body *body)
 	Body *other;
 
 	if(!body)
+		return;
+
+	// i don't think the bodies are being correctly removed from memory
+	if (!body->owner)
 		return;
 
 	// vec3d_cpy(a, a, body->position.x + body->bounds)

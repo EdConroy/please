@@ -18,7 +18,8 @@ typedef struct Map_S
 
 int mapEditorSetup();
 int loadLevel(char* filename, char* openType);
-void editor_inv_setup();
+int saveLevel(char* filename);
+void editor_inv_setup(); // coming soon
 
 
 #endif

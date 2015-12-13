@@ -10,16 +10,19 @@
 FILE *file;
 
 // extern: game
-extern Entity* floor1;
-extern Entity* floor2;
+//extern Entity* floor1;
+//extern Entity* floor2;
 extern Entity* player;
-extern Entity* obstacle1;
+//extern Entity* obstacle1;
 extern Entity* editor;
 extern GameData game;
 
 // extern: game
 extern Vec3D	camera_position;
 extern Vec3D	camera_rotation;
+
+// extern: entity
+extern Entity* __entity_list;
 
 int mapEditorSetup()
 {
@@ -33,6 +36,7 @@ int mapEditorSetup()
 	//strcpy(map->mapname, "test_map");
 
 	physics_clear_bodies();
+	//body_super_clear();
 	entity_deInit();
 	ent_init_all(255);
 	obj_init_all();
@@ -49,20 +53,7 @@ int mapEditorSetup()
 	slog("level initialization finished");
 
 	// level layout 
-	loadLevel("resources/map/test.def", "r");
-
-	/*
-	floor1 = ent_floor(vec3d(0,0,0), vec3d(90,0,0), "floor1", EDIT_GAME);
-	floor1->rot = vec3d(90,0,0);
-
-	floor2 = ent_floor(vec3d(15.5, 0, 0), vec3d(90,0,0), "floor2", EDIT_GAME);
-	floor2->rot = vec3d(90, 0, 0);
-	
-	player = ent_player(vec3d(0,0,10), "player", EDIT_GAME);
-	player->rot = vec3d(80,0,0);
-
-	obstacle1 = ent_obstacle(vec3d(5, 0, 1.6f), "obstacle1", EDIT_GAME);
-	*/
+	loadLevel("resources/map/level.def", "r");
 
 	editor = ent_editor(vec3d(0,0,0), "editor");
 
@@ -130,4 +121,41 @@ int loadLevel(char* filename, char* openType)
 	}
 
 	return 1;
+}
+
+
+int saveLevel(char* filename)
+{
+	FILE* file;
+	int i;
+	//Vec3D pos;
+	//Vec3D rot;
+
+	file = fopen(filename, "w"); // rewrite everything
+
+	fputs("name test_map\n", file);
+
+	for (i = 0; i < MAX_ENT; i++)
+	{
+		if(!strcmp(__entity_list[i].name, "editor") == 0)
+		{
+			if(__entity_list[i].inuse)
+			{
+				fputs("{\n", file);
+				fprintf(file, "%s\n", __entity_list[i].name);
+				fprintf(file, "  pos %f %f %f \n", __entity_list[i].body.position.x, __entity_list[i].body.position.y, __entity_list[i].body.position.z);
+				fprintf(file, "  rot %f %f %f \n", __entity_list[i].rot.x, __entity_list[i].rot.y, __entity_list[i].rot.z);
+				
+				if (__entity_list[i].think)
+					fputs("backforth\n", file);
+				else
+					fputs("NULL\n", file);
+				
+				fputs("}\n\n", file);
+			}
+		}
+	}
+
+	fputs("end", file);
+	fclose(file);
 }
