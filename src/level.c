@@ -128,8 +128,6 @@ int saveLevel(char* filename)
 {
 	FILE* file;
 	int i;
-	//Vec3D pos;
-	//Vec3D rot;
 
 	file = fopen(filename, "w"); // rewrite everything
 

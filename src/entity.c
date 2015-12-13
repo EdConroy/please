@@ -24,6 +24,7 @@ void weapon_setup(Entity* ent); /**<sets up all the weapons in the inventory*/
 // extern: game
 extern float game_TimeRate; /**<how fast everything in the game runs*/
 
+// glitch fix, to go in body.c hopefully; having problems with that file
 void free_body(Body* body)
 {
 	body = NULL;
@@ -163,6 +164,8 @@ void ent_draw(Entity *ent)
 		ent->color, 
 		ent->texture
 		);
+
+	//if (game.showBoundingBox)
 
 	// draw bounding box
 	x = ent->body.bounds.x+ent->body.position.x;
