@@ -9,6 +9,7 @@ void load_ascii();
 // failed
 void OMGAboutToDrawThisShytLIVE(char* ch, int length, int x, int y);
 
+// working when it wants to
 void drawToTheFrigginScreen(Vec2D size, Vec2D pos, GLuint tex_id);
 
 #endif

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <math.h>
 #include <SDL.h>
 #include <glib.h>
@@ -157,7 +158,7 @@ pbool game_LoadState()
 	FILE* file;
 	int i,j,k,no_match;
 	float x,y,z;
-	char buf[24], think[24];
+	char buf[24], think[24], name[16];
 	file = fopen("state.txt", "r");
 
 	for (i = 0; i < MAX_ENT; i++)
@@ -174,6 +175,8 @@ pbool game_LoadState()
 				// find the name
 				if (strcmp(buf, __entity_list[j].name) == 0)
 				{
+					strcpy(name,__entity_list[j].name);
+
 					// get the vector
 					fscanf(file, "%f %f %f", &x, &y, &z);
 					// get the think
@@ -201,7 +204,7 @@ pbool game_LoadState()
 					// recreate that entity, only works for obstacles now, since that is the only thing
 					// that can be killed right now
 					fscanf(file, "%f %f %f", &x, &y, &z);
-					CreateEntity(vec3d(x,y,z), buf);
+					CreateEntity(name, vec3d(x,y,z), vec3d(0,0,0), PLAY_GAME);
 				}
 			}
 		}
@@ -294,6 +297,12 @@ void game_Poll()
 						break;
 					}
 
+					case SDLK_SPACE:
+					{
+						
+						break;
+					}
+
 					case SDLK_INSERT:
 					{
 						game.gamestate = PLAY_GAME;
@@ -313,27 +322,27 @@ void game_Poll()
 				{
 				case SDLK_w:
 					{
-						player->accel.y = 5;
+						Player()->accel.y = 5;
 						break;
 					}
 				case SDLK_s:
 					{
-						player->accel.y = -5;
+						Player()->accel.y = -5;
 						break;
 					}
 				case SDLK_a:
 					{
-						player->accel.x = -5;
+						Player()->accel.x = -5;
 						break;
 					}
 				case SDLK_d:
 					{
-						player->accel.x = 5;
+						Player()->accel.x = 5;
 						break;
 					}
 				case SDLK_z:
 					{
-						weap_switch(player);
+						weap_switch(Player());
 						slog("weapon swtiched");
 						break;
 					}
@@ -373,22 +382,22 @@ void game_Poll()
 				{
 					case SDLK_w:
 					{
-						player->accel.y = 0;
+						Player()->accel.y = 0;
 						break;
 					}
 					case SDLK_s:
 					{
-						player->accel.y = 0;
+						Player()->accel.y = 0;
 						break;
 					}
 					case SDLK_a:
 					{
-						player->accel.x = 0;
+						Player()->accel.x = 0;
 						break;
 					}
 					case SDLK_d:
 					{
-						player->accel.x = 0;
+						Player()->accel.x = 0;
 						break;
 					}
 				}
@@ -406,14 +415,14 @@ void game_Poll()
 				verti = ((curMouseY - mouseY) - (768/2)) * .8;
 
 				// set new positions
-				player->rot.z = horiz;
-				player->rot.x = verti;
+				Player()->rot.z = horiz;
+				Player()->rot.x = verti;
 
 				// clamping
-				if (player->rot.x <= -650)
-					player->rot.x = -650;
-				if (player->rot.x >= -610)
-					player->rot.x = -610;
+				if (Player()->rot.x <= -650)
+					Player()->rot.x = -650;
+				if (Player()->rot.x >= -610)
+					Player()->rot.x = -610;
 
 				//if (player->rot.z >= -300)
 					//player->rot.z = -300;
@@ -427,42 +436,42 @@ void game_Poll()
 
 			if (events.type == SDL_MOUSEBUTTONDOWN)
 			{
-				if (player->inventory)
+				if (Player()->inventory)
 				{
 					for (i = 0; i < 3; i++)
 					{
 						// checking the weapon i am currently using with the active boolean (pbool)
-						if (player->inventory[i].active)
+						if (Player()->inventory[i].active)
 						{
 							// ActivateKnife(); to be put in player files or weapon files
-							if (player->inventory[i].weaponType == WEAP_MELEE)
+							if (Player()->inventory[i].weaponType == WEAP_MELEE)
 							{
 								// i can attack with the knife 
 								// moving the knife happens in ent_draw for now
 								// the attack is checked in physics
 
-								player->inventory[i].attack = true;
+								Player()->inventory[i].attack = true;
 								//#knife
 							}
 
 							//ActivateGun(); 
-							if( player->inventory[i].weaponType == WEAP_FIREARM)
+							if( Player()->inventory[i].weaponType == WEAP_FIREARM)
 							{
 								// i can attack with this weapon 
 								// the attack is checked in physics
 
-								player->inventory[i].attack = true;
-								ShootProjectile(player);
+								Player()->inventory[i].attack = true;
+								ShootProjectile(Player());
 								// #gun #firearm
 							}
 
 							// ActivateShield() #shield #rekt
-							if( player->inventory[i].weaponType == WEAP_SHEILD)
+							if( Player()->inventory[i].weaponType == WEAP_SHEILD)
 							{
 								// i can attack with this weapon 
 								// the attack is checked in physics
 
-								player->inventory[i].attack = true;
+								Player()->inventory[i].attack = true;
 							}
 						}
 					}
@@ -472,9 +481,9 @@ void game_Poll()
 			if (events.type == SDL_MOUSEBUTTONUP)
 			{
 				// SetOriginalPosition(); - set back to non-attack position
-				player->inventory[0].attack = false;
-				player->inventory[1].attack = false;
-				player->inventory[2].attack = false;
+				Player()->inventory[0].attack = false;
+				Player()->inventory[1].attack = false;
+				Player()->inventory[2].attack = false;
 			}
 		}
 	}
@@ -483,17 +492,27 @@ void game_Poll()
 void game_Update()
 {
 	Vec3D rotation;
+	int i;
 
 	if (game.gamestate == PLAY_GAME)
 	{
 		// give entity physics ability, to be renamed body_add_physics()
-		ent_add_physics(&player->body);
+		ent_add_physics(&Player()->body);
 
 		// froze time
 		if (!game_IfPausedTime())
 		{
 			ent_thnk_all(); // all the functions can think
-			ent_add_physics(&obstacle1->body); // give obstacle the ability to move
+
+			for (i = 0; i < MAX_ENT; i++)
+			{
+				// OOOOOOOOOMMMMMMMMGGGGGGGGG this is soooooooooooooooooooooooooooo temporaryyyyyyyy
+				// if i'm a obstacle, I can have physics
+				if (strcmp(__entity_list[i].name, "obstacle") == 0)
+					ent_add_physics(&__entity_list[i].body);
+			}
+
+			//ent_add_physics(&obstacle1->body); // give obstacle the ability to move
 		}
 	
 		// bullet time
@@ -509,15 +528,15 @@ void game_Update()
 
 	if (game.gamestate == PLAY_GAME)
 	{
-		if (player->health <= 0)
+		if (Player()->health <= 0)
 		{
-			player->health = 2000;
+			Player()->health = 2000;
 			game_LoadState();
 		}
 	}
 	
 	// mapEditorUpdate()
-	if (game.gamestate == EDIT_GAME)
+	if (game.gamestate == EDIT_GAME && editor)
 	{
 		camera_position = editor->body.position;
 		rotation = vec_scale(vec3d(sin(camera_rotation.z * DEGTORAD),-cos(camera_rotation.z * DEGTORAD),0), 10);
@@ -531,10 +550,13 @@ void game_Draw()
 {
 	graphics_clear_frame(); // clear everything for the next draw
 	glPushMatrix(); // save all current matrices and continue
-	if (game.gamestate == PLAY_GAME) set_camera(player->body.position, player->rot); // gotta make a position offset
+	
+	if (game.gamestate == PLAY_GAME) set_camera(Player()->body.position, Player()->rot); // gotta make a position offset // that doesn't work
 	if (game.gamestate == EDIT_GAME) set_camera(camera_position, camera_rotation);
+	
 	// this is around where we would do the binary search to see what exactly needs to be drawn from the #bsp tree
 	ent_draw_all(); // also draws weapons
+	
 	//OMGAboutToDrawThisShytLIVE("a",1, 32, 32);
 
 	//ent_weap_draw();
@@ -574,7 +596,9 @@ int game_Init()
 	obj_init_all();
 	sprite_init_all();
 
-	// level layout "loadTestLevel();"
+	loadLevel("resources/map/test.def", "r");
+
+	/*
 	floor1 = ent_floor(vec3d(0,0,0), "floor1", PLAY_GAME);
 	floor1->rot = vec3d(90,0,0);
 
@@ -584,8 +608,9 @@ int game_Init()
 	player = ent_player(vec3d(0,0,10), "player", PLAY_GAME);
 	player->rot = vec3d(80,0,0);
 
-	obstacle1 = ent_obstacle(vec3d(5, 0, 1.6f), "obstacle1", PLAY_GAME);
-	
+	obstacle1 = ent_obstacle(vec3d(5, 0, 1.6f), "obstacle", PLAY_GAME);
+	*/
+
 	// ents are given different types depending on what mode their in
 	// so copies aren't added to the map file
 

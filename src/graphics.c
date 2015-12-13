@@ -136,7 +136,7 @@ void graphics_next_frame()
 	static Uint32 then = 0;
 	Uint32 now;
 
-	drawToTheFrigginScreen(vec2d(58, 14), vec2d(0.8f, -1.0f), ascii->texture);
+	//drawToTheFrigginScreen(vec2d(58, 14), vec2d(0.8f, -1.0f), ascii->texture);
 
 	glPopMatrix();
 

@@ -61,14 +61,14 @@ void physics_collision(Body *body)
 			if (other->owner)
 			{
 				// touch/callback 1 for floor collision
-				if (strcmp(other->owner->name, "floor1") == 0)
+				if (strcmp(other->owner->name, "floor") == 0)
 					if (strcmp(body->owner->name, "player") == 0)
 					{
 						body->done = 1;
 					}
 
 				// touch/callback 2 for #knife attack
-				if (strcmp(other->owner->name, "obstacle1") == 0)
+				if (strcmp(other->owner->name, "obstacle") == 0)
 					if (strcmp(body->owner->name, "player") == 0)
 					{
 						if (body->owner->inventory[0].attack)
@@ -81,7 +81,7 @@ void physics_collision(Body *body)
 					}
 
 				// touch/callback 3 for firearm attack
-				if (strcmp(other->owner->name, "obstacle1") == 0)
+				if (strcmp(other->owner->name, "obstacle") == 0)
 					if (strcmp(body->owner->name, "player") == 0)
 					{
 						if (body->owner->inventory[1].attack)
@@ -89,7 +89,7 @@ void physics_collision(Body *body)
 					}
 
 				// touch/callback 3 for throw attack
-				if (strcmp(other->owner->name, "obstacle1") == 0)
+				if (strcmp(other->owner->name, "obstacle") == 0)
 					if (strcmp(body->owner->name, "player") == 0)
 					{
 						if (body->owner->inventory[2].attack)

@@ -108,6 +108,9 @@ void drawToTheFrigginScreen(Vec2D size, Vec2D pos, GLuint tex_id)
 {
 	Vec2D verts[4]; // points on the screen
 	Vec2D UVs[4];	// coordinates on the texture to draw
+	int i;
+
+	i = 1;
 
 	// upper right
 	verts[0].x = size.x/2;
@@ -122,7 +125,7 @@ void drawToTheFrigginScreen(Vec2D size, Vec2D pos, GLuint tex_id)
 	verts[1].y = size.y/2;
 
 	UVs[1].x = 0;
-	UVs[1].y = 1;
+	UVs[1].y = .1;
 
 	// bottom left
 	verts[2].x = -size.x/2;
@@ -135,8 +138,8 @@ void drawToTheFrigginScreen(Vec2D size, Vec2D pos, GLuint tex_id)
 	verts[3].x = size.x/2;
 	verts[3].y = -size.y/2;
 
-	UVs[3].x = 1;
-	UVs[3].y = 1;
+	UVs[3].x = .1;
+	UVs[3].y = .1;
 
 	// 2D
 	glMatrixMode(GL_PROJECTION);

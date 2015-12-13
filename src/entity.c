@@ -3,6 +3,7 @@
 #include "phys.h"
 #include "simple_logger.h"
 #include "level.h"
+#include "game.h"
 
 // LIST OF ENTITIES
 Entity* __entity_list = NULL;
@@ -240,7 +241,7 @@ void thnk_push(Entity* ent)
 }
 
 /* CREATE ENTITIES */
-Entity *ent_floor(Vec3D position, const char *name)
+Entity *ent_floor(Vec3D position, Vec3D rotation, const char *name, int gametype)
 {
 	Entity * ent;
 	ent = ent_init();
@@ -257,15 +258,16 @@ Entity *ent_floor(Vec3D position, const char *name)
 	ent->movetype = MTYPE_NONE; // floors don't move silly...
 	ent->gravity = 0; // no gravity
     //mgl_callback_set(&ent->body.touch,touch_callback,ent);
+	ent->rot = rotation;
 	ent->body.owner = ent; // when I make the body, set the owner of that body to be the floor entity
 	physics_add_body(&ent->body); // adding myself to the list of physical bodies
 	return ent;
 }
 
-Entity *ent_player(Vec3D position, const char *name)
+Entity *ent_player(Vec3D position, Vec3D rotation, const char *name, int gametype)
 {
 	Entity * ent;
-	int i;
+	//int i;
 	ent = ent_init();
     if (!ent)
     {
@@ -279,7 +281,7 @@ Entity *ent_player(Vec3D position, const char *name)
 	ent->movetype = MTYPE_PLAYER; // i am player, i move like player
 	ent->gravity = 10;
 	ent->health = 2000;
-
+	ent->rot = rotation;
 	physics_add_body(&ent->body);
 	ent->body.owner = ent;
 
@@ -291,7 +293,7 @@ Entity *ent_player(Vec3D position, const char *name)
 Entity *ent_editor(Vec3D position, const char *name)
 {
 	Entity * ent;
-	int i;
+	//int i;
 	ent = ent_init();
     if (!ent)
     {
@@ -308,7 +310,7 @@ Entity *ent_editor(Vec3D position, const char *name)
 	return ent;
 }
 
-Entity *ent_obstacle(Vec3D position, const char *name)
+Entity *ent_obstacle(Vec3D position, Vec3D rotation, const char *name, int gametype)
 {
 	Entity * ent;
 	ent = ent_init();
@@ -325,6 +327,7 @@ Entity *ent_obstacle(Vec3D position, const char *name)
 	ent->movetype = MTYPE_ENT; // i am ent, i move like everybody else
 	ent->gravity = 0;
 	ent->origin = position; // save where i first spawn, gonna need it for the think function
+	ent->rot = rotation;
 	physics_add_body(&ent->body);
 	ent->body.owner = ent;
 	ent->think = thnk_back_forth; // when i spawn, i move back and forth
@@ -332,7 +335,7 @@ Entity *ent_obstacle(Vec3D position, const char *name)
 	return ent;
 }
 
-Entity *ent_projectile(Vec3D position, const char *name)
+Entity *ent_projectile(Vec3D position, const char *name, int gametype)
 {
 	Entity * ent;
 	ent = ent_init();
@@ -360,13 +363,26 @@ Entity *ent_projectile(Vec3D position, const char *name)
 /* temp spawn projectile */
 void ShootProjectile(Entity* ent)
 {
-	Entity* proj = ent_projectile(ent->body.position, "projectile");
+	Entity* proj = ent_projectile(ent->body.position, "projectile", PLAY_GAME);
 }
 
 /* flesh out this function later for level design, may transfer to level.h */
-void CreateEntity(Vec3D position, const char *name)
+void CreateEntity(const char *name, Vec3D pos, Vec3D rot, int gametype)
 {
-	Entity* ent = ent_obstacle(position, name);
+	if (strcmp(name, "floor") == 0)
+	{
+		ent_floor(pos, rot, name, gametype);
+	}
+
+	if (strcmp(name, "player") == 0)
+	{
+		ent_player(pos, rot, name, gametype);
+	}
+
+	if (strcmp(name, "obstacle") == 0)
+	{
+		ent_obstacle(pos, rot, name, gametype);
+	}
 }
 
 /** weapon **/ // weapon.h???
@@ -425,4 +441,21 @@ void weap_switch(Entity* ent) 	/* Depending on what weapon I am, move to the nex
 			return;
 		}
 	}
+}
+
+/* GET THE PLAYER */
+Entity* Player()
+{
+	int i;
+
+	for (i = 0; i < __entity_max; i++)
+	{
+		if(strcmp(__entity_list[i].name, "player") == 0)
+		{
+			return &__entity_list[i];
+		}
+	}
+
+	slog("couldn't find player?????\n");
+	return NULL;
 }

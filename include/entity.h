@@ -43,7 +43,7 @@ typedef struct Entity_S
 	char	name[128];
 
 	int		movetype;	// how i should move
-	int		ent_type;
+	int		ent_type;	// ???
 
 	int		health;
 	
@@ -112,28 +112,28 @@ int ent_is_real(void* data);
  * @param position for floor
  * @param name for floor
  */
-Entity *ent_floor(Vec3D position, const char *name, int gametype);
+Entity *ent_floor(Vec3D position, Vec3D rotation, const char *name, int gametype);
 
 /**
  * @brief create teh player
  * @param initial position
  * @param name
  */
-Entity *ent_player(Vec3D position, const char *name, int gametype);
+Entity *ent_player(Vec3D position, Vec3D rotation, const char *name, int gametype);
 
 /**
  * @brief creates level editor placer that can place stuff in level
  * @param initial position
  * @param name
  */
-Entity *ent_editor(Vec3D position, const char *name, int gametype);
+Entity *ent_editor(Vec3D position, const char *name);
 
 /**
  * @brief creates an obstacle
  * @param initial position
  * @param name
  */
-Entity *ent_obstacle(Vec3D position, const char *name, int gametype);
+Entity *ent_obstacle(Vec3D position, Vec3D rotation, const char *name, int gametype);
 
 /**
  * @brief draws an entity
@@ -153,7 +153,7 @@ void ent_free(Entity* ent);
 void ent_set_type(Entity* ent);
 
 // create an enitity without a designated pointer
-void CreateEntity(Vec3D position, const char *name);
+void CreateEntity(const char *name, Vec3D pos, Vec3D rot, int gametype);
 
 /*	THINK FUNC	*/
 void thnk_back_forth(Entity* ent); /** move back and forth **/
@@ -162,5 +162,8 @@ void thnk_push(Entity* ent); /** pushed **/
 /* WEAPON */
 void weap_switch(Entity* ent); /** switch to next weapon in inventory **/
 void ShootProjectile(Entity* ent); /** initiate new projectile entity **/
+
+/* GET THE PLAYER FROM ENTLIST */
+Entity* Player();
 
 #endif
