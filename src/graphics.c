@@ -136,7 +136,9 @@ void graphics_next_frame()
 	static Uint32 then = 0;
 	Uint32 now;
 
-	//drawToTheFrigginScreen(vec2d(58, 14), vec2d(0.8f, -1.0f), ascii->texture);
+	// ascii texture put in a temporary spot for testing
+	// numbers I use as parameters might be wayyy to large
+	//drawToTheFrigginScreen(vec2d(0.1f, -0.13f),vec2d(0.5, 0.5),  ascii->texture);
 
 	glPopMatrix();
 

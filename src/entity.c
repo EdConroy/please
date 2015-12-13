@@ -167,6 +167,7 @@ void ent_draw(Entity *ent)
 
 	//if (game.showBoundingBox)
 
+	/*
 	// draw bounding box
 	x = ent->body.bounds.x+ent->body.position.x;
 	y = ent->body.bounds.y+ent->body.position.y;
@@ -250,11 +251,13 @@ void ent_draw(Entity *ent)
 
 		}
 		glEnd();
+		
 
 	glDisable(GL_BLEND);
     glDisable(GL_COLOR_MATERIAL);
 	glPopMatrix();
-    
+    */
+
 	// draw weapons to the screen
 	for (i = 0; i < 3; i++)
 	{

@@ -91,7 +91,6 @@ Sprite *sprite_load(char *filename,int fw, int fh)
     glGenTextures(1, &sprite->texture);
     glBindTexture(GL_TEXTURE_2D, sprite->texture);
 
-
     if(sprite->image->format->BytesPerPixel == 4) {
         Mode = GL_RGBA;
     }

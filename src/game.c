@@ -629,8 +629,6 @@ void game_Draw()
 	
 	// this is around where we would do the binary search to see what exactly needs to be drawn from the #bsp tree
 	ent_draw_all(); // also draws weapons
-	
-	//OMGAboutToDrawThisShytLIVE("a",1, 32, 32);
 
 	//ent_weap_draw();
 	glPopMatrix();// reload previous matrices

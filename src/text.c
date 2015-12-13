@@ -3,17 +3,20 @@
 #include "types.h"
 #include "simple_logger.h"
 
+// temp
 Sprite* ascii;
 
+// not being used for now
 extern GLint	view[4];
 extern GLdouble model[16];
 extern GLdouble projection[16];
 
 void load_ascii()
 {
-	ascii = sprite_load("resources/text/some_ascii.png", 8192, 32);
+	ascii = sprite_load("resources/text/some_ascii_red.png", 8192, 32);
 }
 
+// does not work
 void OMGAboutToDrawThisShytLIVE(char* ch, int length, int x, int y)
 {
 	// What's that? Can't use SDL_Rect cuz I'm in GL?
@@ -104,42 +107,56 @@ void OMGAboutToDrawThisShytLIVE(char* ch, int length, int x, int y)
 	glEnable(GL_DEPTH_TEST);
 }
 
-void drawToTheFrigginScreen(Vec2D size, Vec2D pos, GLuint tex_id)
+// called in graphics_next_frame, has to be put between matrix popping to work
+void drawToTheFrigginScreen(Vec2D size, Vec2D pos, GLuint tex_id, int value)
 {
 	Vec2D verts[4]; // points on the screen
 	Vec2D UVs[4];	// coordinates on the texture to draw
-	int i;
-
-	i = 1;
-
-	// upper right
-	verts[0].x = size.x/2;
-	verts[0].y = size.y/2;
-
-	// will attempt to change texture coordinates later
-	UVs[0].x = 1;
-	UVs[0].y = 0;
-
-	// upper left
+	
+	// upper left (start, 1)
 	verts[1].x = -size.x/2;
 	verts[1].y = size.y/2;
 
-	UVs[1].x = 0;
-	UVs[1].y = .1;
+	UVs[1].x = value/256.0f;
+	UVs[1].y = 1;
 
-	// bottom left
+	// upper right (end, 1)
+	verts[0].x = size.x/2;
+	verts[0].y = size.y/2;
+
+	UVs[0].x = (value + 1)/256.0f;
+	UVs[0].y = 1;
+
+	// bottom left, (start 0)
 	verts[2].x = -size.x/2;
 	verts[2].y = -size.y/2;
 
-	UVs[2].x = 0;
+	UVs[2].x = value/256.0;
 	UVs[2].y = 0;
 
-	// bottom right
+	// bottom right (end, 0)
 	verts[3].x = size.x/2;
 	verts[3].y = -size.y/2;
 
-	UVs[3].x = .1;
-	UVs[3].y = .1;
+	UVs[3].x = (value + 1)/256.0f;
+	UVs[3].y = 0;
+
+
+	/*for (i = 0; i <4; i++)
+	{
+		if(i % 3 == 0)
+		{
+			verts[i].x = 1;
+		}else
+			verts[i].x = -1;
+		if (i < 2)
+		{
+			verts[i].y = 1;
+		}else
+			verts[i].y = -1;
+	
+	}*/
+
 
 	// 2D
 	glMatrixMode(GL_PROJECTION);
@@ -148,20 +165,17 @@ void drawToTheFrigginScreen(Vec2D size, Vec2D pos, GLuint tex_id)
 
 	glLoadIdentity();
 
-	// maybe orig. method didn't work
-	// because I didn't make a new ortho camera
 	gluOrtho2D(-1, 1, -1, 1);
 
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 
-	glTranslatef(pos.x, pos.y, 0);
-	glRotatef(0, 0, 0, 1);
+	// might need to change distance from screen (z)
+	glTranslatef(pos.x, pos.y, 0.1);
 
 	glDisable(GL_DEPTH_TEST);
 
 	glEnable(GL_TEXTURE_2D);
-	// or mayb the tex id was wrong
 	glBindTexture(GL_TEXTURE_2D, tex_id);
 
 	// transparecny
@@ -206,11 +220,6 @@ void drawToTheFrigginScreen(Vec2D size, Vec2D pos, GLuint tex_id)
 }
 
 //#define MAX_LENGTH_OF_TEXT 256
-
-	//source.x = (num * TILE_WIDTH) % m_textureTile.Width();
-	//source.y = (num * TILE_WIDTH) / m_textureTile.Width() * TILE_HEIGHT;
-	//source.w = TILE_WIDTH;
-	//source.h = TILE_HEIGHT;
 
 // ascii value / total ascii char = position to start
 
