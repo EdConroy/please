@@ -40,7 +40,8 @@ typedef struct Entity_S
 	int		inuse;
 	int		refID;
 
-	char	name[128];
+	char	name[64];
+	char	classname[64];
 
 	int		movetype;	// how i should move
 	int		selected_model; // for map editor
@@ -156,7 +157,7 @@ void ent_free(Entity* ent);
 void ent_set_type(Entity* ent);
 
 // create an enitity without a designated pointer
-void CreateEntity(const char *name, Vec3D pos, Vec3D rot, int gametype);
+void CreateEntity(const char *classname, const char* name, Vec3D pos, Vec3D rot, int gametype);
 
 /*	THINK FUNC	*/
 void thnk_back_forth(Entity* ent); /** move back and forth **/

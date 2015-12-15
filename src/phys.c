@@ -25,11 +25,17 @@ void physics_remove_body(Body *body)
 
 void physics_clear_bodies()
 {
-	// trying to make sure the bodies are completely cleard from memory
-	// was having issues with incomplete bodies colliding after mode changes
 	g_list_free(__bodyList);
 	
 	// THIS seems to fix the unhandled exception
+	// read a forum, have to set pointer to NULL
+	// "so glib knows it now represents an empty list
+	// otherwise it's still pointing to where it was
+	// before it was freed, which is now invalid"
+	// even though, it's bad to do this because
+	// everytime you change modes, glist gets new
+	// memory address, that's bad
+
 	__bodyList = g_list_alloc();
 }
 
@@ -79,15 +85,15 @@ void physics_collision(Body *body)
 			if (other->owner)
 			{
 				// touch/callback 1 for floor collision
-				if (strcmp(other->owner->name, "floor") == 0)
-					if (strcmp(body->owner->name, "player") == 0)
+				if (strcmp(other->owner->classname, "floor") == 0)
+					if (strcmp(body->owner->classname, "player") == 0)
 					{
 						body->done = 1;
 					}
 
 				// touch/callback 2 for #knife attack
-				if (strcmp(other->owner->name, "obstacle") == 0)
-					if (strcmp(body->owner->name, "player") == 0)
+				if (strcmp(other->owner->classname, "obstacle") == 0)
+					if (strcmp(body->owner->classname, "player") == 0)
 					{
 						if (body->owner->inventory[0].attack)
 							ent_free(other->owner);
@@ -99,16 +105,16 @@ void physics_collision(Body *body)
 					}
 
 				// touch/callback 3 for firearm attack
-				if (strcmp(other->owner->name, "obstacle") == 0)
-					if (strcmp(body->owner->name, "player") == 0)
+				if (strcmp(other->owner->classname, "obstacle") == 0)
+					if (strcmp(body->owner->classname, "player") == 0)
 					{
 						if (body->owner->inventory[1].attack)
 							ent_free(other->owner);
 					}
 
 				// touch/callback 3 for throw attack
-				if (strcmp(other->owner->name, "obstacle") == 0)
-					if (strcmp(body->owner->name, "player") == 0)
+				if (strcmp(other->owner->classname, "obstacle") == 0)
+					if (strcmp(body->owner->classname, "player") == 0)
 					{
 						if (body->owner->inventory[2].attack)
 							other->owner->think = thnk_push;

@@ -55,11 +55,24 @@ GLuint graphics_get_shader_program();
 void graphics_clear_frame();
 
 /**
+  * @brief draws 2d stuff 
+  */
+void graphics_2d_draw();
+
+/**
  * @brief advance the frame, taking into account desired frame rate
  */
 void graphics_next_frame();
 
 // can get stuff like pos. of mouse on an opengl window to find out where i clicked in 3d space
-void windowToGL(GLint x, GLint y, GLdouble z, const GLdouble * model, const GLdouble * proj, const GLint * view, GLdouble * glx, GLdouble * gly, GLdouble * glz);
+//void windowToGL(GLint x, GLint y, GLdouble z, const GLdouble * model, const GLdouble * proj, const GLint * view, GLdouble * glx, GLdouble * gly, GLdouble * glz);
+
+// will change view to orthographic
+void gluxOrthographic();
+void gluxUnOrthographic();
+
+// will change view to perspective
+void gluxPerspective();
+void gluxUnPerspective();
 
 #endif

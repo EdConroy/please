@@ -99,7 +99,7 @@ void ent_draw_all()
 // initiate single entity
 Entity* ent_init()
 {
-	int i,j;
+	int i;
 	for (i = 0; i < __entity_max; i++)
 	{
 		if (!__entity_list[i].inuse)
@@ -142,7 +142,7 @@ void ent_draw(Entity *ent)
 
 	if (!ent) return;
 	
-	if (strcmp(ent->name, "editor") == 0)
+	if (strcmp(ent->classname, "editor") == 0)
 	{
 		obj_draw
 		(
@@ -309,7 +309,8 @@ void ent_free(Entity* ent)
 	ent->inuse = 0;
 	obj_free(ent->model);
 	sprite_free(ent->texture);
-	memset(ent->name, 0, sizeof(char)*128);
+	memset(ent->name, 0, sizeof(char)*64);
+	memset(ent->classname, 0, sizeof(char)*64);
 	ent->movetype = 0;
 	physics_remove_body(&ent->inventory[0].body);
 	memset(ent->inventory, 0, sizeof(Weapon)*3);
@@ -326,9 +327,7 @@ void ent_free(Entity* ent)
 	ent = NULL;
 }
 
-/*	this function was incorrectly named.
-	it not only does acceleration, but does
-	gravity as well as check if powerups are on */
+/*	might rename this again */
 
 void ent_add_physics(Body* body)
 {
@@ -344,7 +343,7 @@ void ent_add_physics(Body* body)
 		body->velocity.z = 0;
 
 	// bullet time
-	if (!strcmp(body->owner->name, "player") == 0)
+	if (!strcmp(body->owner->classname, "player") == 0)
 		vec3d_mult(body->velocity, body->velocity, game_TimeRate);
 	
 	vec3d_add(body->position, body->position, body->velocity);
@@ -386,7 +385,8 @@ Entity *ent_floor(Vec3D position, Vec3D rotation, const char *name, int gametype
 	ent->texture = sprite_load("resources/seamless_tile_floor_1_by_ttrlabs-d4ojzlu.png",1024,1024);
     vec3d_cpy(ent->body.position,position);
     cube_set(ent->body.bounds,-8,-8,-8,16,16,8);
-    sprintf(ent->name,"%s",name);
+	sprintf(ent->classname,"floor");
+	sprintf(ent->name, name);
 	ent->movetype = MTYPE_NONE; // floors don't move silly...
 	ent->gravity = 0; // no gravity
     //mgl_callback_set(&ent->body.touch,touch_callback,ent);
@@ -409,7 +409,8 @@ Entity *ent_player(Vec3D position, Vec3D rotation, const char *name, int gametyp
 	//ent->model = obj_load("resources/cube.obj"); // having problems with this...
     vec3d_cpy(ent->body.position, position);
     cube_set(ent->body.bounds,-1,-1,-1,2,2,2);
-    sprintf(ent->name,"%s",name);
+	sprintf(ent->classname, "player");
+	sprintf(ent->name, name);
 	ent->movetype = MTYPE_PLAYER; // i am player, i move like player
 	ent->gravity = 10;
 	ent->health = 2000;
@@ -434,7 +435,8 @@ Entity *ent_editor(Vec3D position, const char *name)
 	//ent->model = obj_load("resources/cube.obj");
     vec3d_cpy(ent->body.position, position);
     cube_set(ent->body.bounds,-1,-1,-1,2,2,2);
-    sprintf(ent->name,"%s",name);
+    sprintf(ent->classname, "editor");
+	sprintf(ent->name, "editor");
 	ent->body.owner = ent;
 
 	//editor_inv_setup();
@@ -465,7 +467,8 @@ Entity *ent_obstacle(Vec3D position, Vec3D rotation, const char *name, int gamet
 	ent->texture = sprite_load("resources/cube_text.png",1024,1024);
     vec3d_cpy(ent->body.position, position);
     cube_set(ent->body.bounds,-1,-1,-1,2,2,2);
-    sprintf(ent->name,"%s",name);
+    sprintf(ent->classname, "obstacle");
+	sprintf(ent->name, name);
 	ent->movetype = MTYPE_ENT; // i am ent, i move like everybody else
 	ent->gravity = 0;
 	ent->origin = position; // save where i first spawn, gonna need it for the think function
@@ -490,7 +493,8 @@ Entity *ent_projectile(Vec3D position, const char *name, int gametype)
 	ent->texture = sprite_load("resources/metal_txt.png",1024,1024);
     vec3d_cpy(ent->body.position, position);
     cube_set(ent->body.bounds,-1,-1,-1,2,2,2);
-    sprintf(ent->name,"%s",name);
+    sprintf(ent->classname, "projectile");
+	sprintf(ent->name, name);
 	ent->movetype = MTYPE_PROJ;
 	ent->gravity = 0;
 	ent->accel.y = 1; // i accelerate constantly, because I am a projectile. this i do.
@@ -509,19 +513,19 @@ void ShootProjectile(Entity* ent)
 }
 
 /* flesh out this function later for level design, may transfer to level.h */
-void CreateEntity(const char *name, Vec3D pos, Vec3D rot, int gametype)
+void CreateEntity(const char* classname, const char *name, Vec3D pos, Vec3D rot, int gametype)
 {
-	if (strcmp(name, "floor") == 0)
+	if (strcmp(classname, "floor") == 0)
 	{
 		ent_floor(pos, rot, name, gametype);
 	}
 
-	if (strcmp(name, "player") == 0)
+	if (strcmp(classname, "player") == 0)
 	{
 		ent_player(pos, rot, name, gametype);
 	}
 
-	if (strcmp(name, "obstacle") == 0)
+	if (strcmp(classname, "obstacle") == 0)
 	{
 		ent_obstacle(pos, rot, name, gametype);
 	}
@@ -592,7 +596,7 @@ Entity* Player()
 
 	for (i = 0; i < __entity_max; i++)
 	{
-		if(strcmp(__entity_list[i].name, "player") == 0)
+		if(strcmp(__entity_list[i].classname, "player") == 0)
 		{
 			return &__entity_list[i];
 		}

@@ -78,13 +78,6 @@ Sprite *sprite_load(char *filename,int fw, int fh)
         sprite->h = sprite->image->h;
     }
     /*set the rest of the data*/
-    
-	// i don't know why I need to do this
-    windowToGL(
-		((640 >> 1) + 64),
-		((480 >> 1) + 32),
-		0.99, model, projection, view,
-		&sprite->x3D, &sprite->y3D, &sprite->z3D);
 
     // You should probably use CSurface::OnLoad ... ;)
     //-- and make sure the Surface pointer is good!

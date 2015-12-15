@@ -5,6 +5,7 @@
 #include "entity.h"
 #include "phys.h"
 #include "game.h"
+#include "text.h"
 
 // private declaraton: map (was level)
 FILE *file;
@@ -35,13 +36,14 @@ int mapEditorSetup()
 	//map->spawnList = NULL;
 	//strcpy(map->mapname, "test_map");
 
+	textExit();
 	physics_clear_bodies();
-	//body_super_clear();
 	entity_deInit();
 	ent_init_all(255);
 	obj_init_all();
 	sprite_close_all();
 	sprite_init_all();
+	textInit();
 
 	camera_rotation.x = 80;
 	camera_rotation.y = 0;
@@ -78,7 +80,7 @@ int loadLevel(char* filename, char* openType)
 
 	char mapName[16];
 
-	char classname[16];
+	char classname[16], name[16];
 	Vec3D pos;
 	Vec3D rot;
 	char think[24];
@@ -98,13 +100,14 @@ int loadLevel(char* filename, char* openType)
 		{
 			case '{':
 			{
-				fscanf(file, "%s", &classname);
+				fscanf(file, "%s", classname);
+				fscanf(file, "%s", name);
 				fscanf(file, "%*s %f %f %f", &pos.x, &pos.y, &pos.z); // %*s means it will be discarded; i want to skip over it and go straight to the numbers
 				fscanf(file, "%*s %f %f %f", &rot.x, &rot.y, &rot.z); 
 				fscanf(file, "%s", think);
 				fscanf(file, "%*s"); // skip over end bracket
 
-				CreateEntity(classname, pos, rot, game.gamestate);
+				CreateEntity(classname, name, pos, rot, game.gamestate);
 
 				break;
 			}
@@ -140,14 +143,15 @@ int saveLevel(char* filename)
 			if(__entity_list[i].inuse)
 			{
 				fputs("{\n", file);
-				fprintf(file, "%s\n", __entity_list[i].name);
+				fprintf(file, "  %s\n", __entity_list[i].classname);
+				fprintf(file, "  %s\n", __entity_list[i].name);
 				fprintf(file, "  pos %f %f %f \n", __entity_list[i].body.position.x, __entity_list[i].body.position.y, __entity_list[i].body.position.z);
 				fprintf(file, "  rot %f %f %f \n", __entity_list[i].rot.x, __entity_list[i].rot.y, __entity_list[i].rot.z);
 				
 				if (__entity_list[i].think)
-					fputs("backforth\n", file);
+					fputs("  backforth\n", file);
 				else
-					fputs("NULL\n", file);
+					fputs("  NULL\n", file);
 				
 				fputs("}\n\n", file);
 			}
@@ -156,4 +160,5 @@ int saveLevel(char* filename)
 
 	fputs("end", file);
 	fclose(file);
+	return 1;
 }

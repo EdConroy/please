@@ -65,6 +65,9 @@ void		game_Update();
 void		game_Draw();
 int			Run();
 
+// test: text
+Text* testText;
+
 // reminder: needs offset of player's position, called in game_Draw()
 void set_camera(Vec3D position, Vec3D rotation)
 {
@@ -77,7 +80,7 @@ void set_camera(Vec3D position, Vec3D rotation)
                  -position.z);
 }
 
-// private definitions: game - time
+// private definitions: game / time
 
 // if the game was paused by the player, called in game_Update()
 pbool game_IfPausedTime()
@@ -121,6 +124,9 @@ pbool game_SaveState()
 	{
 		if (__entity_list[i].inuse)
 		{
+			// entity classname
+			fprintf(file, __entity_list[i].classname);
+			fprintf(file, "\n");
 			// entity name
 			fprintf(file, __entity_list[i].name);
 			fprintf(file, "\n");
@@ -140,7 +146,7 @@ pbool game_SaveState()
 			else
 				fprintf(file, "no_think\n");
 
-			fprintf(file, "-\n\n");
+			fprintf(file, "\n\n");
 		}
 	}
 
@@ -158,22 +164,27 @@ pbool game_LoadState()
 	FILE* file;
 	int i,j,k,no_match;
 	float x,y,z;
-	char buf[24], think[24], name[16];
+	char buf[24], think[24], name[64], classname[16];
 	file = fopen("state.txt", "r");
 
+	no_match = 0;
+	
 	for (i = 0; i < MAX_ENT; i++)
 	{
-		no_match = 0;
-		fscanf(file, "%s", buf);
-		for (j = 0; j < 5; j++)
+		if (fscanf(file, "%s", classname) == EOF)
+			break;
+
+		//if (strcmp(classname, "-") == 0) continue;
+
+		fscanf(file, "%s", buf); // find the name
+
+		for (j = 0; j < MAX_ENT; j++)
 		{
-			if ((buf != NULL) 
-				&& (!strcmp(buf, "-") == 0) 
-				&& (!strcmp(buf, "thnk_back_forth") == 0)
-				&& (!strcmp(buf, "thnk_push") == 0)) // isolating everything and finding the entity name
+			if ((classname != NULL) 
+				&& (!strcmp(classname, "thnk_back_forth") == 0)
+				&& (!strcmp(classname, "thnk_push") == 0)) // isolating everything and finding the entity classname
 			{
-				// find the name
-				if (strcmp(buf, __entity_list[j].name) == 0)
+				if (strcmp(buf, __entity_list[j].name) == 0  && strcmp(classname, __entity_list[j].classname) == 0)
 				{
 					strcpy(name,__entity_list[j].name);
 
@@ -194,19 +205,28 @@ pbool game_LoadState()
 					{
 						__entity_list[j].think = thnk_push;
 					}
+					
+					no_match = 0;
+
+					 break;
 				}
 				else
-					no_match++;
-				
-				// checking if there is an entity in the file, that is no longer in the entity list
-				if (no_match == 5)
 				{
-					// recreate that entity, only works for obstacles now, since that is the only thing
-					// that can be killed right now
-					fscanf(file, "%f %f %f", &x, &y, &z);
-					CreateEntity(name, vec3d(x,y,z), vec3d(0,0,0), PLAY_GAME);
+					no_match++;
+					// checking if there is an entity in the file, that is no longer in the entity list
+					continue;
 				}
 			}
+		}
+
+		if (no_match == MAX_ENT)
+		{
+			// recreate that entity, only works for obstacles now, since that is the only thing
+			// that can be killed right now
+			fscanf(file, "%f %f %f", &x, &y, &z);
+			CreateEntity(classname, name, vec3d(x,y,z), vec3d(0,0,0), PLAY_GAME);
+			no_match = 0;
+			continue;
 		}
 	}
 
@@ -219,7 +239,7 @@ pbool game_LoadState()
 void game_Poll()
 {
 	int mouseX, mouseY;
-	int horiz, verti;
+	float horiz, verti;
 
 	Entity* ent;
 	Cube a,b;
@@ -234,9 +254,6 @@ void game_Poll()
 
 	while (SDL_PollEvent (&events))
 	{	
-		if (events.type == SDL_QUIT)
-			game_running = false;
-
 		if(game.gamestate == EDIT_GAME) // if im in level edit
 		{
 			if (events.type == SDL_KEYDOWN)
@@ -322,13 +339,13 @@ void game_Poll()
 
 							case 0:
 							{
-								CreateEntity("obstacle", editor->body.position, editor->rot, game.gamestate);
+								CreateEntity("obstacle","for editor", editor->body.position, editor->rot, game.gamestate);
 								break;
 							}
 
 							case 1:
 							{
-								CreateEntity("floor", editor->body.position, editor->rot, game.gamestate);
+								CreateEntity("floor", "for editor", editor->body.position, editor->rot, game.gamestate);
 								break;
 							}
 
@@ -389,6 +406,9 @@ void game_Poll()
 
 		if(game.gamestate == PLAY_GAME)
 		{
+			if (events.type == SDL_QUIT)
+				game_running = false;
+
 			if (events.type == SDL_KEYDOWN)
 			{
 				switch(events.key.keysym.sym)
@@ -446,6 +466,10 @@ void game_Poll()
 						//slog("boop");
 						return;
 					}
+				case SDLK_ESCAPE:
+					{
+						game_running = false;
+					}
 				}
 			}
 
@@ -484,8 +508,8 @@ void game_Poll()
 
 				// get new positions
 				// highly inaccurate
-				horiz = ((((curMouseX - mouseX)) + (1024/2)));
-				verti = ((curMouseY - mouseY) - (768/2)) * .8;
+				horiz = ((((curMouseX - mouseX)) + (1024.0f/2.0f)));
+				verti = ((curMouseY - mouseY) - (768.0f/2.0f)) * .8f;
 
 				// set new positions
 				Player()->rot.z = horiz;
@@ -581,7 +605,7 @@ void game_Update()
 			{
 				// OOOOOOOOOMMMMMMMMGGGGGGGGG this is soooooooooooooooooooooooooooo temporaryyyyyyyy
 				// if i'm a obstacle, I can have physics
-				if (strcmp(__entity_list[i].name, "obstacle") == 0)
+				if (strcmp(__entity_list[i].classname, "obstacle") == 0)
 					ent_add_physics(&__entity_list[i].body);
 			}
 
@@ -629,9 +653,11 @@ void game_Draw()
 	
 	// this is around where we would do the binary search to see what exactly needs to be drawn from the #bsp tree
 	ent_draw_all(); // also draws weapons
-
 	//ent_weap_draw();
+
 	glPopMatrix();// reload previous matrices
+	graphics_2d_draw(); // just draws 2d text to screen for now
+	glPopMatrix();
 	graphics_next_frame(); // show the next frame
 }
 
@@ -662,32 +688,18 @@ int game_Init()
 		game_TimeRate = 1; // initial time rate
 	}	
 
+	textExit();
 	entity_deInit();
 	physics_clear_bodies();
-	//body_super_clear();
 	ent_init_all(255);
 	obj_init_all();
 	sprite_init_all();
+	textInit();
 
 	loadLevel("resources/map/level.def", "r");
 
-	/*
-	floor1 = ent_floor(vec3d(0,0,0), "floor1", PLAY_GAME);
-	floor1->rot = vec3d(90,0,0);
-
-	floor2 = ent_floor(vec3d(15.5, 0, 0), "floor2", PLAY_GAME);
-	floor2->rot = vec3d(90, 0, 0);
-	
-	player = ent_player(vec3d(0,0,10), "player", PLAY_GAME);
-	player->rot = vec3d(80,0,0);
-
-	obstacle1 = ent_obstacle(vec3d(5, 0, 1.6f), "obstacle", PLAY_GAME);
-	*/
-
-	// ents are given different types depending on what mode their in
-	// so copies aren't added to the map file
-
-	load_ascii();
+	testText = makeText("play mode", vec2d(-0.97f, 0.94f), vec2d(0.08f, -0.08f));
+	testText->draw = 1;
 
 	slog("game initialization finished");
 	return 1;

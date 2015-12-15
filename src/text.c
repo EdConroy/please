@@ -1,114 +1,136 @@
 #include "graphics.h"
 #include "text.h"
-#include "types.h"
 #include "simple_logger.h"
+#include <string.h>
+
+// text is drawn by surfing thru a texture
+// and cutting out what's needed
+// that way, there's no reason why this shouldn't
+// work with opengl2 or 4 since I'm not using SDL
+// except for loading the texture
+
+// doing some weird data hiding in here, for now....
+
+// text list
+Text __text_list[MAX_TEXT];
 
 // temp
 Sprite* ascii;
 
-// not being used for now
-extern GLint	view[4];
-extern GLdouble model[16];
-extern GLdouble projection[16];
-
+/* birth */
 void load_ascii()
 {
 	ascii = sprite_load("resources/text/some_ascii_red.png", 8192, 32);
 }
 
-// does not work
-void OMGAboutToDrawThisShytLIVE(char* ch, int length, int x, int y)
+int textInit()
 {
-	// What's that? Can't use SDL_Rect cuz I'm in GL?
-	// ILL JUS MAKE MY OWN
-	// HAHA
-	// DIDN'T EXPEXT THAT DID YA?
-	// TWIWST
-	rectangle src;
-	Vec3DX pos;
-	int ch_value;
-	float left, right, top, bottom; // dont know WTF this means, will mess with lateer
+	// initiate list
+	int x;
+	memset(__text_list, 0, sizeof(Text) * MAX_TEXT);
+	//for(x = 0; x < MAX_TEXT; x++) __text_list[x].data = "";
+	atexit(textExit);
 
-	if (!ascii)
-	{
-		slog("go scrwe yourse;lf");
-		return;
-	}
-
-	// no depth, this is 2D
-	glDisable(GL_DEPTH_TEST);
-
-	// texture mode, this is 2D
-	glEnable(GL_TEXTURE_2D);
-
-	// WTF IS COLOR TRACKING?
-	glEnable(GL_COLOR_MATERIAL);
-
-	// apparenlty this enables transparecy
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	// alpha calculation?
-	glEnable(GL_BLEND);
-
-	// setting the current color
-	glColor4f(1, 1, 1, 1);
-
-	ch_value = (int)ch[0];
-
-	
-	src.x = (float)ch_value/256.0f * ascii->image->w;
-	src.y = (float)ch_value/256 * ascii->image->h;
-
-	src.w = ascii->image->w + src.x;
-	src.h = ascii->image->h + src.y;
-
-	// mapping window to object coord
-	windowToGL(x, y, 0.99, model, projection, view, &pos.x, &pos.y, &pos.z);
-	
-	glBindTexture(GL_TEXTURE_2D, ascii->texture);
-
-	/*
-	//still don't know what this means
-	left = src.x;
-	right = src.w;
-	top = src.y;
-	bottom = src.h;
-	*/
-
-	// hnnnnnnnggghhh
-	glPushMatrix();
-	glTranslatef(pos.x, pos.y, pos.z); // go to this position
-	glRotatef(0, 0.0f, 0.0f, 1.0f);
-	glScalef(1, 1, 1);
-	glTranslatef(ascii->x3D * 0.5f, ascii->y3D * 0.5f, 0.0f); // don't know why i need this
-	glBegin(GL_QUADS);
-	
-	/*
-	glTexCoord2f(left, top);
-	glVertex3f(-ascii->x3D/2, -ascii->y3D * 0.5f, 0.0f);
-
-	glTexCoord2f(left, bottom);
-	glVertex3f(-ascii->x3D/2, ascii->y3D/2, 0.0f);
-
-	glTexCoord2f(right, bottom);
-	glVertex3f(ascii->x3D/2, ascii->y3D/2, 0.0f);
-
-	glTexCoord2f(right, top);
-	glVertex3f(ascii->x3D/2, -ascii->y3D/2, 0.0f);
-	*/
-
-	glEnd();
-
-	glPopMatrix();
-	glColor4f(1,1,1,1);
-	glDisable(GL_BLEND);
-	glDisable(GL_COLOR_MATERIAL);
-	glDisable(GL_TEXTURE_2D);
-	glEnable(GL_DEPTH_TEST);
+	// load the ascii table (horizontal spreadsheet)
+	load_ascii();
+	return 1; // for now
 }
 
-// called in graphics_next_frame, has to be put between matrix popping to work
-void drawToTheFrigginScreen(Vec2D size, Vec2D pos, GLuint tex_id, int value)
+/* death/rebirth */
+void free_ascii()
+{
+	// for some reason, when in edit mode, even though ascii should've been cleared
+	// ascii is still showing and using the cube texture for some reason
+	// must be treated seperately from the other textures
+	DeleteSprite(ascii);
+}
+
+void textExit()
+{
+	int i;
+
+	for (i = 0; i < MAX_TEXT; i++)
+	{
+		__text_list[i].draw = 0;
+		__text_list[i].inuse = 0;
+		memset(&__text_list[i].data, 0, sizeof(char));
+		memset(&__text_list[i], 0, sizeof(Text));
+	}
+
+	free_ascii();
+}
+
+/* life */
+Text* makeText(char* data, Vec2D pos, Vec2D size)
+{
+	int i;
+
+	for(i = 0; i < MAX_TEXT; i++)
+	{
+		if (!__text_list[i].inuse)
+		{
+			memset(&__text_list[i], 0, sizeof(Text));
+
+			__text_list[i].inuse = 1;
+			strcpy(__text_list[i].data, data);
+			__text_list[i].pos = pos;
+			__text_list[i].size = size;
+
+			return &__text_list[i];
+		}
+	}
+}
+
+void text_draw(Text* text)
+{
+	int i;
+	int value;
+	
+	// for as long as the length of the 'string'
+	for (i = 0; i < strlen(text->data); i++)
+	{
+		value = text->data[i];
+
+		if (!value == '\0')
+		{
+			drawToTheFrigginScreen(text->pos, text->size, ascii->texture, text->data[i], i);
+		}
+	}
+}
+
+void text_draw2(char* text)
+{
+	int i;
+	int value;
+	
+	// for as long as the length of the 'string'
+	for (i = 0; i < strlen(text); i++)
+	{
+		value = text[i];
+
+		if (!value == '\0')
+		{
+			drawToTheFrigginScreen(vec2d(0.1f, 0.94f), vec2d(0.08f, -0.08f), ascii->texture, text[i], i);
+		}
+	}
+}
+
+
+void text_draw_all()
+{
+	int i;
+
+	for (i = 0; i < MAX_TEXT; i++)
+	{
+		if(__text_list[i].inuse && (__text_list[i].draw))
+		{
+			text_draw(&__text_list[i]);
+		}
+	}
+}
+
+// graphics_2d_draw() - > text_draw_all()
+void drawToTheFrigginScreen(Vec2D pos, Vec2D size, GLuint tex_id, int value, int count)
 {
 	Vec2D verts[4]; // points on the screen
 	Vec2D UVs[4];	// coordinates on the texture to draw
@@ -131,7 +153,7 @@ void drawToTheFrigginScreen(Vec2D size, Vec2D pos, GLuint tex_id, int value)
 	verts[2].x = -size.x/2;
 	verts[2].y = -size.y/2;
 
-	UVs[2].x = value/256.0;
+	UVs[2].x = value/256.0f;
 	UVs[2].y = 0;
 
 	// bottom right (end, 0)
@@ -171,7 +193,8 @@ void drawToTheFrigginScreen(Vec2D size, Vec2D pos, GLuint tex_id, int value)
 	glPushMatrix();
 
 	// might need to change distance from screen (z)
-	glTranslatef(pos.x, pos.y, 0.1);
+	pos.x = pos.x + (count/20.0f);
+	glTranslatef(pos.x, pos.y, 0.1f);
 
 	glDisable(GL_DEPTH_TEST);
 
@@ -218,94 +241,3 @@ void drawToTheFrigginScreen(Vec2D size, Vec2D pos, GLuint tex_id, int value)
 
 	glMatrixMode(GL_MODELVIEW);
 }
-
-//#define MAX_LENGTH_OF_TEXT 256
-
-// ascii value / total ascii char = position to start
-
-// make a text object
-// look thru entire char array
-// find it in spritesheet
-// save it as a sprite
-// '0' + 9 = '9'
-
-// position to start + 1 / 256 = position to end
-// start, 0 end, 0
-// start, 1  end, 1
-/* 
-void func (char *text)
-{
-	for (i)
-	{
-		int num = char[i];
-		position to start = num/256;
-		position to end = position to start + 1 / 256
-
-		50 sprites onscreen
-		50/2 for one side
-		1/25 = 0.04
-		translate by 0.4 after every draw
-		push pop matrix
-
-		glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D,texture->texture);
-
-		glBegin(GL_TRIANGLES);
-
-		given pos << glTranslatef
-																					(0, 0)   (.04, 0)  (.04, .08) < 1 triangle  (0, .08)
-
-
-
-		Vec3D.x = 0
-		Vec3D.y = .04
-		Vec3D.z = 0.1 // so the camera can see it
-
-		push MATRIX
-		translate to given posiiton
-		every positoin after acts like a child position
-		draw thru array
-		pop matrix
-
-		create array
-		Vec3D verts = { (0. .08)  (0, 0)  (.04, .08) < 1st triangle (0, 0)  (0.4, 0)  (.04, .08) < 2nd triangle }
-		Vec3D which verts to draw = {1, 0, 2, 0, 3, 2)
-		Vec2D texels = {start, 0
-						end, 0
-						start, 1
-						end, 1}
-
-
-		for (i = 0; i < length of array of which vertex to draw, i++)
-		{
-			triangle = which verts to draw[i]
-			glTexCoord2f(trianlge->texels[i], triangle->texels[i++]);
-			glVertex3f(triangle->verts[i].x, triangle->verts[i].y, triangle->verts[i].z);
-		}
-
-	}
-}
-
-*/
-/*
-void showText(char* text, int length)
-{
-	// need to get every char element individually to draw on screen
-	int character;
-	int i, j;
-	// need array of triangles
-	// each triangle has own verts and UVs
-	int tri_array[MAX_LENGTH_OF_TEXT];
-
-	float upperLeft; // are we using this as a box?
-	
-	// for each 4 coordinates
-	for (j = 0; j < length; j++)
-	{
-		for (i = 0; i < 4; i++)
-		{
-			// printing i's texels and verts to screen
-			tri_array[j]
-		}
-	}
-}*/

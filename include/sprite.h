@@ -23,6 +23,8 @@ void sprite_free(Sprite *img);
 
 Sprite *sprite_load(char *filename,int sizex, int sizey);
 
+void DeleteSprite(Sprite *sprite);
+
 void sprite_close_all();
 
 #endif

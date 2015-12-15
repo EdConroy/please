@@ -1,30 +1,50 @@
 name test_map
 {
-floor
+  floor
+  1
   pos 0.000000 0.000000 0.000000 
   rot 0.000000 0.000000 0.000000 
-NULL
+  NULL
 }
 
 {
-floor
+  floor
+  2
   pos 15.500000 0.000000 0.000000 
   rot 0.000000 0.000000 0.000000 
-NULL
+  NULL
 }
 
 {
-player
+  player
+  1
   pos 0.000000 0.000000 10.000000 
   rot 80.000000 0.000000 0.000000 
-NULL
+  NULL
 }
 
 {
-obstacle
+  obstacle
+  1
   pos 5.000000 0.000000 1.600000 
   rot 0.000000 0.000000 0.000000 
-backforth
+  backforth
+}
+
+{
+  floor
+  3
+  pos 22.000000 9.000000 3.000000 
+  rot 0.000000 0.000000 0.000000 
+  NULL
+}
+
+{
+  floor
+  4
+  pos 11.000000 19.000000 3.000000 
+  rot 0.000000 0.000000 0.000000 
+  NULL
 }
 
 end

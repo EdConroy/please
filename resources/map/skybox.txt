@@ -1,0 +1,7 @@
+calculkating how far we skybox must be away from player
+
+added classnames and specific names
+fleshed out 2d drawing functions
+fleshed out text stuff
+changed how levels and save states formats
+load state function fixed

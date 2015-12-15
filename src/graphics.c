@@ -1,9 +1,10 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "graphics.h"
 #include "shader.h"
 #include "simple_logger.h"
 #include "text.h"
-
+#include "entity.h"
 
 GLint	view[4];
 GLdouble model[16];
@@ -131,16 +132,26 @@ void graphics_clear_frame()
     glPushMatrix();
 }
 
+void graphics_2d_draw()
+{
+	// make a place...
+	char score[128];
+
+	// to store the player's score in characters
+	sprintf(score, "%d", Player()->health);
+
+	text_draw_all();
+
+	// constantly update the score
+	text_draw2(score);
+}
+
 void graphics_next_frame()
 {
 	static Uint32 then = 0;
 	Uint32 now;
 
-	// ascii texture put in a temporary spot for testing
-	// numbers I use as parameters might be wayyy to large
-	//drawToTheFrigginScreen(vec2d(0.1f, -0.13f),vec2d(0.5, 0.5),  ascii->texture);
-
-	glPopMatrix();
+	//drawToTheFrigginScreen(vec2d(0.1f, -0.13f),vec2d(0.5, 0.5),  ascii->texture
 
 	SDL_GL_SwapWindow(__graphics_window); // update frames
 
